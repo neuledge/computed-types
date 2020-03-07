@@ -26,11 +26,15 @@ declare function Validator<T, I>(input: I): T | Promise<T>;
 - **Function Composition** - Pipe multiple validators to generate new ones.
 - **TypeScript Validation** - Detect errors during compile time. 
 
+<br>
+
 ## Install
 
 ```bash
 npm i funval
 ```
+
+<br>
 
 ## Usage
 
@@ -61,6 +65,7 @@ try {
 }
 ```
 
+<br>
 
 ## Creating Validators
 
@@ -87,6 +92,8 @@ const UserSchema = {
 
 const validator = Validate(UserSchema);
 ```
+
+<br>
 
 ### Asynchronous Validators
 
@@ -115,6 +122,7 @@ const UserSchema = {
 const validator = await Validate(UserSchema);
 ```
 
+<br>
 
 ## License
 
