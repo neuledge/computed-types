@@ -1,6 +1,6 @@
-<h1 align="center">FunVal</h1>
+<h1 align="center">FunVal 🦩</h1>
 
-<h4 align="center">A minimalist library for data validation using plain functions ❤️.</h4>
+<h4 align="center">A minimalist library for data validation using plain functions.</h4>
 
 <p align="center">
 <a href="https://www.npmjs.org/package/funval"><img src="http://img.shields.io/npm/v/funval.svg" alt="View On NPM"></a>
