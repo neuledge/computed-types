@@ -17,6 +17,19 @@ export function Maybe<T extends Schema>(
   };
 }
 
+export function Optional<T extends Schema>(
+  schema: T,
+  errorMsg?: string,
+): SchemaValidator<T | undefined, [Input<T> | undefined]> {
+  return (input: Input<T> | undefined): ValidatorOutput<T | undefined> => {
+    if (!input) {
+      return undefined;
+    }
+
+    return Validate(schema, errorMsg)(input);
+  };
+}
+
 export function Or<A extends Schema, B extends Schema>(
   a: A,
   b: B,

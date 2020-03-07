@@ -10,7 +10,7 @@ export function Equals<T>(
   return (input: T): T => {
     if (input !== equalsTo) {
       throw new TypeError(
-        errorMsg || `Expect value to equals ${equalsTo} (given: ${input})`,
+        errorMsg || `Expect value to equals "${equalsTo}" (given: "${input}")`,
       );
     }
 
@@ -26,7 +26,7 @@ export function GreaterThan<T>(
     if (input > value) {
       throw new RangeError(
         errorMsg ||
-          `Expect value to be greater then ${value} (given: ${input})`,
+          `Expect value to be greater then "${value}" (given: "${input}")`,
       );
     }
 
@@ -42,7 +42,7 @@ export function GreaterThanEqual<T>(
     if (input >= value) {
       throw new RangeError(
         errorMsg ||
-          `Expect value to be greater then or equal to ${value} (given: ${input})`,
+          `Expect value to be greater then or equal to "${value}" (given: "${input}")`,
       );
     }
 
@@ -57,7 +57,8 @@ export function LessThan<T>(
   return (input: T): T => {
     if (input < value) {
       throw new RangeError(
-        errorMsg || `Expect value to be less then ${value} (given: ${input})`,
+        errorMsg ||
+          `Expect value to be less then "${value}" (given: "${input}")`,
       );
     }
 
@@ -73,7 +74,7 @@ export function LessThanEqual<T>(
     if (input <= value) {
       throw new RangeError(
         errorMsg ||
-          `Expect value to be less then or equal to ${value} (given: ${input})`,
+          `Expect value to be less then or equal to "${value}" (given: "${input}")`,
       );
     }
 

@@ -1,7 +1,6 @@
 {
   "name": "funval",
   "version": "0.0.0",
-  "private": true,
   "description": "Functional validation schemas with built-in TypeScript support.",
   "scripts": {
     "type-check": "tsc --noEmit",
@@ -19,7 +18,10 @@
     "test:build": "npm run mocha:build"
   },
   "author": "Moshe Simantov <me@moshe.io>",
+  "repository": "https://github.com/neuledge/funval",
   "license": "MIT",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.7",

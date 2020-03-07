@@ -1,5 +1,5 @@
-import { Maybe, Or } from './validators/logic';
-import {
+import { Maybe, Or, Optional } from './validators/logic';
+import Validate, {
   Schema,
   FunctionValidator,
   SyncFunctionValidator,
@@ -31,7 +31,10 @@ import {
 } from './validators/number';
 import { Binary } from './validators/boolean';
 
+export default Validate;
+
 export {
+  Validate,
   Schema,
   FunctionValidator,
   SyncFunctionValidator,
@@ -42,6 +45,7 @@ export {
   Output,
   Type,
   Maybe,
+  Optional,
   Or,
   Equals,
   GreaterThan,

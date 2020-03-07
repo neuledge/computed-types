@@ -6,7 +6,7 @@ export function ValidNumber(input: unknown): number {
   const res = Number(input);
 
   if (isNaN(res)) {
-    throw new TypeError(`${input} is not a number`);
+    throw new TypeError(`"${input}" is not a number`);
   }
 
   return res;
@@ -14,7 +14,7 @@ export function ValidNumber(input: unknown): number {
 
 export function Integer(input: number): number {
   if (!Number.isInteger(input)) {
-    throw new TypeError(`${input} is not an integer`);
+    throw new TypeError(`"${input}" is not an integer`);
   }
 
   return input;
@@ -22,7 +22,7 @@ export function Integer(input: number): number {
 
 export function FiniteNumber(input: number): number {
   if (!Number.isFinite(input)) {
-    throw new TypeError(`${input} is not an finite`);
+    throw new TypeError(`"${input}" is not an finite`);
   }
 
   return input;
