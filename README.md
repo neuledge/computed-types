@@ -64,7 +64,7 @@ try {
 
 ### Creating Validators
 
-A validator is any function that can return a value. For example, here is an email address validator:
+A validator is any function that can return a value:
 
 ```ts
 import * as EmailValidator from 'email-validator';
