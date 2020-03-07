@@ -117,9 +117,7 @@ export default function Validate<T extends Schema>(
             throw createError(errorPaths, errorMsg);
           }
 
-          return res as T extends SyncSchema<Output<T>>
-            ? Output<T>
-            : Promise<Output<T>>;
+          return res as ValidatorOutput<T>;
         }
 
         return Promise.all(promises).then(() => {
@@ -128,9 +126,7 @@ export default function Validate<T extends Schema>(
           }
 
           return res as Output<T>;
-        }) as T extends SyncSchema<Output<T>> ? Output<T> : Promise<Output<T>>;
-
-        // TODO fix "as unknown" assumption
+        }) as ValidatorOutput<T>;
       };
 
     default:
