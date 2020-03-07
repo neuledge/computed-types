@@ -15,7 +15,10 @@
     "mocha": "TS_NODE_FILES=true mocha -r ts-node/register src/**/*.test.ts --timeout 10000",
     "mocha:build": "mocha lib/**/*.test.js --timeout 10000",
     "test": "npm run type-check && npm run lint -- --quiet && npm run mocha",
-    "test:build": "npm run mocha:build"
+    "test:build": "npm run mocha:build",
+    "prepack": "npm run clean && npm run build",
+    "prepublishOnly": "npm run test:build",
+    "postpublish" : "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
   },
   "author": "Moshe Simantov <me@moshe.io>",
   "repository": "https://github.com/neuledge/funval",
@@ -39,6 +42,8 @@
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.8",
     "mocha": "^7.1.0",
     "prettier": "^1.19.1",
     "ts-node": "^8.6.2",
@@ -48,5 +53,13 @@
     "@types/compose-function": "0.0.30",
     "boolean": "^3.0.1",
     "compose-function": "^3.0.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*": "eslint"
   }
 }
