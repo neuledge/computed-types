@@ -58,14 +58,6 @@ try {
   });
 } catch (err) {
   console.error(err.message, err.paths);
-  
-  // Prints:
-  // Expect value to equals "suspended" (given: "unregistered") [
-  //   {
-  //     path: [ 'status' ],
-  //     message: 'Expect value to equals "suspended" (given: "unregistered")'
-  //   }
-  // ]
 }
 ```
 
