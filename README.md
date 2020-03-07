@@ -26,13 +26,13 @@ declare function Validator<T, I>(input: I): T | Promise<T>;
 - **Function Composition** - Pipe multiple validators to generate new ones.
 - **TypeScript Validation** - Detect errors during compile time. 
 
-### Install
+## Install
 
 ```bash
 npm i funval
 ```
 
-### Usage
+## Usage
 
 ```ts
 import { Validate, Optional, Or, NonEmptyString, StringRange, Type } from 'funval';
@@ -62,7 +62,7 @@ try {
 ```
 
 
-### Creating Validators
+## Creating Validators
 
 A validator is any function that can return a value:
 
@@ -88,7 +88,7 @@ const UserSchema = {
 const validator = Validate(UserSchema);
 ```
 
-#### Asynchronous Validators
+### Asynchronous Validators
 
 Asynchronous validators are supported by resolving to a `Promise` value:
 
@@ -116,7 +116,7 @@ const validator = await Validate(UserSchema);
 ```
 
 
-### License
+## License
 
 &copy; 2020 Moshe Simantov
 
