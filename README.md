@@ -126,4 +126,4 @@ const validator = await Validate(UserSchema);
 
 ## License
 
-[MIT](LICENSE) license &copy; 2020 [Moshe Simantov](https://moshe.io)
+[MIT](LICENSE) license &copy; 2020 [Neuledge](https://neuledge.com)
