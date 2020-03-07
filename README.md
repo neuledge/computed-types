@@ -10,13 +10,13 @@
 </p>
 <br>
 
-```ts
-declare function Validator<T, I>(input: I): T | Promise<T>;
-```
-
 **FunVal** is a minimalist validation library that seamlessly integrates with your existing
 TypeScript schemas. Using only pure functions, **FunVal** knows how to validate your data and
 automatically generates TypeScript interfaces to reduce code duplications and complexity.
+
+```ts
+declare function Validator<T, I>(input: I): T | Promise<T>;
+```
 
 ### Main Features
 
