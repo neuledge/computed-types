@@ -3,4 +3,5 @@ src/
 .eslintrc
 .gitignore
 .prettierrc
+.travis.yml
 tsconfig.json
