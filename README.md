@@ -1,8 +1,8 @@
-# FunVal
+<h1 align="center">🦩 Funval</h1>
 
-<h4>Minimalist library for data validation using plain functions ❤️.</h4>
+<h4 align="center">A minimalist library for data validation using plain functions.</h4>
 
-<p>
+<p align="center">
 <a href="https://www.npmjs.org/package/funval"><img src="http://img.shields.io/npm/v/funval.svg" alt="View On NPM"></a>
 <a href="https://travis-ci.org/neuledge/funval"><img src="https://travis-ci.org/neuledge/funval.svg?branch=master" alt="Build Status"></a>
 <a href="https://david-dm.org/neuledge/funval"><img src="https://david-dm.org/neuledge/funval.svg" alt="Dependency Status"></a>
@@ -10,33 +10,40 @@
 </p>
 <br>
 
-**FunVal** is a minimalist validation library that seamlessly integrates with your existing
-TypeScript schemas. Using only pure functions, **FunVal** knows how to validate your data and
+**Funval** is a minimalist validation library that seamlessly integrates with your existing
+TypeScript schemas. Using only pure functions, *Funval* knows how to validate your data and
 automatically generates TypeScript interfaces to reduce code duplications and complexity.
 
-### Features
+```ts
+declare function Validator<T, I>(input: I): T | Promise<T>;
+```
 
-- **Asynchronous or Synchronous validation** - Automatically detection using your validators.
+### Main Features
+
+- **Asynchronous & Synchronous Support** - Automaticly detected by validators types.
 - **Pure Javascript** - Works also without TypeScript.
-- **Seamless interface** - Create new validator using plain functions in seconds.
-- **Support function composition** - Pipe multiple validators to generate new ones.
-- **TypeScript Input Validation** - Detect errors during compile time. 
+- **Seamless Interfaces** - Create new validator using plain functions in seconds.
+- **Function Composition** - Pipe multiple validators to generate new ones.
+- **TypeScript Validation** - Detect errors during compile time. 
 
-### Install
+<br>
+
+## Install
 
 ```bash
 npm i funval
 ```
 
-### Usage
+<br>
+
+## Usage
 
 ```ts
 import { Validate, Optional, Or, NonEmptyString, StringRange, Type } from 'funval';
 import compose from 'compose-function';
 
 const UserSchema = {
-  firstName: Optional(String),
-  lastName: Optional(String),
+  name: Optional(String),
   username: compose(StringRange(3, 20), NonEmptyString),
   status: Or('active' as 'active', 'suspended' as 'suspended'),
   amount: Number,
@@ -48,28 +55,21 @@ let user: Type<typeof UserSchema>;
 
 try {
   user = validator({
-    firstName: 'John',
     username: 'john1',
-    // @ts-ignore TS2322: Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
+    // @ts-ignore Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
     status: 'unregistered',
     amount: 20.3,
   });
 } catch (err) {
   console.error(err.message, err.paths);
-
-  // Expect value to equals "suspended" (given: "unregistered") [
-  //   {
-  //     path: [ 'status' ],
-  //     message: 'Expect value to equals "suspended" (given: "unregistered")'
-  //   }
-  // ]
 }
 ```
 
+<br>
 
-### Creating Validators
+## Creating Validators
 
-A validator is any function that return value. For example here is an email address validator:
+A validator is any function that can return a value:
 
 ```ts
 import * as EmailValidator from 'email-validator';
@@ -83,7 +83,7 @@ function Email(input: string): string {
 }
 ```
 
-You can use it on schemas like this:
+You can use the `Email` validator on schemas by using:
 
 ```ts
 const UserSchema = {
@@ -93,9 +93,11 @@ const UserSchema = {
 const validator = Validate(UserSchema);
 ```
 
-#### Asynchronous Validators
+<br>
 
-You can even create asynchronous validators that resolve to a `Promise`:
+### Asynchronous Validators
+
+Asynchronous validators are supported by resolving to a `Promise` value:
 
 ```ts
 import fetch from 'node-fetch';
@@ -109,8 +111,10 @@ async function AvailableUsername(input: string): Promise<string> {
 
   return input;
 }
+```
 
-
+*Funval* automatically detects promise values and convert the return type of the `Validator` to promise as well: 
+```ts
 const UserSchema = {
   username: AvailableUsername,
 };
@@ -118,9 +122,8 @@ const UserSchema = {
 const validator = await Validate(UserSchema);
 ```
 
+<br>
 
-### License
+## License
 
-&copy; 2020 Moshe Simantov
-
-Licensed under the [MIT](LICENSE).
+[MIT](LICENSE) license &copy; 2020 [Neuledge](https://neuledge.com)
