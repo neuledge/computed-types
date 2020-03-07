@@ -1,14 +1,18 @@
-# FunVal
+<h1 align="center">FunVal</h1>
 
-<h4>Minimalist library for data validation using plain functions ❤️.</h4>
+<h4 align="center">A minimalist library for data validation using plain functions ❤️.</h4>
 
-<p>
+<p align="center">
 <a href="https://www.npmjs.org/package/funval"><img src="http://img.shields.io/npm/v/funval.svg" alt="View On NPM"></a>
 <a href="https://travis-ci.org/neuledge/funval"><img src="https://travis-ci.org/neuledge/funval.svg?branch=master" alt="Build Status"></a>
 <a href="https://david-dm.org/neuledge/funval"><img src="https://david-dm.org/neuledge/funval.svg" alt="Dependency Status"></a>
 <a href="LICENSE"><img src="https://img.shields.io/npm/l/funval.svg" alt="License"></a>
 </p>
 <br>
+
+```ts
+declare function Validator<T, I>(input: I): T | Promise<T>;
+```
 
 **FunVal** is a minimalist validation library that seamlessly integrates with your existing
 TypeScript schemas. Using only pure functions, **FunVal** knows how to validate your data and
@@ -18,9 +22,9 @@ automatically generates TypeScript interfaces to reduce code duplications and co
 
 - **Asynchronous or Synchronous validation** - Automatically detection using your validators.
 - **Pure Javascript** - Works also without TypeScript.
-- **Seamless interface** - Create new validator using plain functions in seconds.
-- **Support function composition** - Pipe multiple validators to generate new ones.
-- **TypeScript Input Validation** - Detect errors during compile time. 
+- **Seamless Interfaces** - Create new validator using plain functions in seconds.
+- **Function Composition** - Pipe multiple validators to generate new ones.
+- **TypeScript Validation** - Detect errors during compile time. 
 
 ### Install
 
@@ -35,8 +39,7 @@ import { Validate, Optional, Or, NonEmptyString, StringRange, Type } from 'funva
 import compose from 'compose-function';
 
 const UserSchema = {
-  firstName: Optional(String),
-  lastName: Optional(String),
+  name: Optional(String),
   username: compose(StringRange(3, 20), NonEmptyString),
   status: Or('active' as 'active', 'suspended' as 'suspended'),
   amount: Number,
@@ -48,7 +51,6 @@ let user: Type<typeof UserSchema>;
 
 try {
   user = validator({
-    firstName: 'John',
     username: 'john1',
     // @ts-ignore TS2322: Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
     status: 'unregistered',
@@ -56,7 +58,8 @@ try {
   });
 } catch (err) {
   console.error(err.message, err.paths);
-
+  
+  // Prints:
   // Expect value to equals "suspended" (given: "unregistered") [
   //   {
   //     path: [ 'status' ],
