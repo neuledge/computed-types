@@ -52,7 +52,7 @@ let user: Type<typeof UserSchema>;
 try {
   user = validator({
     username: 'john1',
-    // @ts-ignore TS2322: Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
+    // @ts-ignore Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
     status: 'unregistered',
     amount: 20.3,
   });
