@@ -1,4 +1,4 @@
-<h1 align="center">FunVal 🦩</h1>
+<h1 align="center">🦩 FunVal</h1>
 
 <h4 align="center">A minimalist library for data validation using plain functions.</h4>
 
