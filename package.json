@@ -1,0 +1,50 @@
+{
+  "name": "funval",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Functional validation schemas with built-in TypeScript support.",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "clean": "rm -rf lib",
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir lib --extensions \".js,.ts\" --source-maps inline",
+    "lint": "eslint \"src/**\"",
+    "fix": "npm run fix:lint",
+    "fix:lint": "npm run lint -- --fix",
+    "mocha": "TS_NODE_FILES=true mocha -r ts-node/register src/**/*.test.ts --timeout 10000",
+    "mocha:build": "mocha lib/**/*.test.js --timeout 10000",
+    "test": "npm run type-check && npm run lint -- --quiet && npm run mocha",
+    "test:build": "npm run mocha:build"
+  },
+  "author": "Moshe Simantov <me@moshe.io>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-decorators": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/preset-env": "^7.8.7",
+    "@babel/preset-typescript": "^7.8.3",
+    "@types/chai": "^4.2.10",
+    "@types/mocha": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.22.0",
+    "@typescript-eslint/parser": "^2.22.0",
+    "babel-plugin-transform-typescript-metadata": "^0.3.0",
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "mocha": "^7.1.0",
+    "prettier": "^1.19.1",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@types/compose-function": "0.0.30",
+    "boolean": "^3.0.1",
+    "compose-function": "^3.0.3"
+  }
+}

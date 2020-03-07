@@ -1,0 +1,25 @@
+{
+  "root": true,
+  "parser":  "@typescript-eslint/parser",
+  "extends":  [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+
+    // Make sure this is always the last configuration in the extends array:
+    "plugin:prettier/recommended"
+  ],
+  "parserOptions":  {
+    "ecmaVersion":  2020,
+    "sourceType":  "module"
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-console": ["error", { "allow": ["info", "warn", "error"] }]
+  }
+}
