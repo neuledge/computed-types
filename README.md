@@ -1,4 +1,4 @@
-<h1 align="center">
+<h1>
   <br>
   <br>
   FunVal
@@ -6,9 +6,9 @@
   <br>
 </h1>
 
-<h4 align="center">Minimalist library for data validation using plain functions ❤️.</h4>
+<h4>Minimalist library for data validation using plain functions ❤️.</h4>
 
-<p align="center">
+<p>
 <a href="https://www.npmjs.org/package/fanval"><img src="http://img.shields.io/npm/v/fanval.svg" alt="View On NPM"></a>
 <a href="https://travis-ci.org/neuledge/fanval"><img src="https://travis-ci.org/neuledge/fanval.svg?branch=master" alt="Build Status"></a>
 <a href="https://david-dm.org/neuledge/fanval"><img src="https://david-dm.org/neuledge/fanval.svg" alt="Dependency Status"></a>
