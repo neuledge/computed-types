@@ -18,9 +18,9 @@ declare function Validator<T, I>(input: I): T | Promise<T>;
 TypeScript schemas. Using only pure functions, **FunVal** knows how to validate your data and
 automatically generates TypeScript interfaces to reduce code duplications and complexity.
 
-### Features
+### Main Features
 
-- **Asynchronous or Synchronous validation** - Automatically detection using your validators.
+- **Asynchronous & Synchronous Support** - Automaticly detected by the validators type.
 - **Pure Javascript** - Works also without TypeScript.
 - **Seamless Interfaces** - Create new validator using plain functions in seconds.
 - **Function Composition** - Pipe multiple validators to generate new ones.
@@ -72,7 +72,7 @@ try {
 
 ### Creating Validators
 
-A validator is any function that return value. For example here is an email address validator:
+A validator is any function that can return a value. For example, here is an email address validator:
 
 ```ts
 import * as EmailValidator from 'email-validator';
@@ -86,7 +86,7 @@ function Email(input: string): string {
 }
 ```
 
-You can use it on schemas like this:
+You can use the `Email` validator on schemas by using:
 
 ```ts
 const UserSchema = {
@@ -98,7 +98,7 @@ const validator = Validate(UserSchema);
 
 #### Asynchronous Validators
 
-You can even create asynchronous validators that resolve to a `Promise`:
+Asynchronous validators are supported by resolving to a `Promise` value:
 
 ```ts
 import fetch from 'node-fetch';
@@ -112,8 +112,10 @@ async function AvailableUsername(input: string): Promise<string> {
 
   return input;
 }
+```
 
-
+**FunVal** automatically detects promise values and convert the return type of the `Validator` to promise as well: 
+```ts
 const UserSchema = {
   username: AvailableUsername,
 };
