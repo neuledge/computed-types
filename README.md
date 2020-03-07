@@ -118,6 +118,4 @@ const validator = await Validate(UserSchema);
 
 ## License
 
-&copy; 2020 Moshe Simantov
-
-Licensed under the [MIT](LICENSE).
+[MIT](LICENSE) license &copy; 2020 Moshe Simantov
