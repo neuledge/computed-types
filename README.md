@@ -1,4 +1,4 @@
-<h1 align="center">🦩 FunVal</h1>
+<h1 align="center">🦩 Funval</h1>
 
 <h4 align="center">A minimalist library for data validation using plain functions.</h4>
 
@@ -10,8 +10,8 @@
 </p>
 <br>
 
-**FunVal** is a minimalist validation library that seamlessly integrates with your existing
-TypeScript schemas. Using only pure functions, **FunVal** knows how to validate your data and
+**Funval** is a minimalist validation library that seamlessly integrates with your existing
+TypeScript schemas. Using only pure functions, *Funval* knows how to validate your data and
 automatically generates TypeScript interfaces to reduce code duplications and complexity.
 
 ```ts
@@ -113,7 +113,7 @@ async function AvailableUsername(input: string): Promise<string> {
 }
 ```
 
-**FunVal** automatically detects promise values and convert the return type of the `Validator` to promise as well: 
+*Funval* automatically detects promise values and convert the return type of the `Validator` to promise as well: 
 ```ts
 const UserSchema = {
   username: AvailableUsername,
