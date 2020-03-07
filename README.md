@@ -17,13 +17,12 @@
 <br>
 
 **FunVal** is a minimalist validation library that seamlessly integrates with your existing
-TypeScript schemas. Using only pure functions, FunVal knows how to validate your data and
-automatically generates TypeScript interfaces and type validations to reduce code duplications
-and complexity.
+TypeScript schemas. Using only pure functions, **FunVal** knows how to validate your data and
+automatically generates TypeScript interfaces to reduce code duplications and complexity.
 
 ### Features
 
-- **Asynchronous or Synchronous validation** - Automatically detect using your validators.
+- **Asynchronous or Synchronous validation** - Automatically detection using your validators.
 - **Pure Javascript** - Works also without TypeScript.
 - **Seamless interface** - Create new validator using plain functions in seconds.
 - **Support function composition** - Pipe multiple validators to generate new ones.
