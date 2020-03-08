@@ -8,6 +8,7 @@ export type Primitive =
   | boolean
   | null
   | undefined
+  | void
   | bigint;
 
 export type FunctionType<T = AnyType, A extends Array<AnyType> = AnyType> = (
@@ -16,7 +17,7 @@ export type FunctionType<T = AnyType, A extends Array<AnyType> = AnyType> = (
 
 export type ObjectProperty = string | number | symbol;
 
-export type ResolvedValue<T> = T extends Promise<infer R> ? R : T;
+export type ResolvedValue<T> = T extends PromiseLike<infer R> ? R : T;
 
 type OptionalKeys<T> = Exclude<
   {

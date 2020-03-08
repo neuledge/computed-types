@@ -1,10 +1,11 @@
 import { Maybe, Or, Optional } from './validators/logic';
-import Validate, {
-  Schema,
+import Schema, {
+  SchemaType,
   FunctionValidator,
   SyncFunctionValidator,
   AsyncFunctionValidator,
-} from './Validate';
+  Async,
+} from './Schema';
 import Type, { Input, Output } from './Type';
 import {
   Equals,
@@ -31,14 +32,15 @@ import {
 } from './validators/number';
 import { Binary } from './validators/boolean';
 
-export default Validate;
+export default Schema;
 
 export {
-  Validate,
   Schema,
+  SchemaType,
   FunctionValidator,
   SyncFunctionValidator,
   AsyncFunctionValidator,
+  Async,
   ValidationError,
   ErrorPath,
   Input,

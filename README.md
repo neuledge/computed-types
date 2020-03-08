@@ -39,7 +39,7 @@ npm i funval
 ## Usage
 
 ```ts
-import { Validate, Optional, Or, NonEmptyString, StringRange, Type } from 'funval';
+import { Schema, Optional, Or, NonEmptyString, StringRange, Type } from 'funval';
 import compose from 'compose-function';
 
 const UserSchema = {
@@ -49,7 +49,7 @@ const UserSchema = {
   amount: Number,
 };
 
-const validator = Validate(UserSchema);
+const validator = Schema(UserSchema);
 
 let user: Type<typeof UserSchema>;
 
@@ -90,7 +90,7 @@ const UserSchema = {
   email: Email,
 };
 
-const validator = Validate(UserSchema);
+const validator = Schema(UserSchema);
 ```
 
 <br>
@@ -119,7 +119,20 @@ const UserSchema = {
   username: AvailableUsername,
 };
 
-const validator = await Validate(UserSchema);
+const validator = await Schema(UserSchema);
+```
+
+If you prefer, you can safely convert any validator to an asynchronous validator using the `Async`
+helper:
+
+```ts
+import { Async, Schema } from 'funval';
+
+const UserSchema = {
+  email: Email,
+};
+
+const validator = await Async(Schema(UserSchema));
 ```
 
 <br>

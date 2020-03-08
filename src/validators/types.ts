@@ -1,4 +1,4 @@
-import { SyncFunctionValidator } from '../Validate';
+import { SyncFunctionValidator } from '../Schema';
 
 type TypeOfType<T> = T extends 'string'
   ? string

@@ -1,10 +1,10 @@
 import 'mocha';
 import { assert } from 'chai';
-import { Validate, Optional, Or, NonEmptyString, StringRange, Type } from './';
+import { Schema, Optional, Or, NonEmptyString, StringRange, Type } from './';
 import compose from 'compose-function';
 
-describe('README.md', (): void => {
-  it('Usage', (): void => {
+describe('README.md', () => {
+  it('Usage', () => {
     const UserSchema = {
       name: Optional(String),
       username: compose(StringRange(3, 20), NonEmptyString),
@@ -12,7 +12,7 @@ describe('README.md', (): void => {
       amount: Number,
     };
 
-    const validator = Validate(UserSchema);
+    const validator = Schema(UserSchema);
 
     let user: Type<typeof UserSchema>;
 

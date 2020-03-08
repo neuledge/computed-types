@@ -1,5 +1,5 @@
 import compose from 'compose-function';
-import { SyncFunctionValidator } from '../Validate';
+import { SyncFunctionValidator } from '../Schema';
 import { Truthy } from './types';
 
 interface NumericLength {

@@ -1,4 +1,4 @@
-import { SyncFunctionValidator } from '../Validate';
+import { SyncFunctionValidator } from '../Schema';
 import compose from 'compose-function';
 
 // exported functions

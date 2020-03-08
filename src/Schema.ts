@@ -11,19 +11,19 @@ export type SyncFunctionValidator<T = AnyType> = FunctionType<T>;
 export type AsyncFunctionValidator<T = AnyType> = FunctionType<PromiseLike<T>>;
 export type FunctionValidator<T = AnyType> = FunctionType<PromiseLike<T> | T>;
 
-export type Schema<T = AnyType> = T extends FunctionType
+export type SchemaType<T = AnyType> = T extends FunctionType
   ? FunctionValidator<T>
   : T extends object
-  ? { [K in keyof T]: Schema<T[K]> }
+  ? { [K in keyof T]: SchemaType<T[K]> }
   : FunctionValidator<T> | T;
 
-export type SyncSchema<T> = T extends FunctionType
+export type SyncSchemaType<T> = T extends FunctionType
   ? SyncFunctionValidator<T>
   : T extends object
-  ? { [K in keyof T]: SyncSchema<T[K]> }
+  ? { [K in keyof T]: SyncSchemaType<T[K]> }
   : SyncFunctionValidator<T> | T;
 
-export type ValidatorOutput<T> = T extends SyncSchema<Output<T>>
+export type ValidatorOutput<T> = T extends SyncSchemaType<Output<T>>
   ? Output<T>
   : PromiseLike<Output<T>>;
 
@@ -32,9 +32,14 @@ export type SchemaValidator<
   I extends Array<AnyType> = [Input<T>]
 > = FunctionType<ValidatorOutput<T>, I>;
 
+export type SchemaAsyncValidator<
+  T,
+  I extends Array<AnyType> = [Input<T>]
+> = FunctionType<PromiseLike<Output<T>>, I>;
+
 // exported functions
 
-export default function Validate<T extends Schema>(
+export default function Schema<T extends SchemaType>(
   schema: T,
   errorMsg?: string,
 ): SchemaValidator<T> {
@@ -85,7 +90,7 @@ export default function Validate<T extends Schema>(
           const inputProp = input[key];
 
           try {
-            const value = Validate<T[keyof T]>(schemaProp)(inputProp) as
+            const value = Schema<T[keyof T]>(schemaProp)(inputProp) as
               | PromiseLike<Output<T>[keyof Output<T>]>
               | Output<T>[keyof Output<T>];
 
@@ -132,4 +137,13 @@ export default function Validate<T extends Schema>(
     default:
       throw new Error(`Unknown JavaScript type: ${typeof schema}`);
   }
+}
+
+export function Async<
+  V,
+  T extends FunctionValidator<V>,
+  I extends Parameters<T>[0]
+>(validator: T): FunctionType<PromiseLike<V>, [I]> {
+  return (input: I): Promise<V> =>
+    new Promise(resolve => resolve(validator(input)));
 }

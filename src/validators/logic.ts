@@ -1,10 +1,10 @@
-import { Input, Schema } from '../';
-import Validate, { SchemaValidator, ValidatorOutput } from '../Validate';
+import { Input, SchemaType } from '../';
+import Schema, { SchemaValidator, ValidatorOutput } from '../Schema';
 import { isPromiseLike } from '../utils';
 
 // exported functions
 
-export function Maybe<T extends Schema>(
+export function Maybe<T extends SchemaType>(
   schema: T,
   errorMsg?: string,
 ): SchemaValidator<T | undefined, [Input<T> | undefined]> {
@@ -13,11 +13,11 @@ export function Maybe<T extends Schema>(
       return undefined;
     }
 
-    return Validate(schema, errorMsg)(input);
+    return Schema(schema, errorMsg)(input);
   };
 }
 
-export function Optional<T extends Schema>(
+export function Optional<T extends SchemaType>(
   schema: T,
   errorMsg?: string,
 ): SchemaValidator<T | undefined, [Input<T> | undefined]> {
@@ -26,11 +26,11 @@ export function Optional<T extends Schema>(
       return undefined;
     }
 
-    return Validate(schema, errorMsg)(input);
+    return Schema(schema, errorMsg)(input);
   };
 }
 
-export function Or<A extends Schema, B extends Schema>(
+export function Or<A extends SchemaType, B extends SchemaType>(
   a: A,
   b: B,
   errorMsg?: string,
@@ -39,9 +39,9 @@ export function Or<A extends Schema, B extends Schema>(
     let res;
 
     try {
-      res = Validate(a, errorMsg)(input as Input<A>);
+      res = Schema(a, errorMsg)(input as Input<A>);
     } catch (e) {
-      return Validate(b, errorMsg)(input as Input<B>);
+      return Schema(b, errorMsg)(input as Input<B>);
     }
 
     if (!isPromiseLike(res)) {
@@ -50,7 +50,7 @@ export function Or<A extends Schema, B extends Schema>(
 
     return (res as ValidatorOutput<A>).then(
       null,
-      (): SchemaValidator<B> => Validate(b, errorMsg)(input as Input<B>),
+      (): SchemaValidator<B> => Schema(b, errorMsg)(input as Input<B>),
     );
   };
 }
