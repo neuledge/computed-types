@@ -5,7 +5,7 @@
 <p align="center">
 <a href="https://www.npmjs.org/package/funval"><img src="http://img.shields.io/npm/v/funval.svg" alt="View On NPM"></a>
 <a href="https://travis-ci.org/neuledge/funval"><img src="https://travis-ci.org/neuledge/funval.svg?branch=master" alt="Build Status"></a>
-<a href="https://david-dm.org/neuledge/funval"><img src="https://david-dm.org/neuledge/funval.svg" alt="Dependency Status"></a>
+<a href="https://libraries.io/npm/funval/"><img alt="Libraries.io dependency status for latest release" src="https://img.shields.io/librariesio/release/npm/funval"></a>
 <a href="LICENSE"><img src="https://img.shields.io/npm/l/funval.svg" alt="License"></a>
 </p>
 <br>
