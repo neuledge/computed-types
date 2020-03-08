@@ -20,7 +20,7 @@ declare function Validator<T, I>(input: I): T | Promise<T>;
 
 ### Main Features
 
-- **Easy to Read** - Uses functional contractors as types (including `String`, `Number`, `Boolean`, etc...)
+- **Easy to Read** - Uses functions as types (including `String`, `Number`, `Boolean`, etc...)
 - **Asynchronous & Synchronous Support** - Automaticly detected using validators response.
 - **Pure Javascript** - Works also without TypeScript.
 - **Seamless Interfaces** - Create new validator using plain functions in seconds.
