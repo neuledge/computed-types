@@ -1,10 +1,14 @@
 import { Input, Output } from './Type';
 import { ValidatorOutput } from './Schema';
 
-type AssertEqual<T, R> = R extends T ? (T extends R ? 'ok' : never) : never;
+type AssertEqual<T, R> = [R] extends [T]
+  ? [T] extends [R]
+    ? 'ok'
+    : never
+  : never;
 
 // type tests
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars,@typescript-eslint/no-explicit-any */
 
 const stringConst: AssertEqual<Output<StringConstructor>, string> = 'ok';
 const numberConst: AssertEqual<Output<NumberConstructor>, number> = 'ok';
@@ -43,9 +47,7 @@ const schemaSchema: AssertEqual<
 
 const strOut: AssertEqual<ValidatorOutput<StringConstructor>, string> = 'ok';
 const numOut: AssertEqual<ValidatorOutput<NumberConstructor>, number> = 'ok';
-
-// FIXME: https://github.com/microsoft/TypeScript/issues/37279
-// const boolOut: AssertEqual<ValidatorOutput<BooleanConstructor>, boolean> = 'ok';
+const boolOut: AssertEqual<ValidatorOutput<BooleanConstructor>, boolean> = 'ok';
 
 const strAsyncOut: AssertEqual<
   ValidatorOutput<() => Promise<string>>,
@@ -60,7 +62,25 @@ const recStrAsyncOut: AssertEqual<
 const numInput: AssertEqual<Input<number>, number> = 'ok';
 const strInput: AssertEqual<Input<string>, string> = 'ok';
 const boolInput: AssertEqual<Input<boolean>, boolean> = 'ok';
+const strBoolInput: AssertEqual<Input<string | boolean>, string | boolean> =
+  'ok';
 
 const valConsInput: AssertEqual<Input<(input: 'foo') => never>, 'foo'> = 'ok';
+
 const unkConsInput: AssertEqual<Input<(input: unknown) => never>, unknown> =
   'ok';
+
+const propInput: AssertEqual<
+  Input<{ str: (input: string) => string }>,
+  { str: string }
+> = 'ok';
+
+const reqPropInput: AssertEqual<
+  Input<{ maybe: (input: undefined | string) => string }>,
+  { maybe: string | undefined }
+> = 'ok';
+
+const maybeAnyPropInput: AssertEqual<
+  Input<{ maybe: (input?: any) => string }>,
+  { maybe?: any }
+> = 'ok';

@@ -39,11 +39,12 @@ describe('Schema', () => {
   it('Boolean', () => {
     const validator = Schema(Boolean);
 
-    // FIXME: https://github.com/microsoft/TypeScript/issues/37279
-    assert.equal(validator(true), (true as unknown) as PromiseLike<boolean>);
-
-    // FIXME: https://github.com/microsoft/TypeScript/issues/37279
-    assert.equal(validator(false), (false as unknown) as PromiseLike<boolean>);
+    assert.equal(validator(true), true);
+    assert.equal(validator(false), false);
+    assert.equal(validator(0), false);
+    assert.equal(validator(1), true);
+    assert.equal(validator('foo'), true);
+    assert.equal(validator('true'), true);
   });
 
   it('schema', () => {

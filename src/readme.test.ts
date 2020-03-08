@@ -1,6 +1,14 @@
 import 'mocha';
 import { assert } from 'chai';
-import { Schema, Optional, Or, NonEmptyString, StringRange, Type } from './';
+import {
+  Schema,
+  Or,
+  NonEmptyString,
+  StringRange,
+  Type,
+  Optional,
+  ValidNumber,
+} from './';
 import compose from 'compose-function';
 
 describe('README.md', () => {
@@ -9,7 +17,7 @@ describe('README.md', () => {
       name: Optional(String),
       username: compose(StringRange(3, 20), NonEmptyString),
       status: Or('active' as 'active', 'suspended' as 'suspended'),
-      amount: Number,
+      amount: ValidNumber,
     };
 
     const validator = Schema(UserSchema);
@@ -19,10 +27,8 @@ describe('README.md', () => {
     try {
       user = validator({
         username: 'john1',
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore TS2322: Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
-        status: 'unregistered',
-        amount: 20.3,
+        status: 'unregistered' as 'active' | 'suspended',
+        amount: 12.3,
       });
     } catch (err) {
       // console.error(err.message, err.paths);

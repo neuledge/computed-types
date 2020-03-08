@@ -1,4 +1,5 @@
 import { SyncFunctionValidator } from '../Schema';
+import { AnyType } from '../utils';
 
 type TypeOfType<T> = T extends 'string'
   ? string
@@ -37,9 +38,9 @@ export function TypeOf<
   };
 }
 
-export function Truthy<T>(
-  input: T,
-): Exclude<T, undefined | null | 0 | false | ''> {
+export function Truthy<
+  T extends Exclude<AnyType, undefined | null | 0 | false | ''>
+>(input: T): T {
   if (!input) {
     throw new TypeError(`This value is required`);
   }
@@ -47,8 +48,8 @@ export function Truthy<T>(
   return input as Exclude<T, undefined | null | 0 | false | ''>;
 }
 
-export function Required<T>(input: T | undefined): Exclude<T, undefined> {
-  if (input !== undefined) {
+export function Required<T extends Exclude<AnyType, undefined>>(input: T): T {
+  if (input === undefined) {
     throw new TypeError(`This value is required`);
   }
 

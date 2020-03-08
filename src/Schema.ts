@@ -11,15 +11,15 @@ export type SyncFunctionValidator<T = AnyType> = FunctionType<T>;
 export type AsyncFunctionValidator<T = AnyType> = FunctionType<PromiseLike<T>>;
 export type FunctionValidator<T = AnyType> = FunctionType<PromiseLike<T> | T>;
 
-export type SchemaType<T = AnyType> = T extends FunctionType
+export type SchemaType<T = AnyType> = [T] extends [FunctionType]
   ? FunctionValidator<T>
-  : T extends object
+  : [T] extends [object]
   ? { [K in keyof T]: SchemaType<T[K]> }
   : FunctionValidator<T> | T;
 
-export type SyncSchemaType<T> = T extends FunctionType
+export type SyncSchemaType<T> = [T] extends [FunctionType]
   ? SyncFunctionValidator<T>
-  : T extends object
+  : [T] extends [object]
   ? { [K in keyof T]: SyncSchemaType<T[K]> }
   : SyncFunctionValidator<T> | T;
 
@@ -39,7 +39,7 @@ export type SchemaAsyncValidator<
 
 // exported functions
 
-export default function Schema<T extends SchemaType>(
+export default function Schema<T>(
   schema: T,
   errorMsg?: string,
 ): SchemaValidator<T> {
@@ -86,14 +86,14 @@ export default function Schema<T extends SchemaType>(
         for (const key in schema) {
           if (!Object.prototype.hasOwnProperty.call(schema, key)) continue;
 
-          const schemaProp = schema[key];
-          const inputProp = input[key];
+          const schemaProp = schema[key as keyof T];
+          const inputProp = input[key as keyof Input<T>];
 
           try {
-            const value = Schema<T[keyof T]>(schemaProp)(inputProp) as
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const value = Schema(schemaProp)(inputProp as any) as
               | PromiseLike<Output<T>[keyof Output<T>]>
               | Output<T>[keyof Output<T>];
-
             const resKey = key as keyof Output<T>;
 
             if (!isPromiseLike(value)) {

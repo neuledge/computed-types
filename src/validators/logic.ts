@@ -1,14 +1,14 @@
-import { Input, SchemaType } from '../';
 import Schema, { SchemaValidator, ValidatorOutput } from '../Schema';
+import { Input } from '../Type';
 import { isPromiseLike } from '../utils';
 
 // exported functions
 
-export function Maybe<T extends SchemaType>(
+export function Maybe<T>(
   schema: T,
   errorMsg?: string,
-): SchemaValidator<T | undefined, [Input<T> | undefined]> {
-  return (input: Input<T> | undefined): ValidatorOutput<T | undefined> => {
+): SchemaValidator<T | undefined, [Input<T>?]> {
+  return (input?: Input<T>): ValidatorOutput<T | undefined> => {
     if (input === undefined) {
       return undefined;
     }
@@ -17,11 +17,11 @@ export function Maybe<T extends SchemaType>(
   };
 }
 
-export function Optional<T extends SchemaType>(
+export function Optional<T>(
   schema: T,
   errorMsg?: string,
-): SchemaValidator<T | undefined, [Input<T> | undefined]> {
-  return (input: Input<T> | undefined): ValidatorOutput<T | undefined> => {
+): SchemaValidator<T | undefined, [Input<T>?]> {
+  return (input?: Input<T>): ValidatorOutput<T | undefined> => {
     if (!input) {
       return undefined;
     }
@@ -30,7 +30,7 @@ export function Optional<T extends SchemaType>(
   };
 }
 
-export function Or<A extends SchemaType, B extends SchemaType>(
+export function Or<A, B>(
   a: A,
   b: B,
   errorMsg?: string,
@@ -48,9 +48,6 @@ export function Or<A extends SchemaType, B extends SchemaType>(
       return res;
     }
 
-    return (res as ValidatorOutput<A>).then(
-      null,
-      (): SchemaValidator<B> => Schema(b, errorMsg)(input as Input<B>),
-    );
+    return (res as ValidatorOutput<A>).then(null, () => Schema(b, errorMsg));
   };
 }
