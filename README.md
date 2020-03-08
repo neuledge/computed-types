@@ -118,8 +118,9 @@ async function AvailableUsername(input: string): Promise<string> {
 const UserSchema = {
   username: AvailableUsername,
 };
+const validator = Schema(UserSchema);
 
-const validator = await Schema(UserSchema);
+const user = await validator({ username: 'test' });
 ```
 
 If you prefer, you can safely convert any validator to an asynchronous validator using the `Async`
@@ -131,8 +132,10 @@ import { Async, Schema } from 'funval';
 const UserSchema = {
   email: Email,
 };
+const validator = Async(Schema(UserSchema));
 
-const validator = await Async(Schema(UserSchema));
+// will catch instead of throwing
+validator({ email: 'invalid-email' }).catch(err => console.err(err));
 ```
 
 <br>
