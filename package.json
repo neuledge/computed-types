@@ -2,7 +2,14 @@
   "name": "funval",
   "version": "0.1.1",
   "description": "Functional validation schemas with built-in TypeScript support.",
-  "keywords": ["validation", "function", "schema", "typescript", "functional", "composition"],
+  "keywords": [
+    "validation",
+    "function",
+    "schema",
+    "typescript",
+    "functional",
+    "composition"
+  ],
   "scripts": {
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
@@ -20,7 +27,7 @@
     "test:commit": "if [[ -z \"$(git status --untracked-files=no --porcelain)\" ]]; then\n  echo \"All filed committed.\"\nelse\n  echo \"Uncommitted changes found. Please Commit them first.\" && exit 1\nfi",
     "prepare": "npm run clean && npm run build",
     "prepublishOnly": "npm run test:commit && npm run test:build",
-    "postpublish" : "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
+    "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
   },
   "author": "Moshe Simantov <me@moshe.io>",
   "repository": "https://github.com/neuledge/funval",
