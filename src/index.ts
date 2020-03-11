@@ -22,6 +22,7 @@ import {
   MinLength,
   MaxLength,
   StringRange,
+  LowerCaseString,
 } from './validators/string';
 import {
   ValidNumber,
@@ -61,6 +62,7 @@ export {
   Any,
   Override,
   NonEmptyString,
+  LowerCaseString,
   MinLength,
   MaxLength,
   StringRange,

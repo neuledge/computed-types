@@ -55,3 +55,11 @@ export function StringRange<T extends NumericLength>(
     MaxLength<T>(maxLength, errorMsg),
   );
 }
+
+export function LowerCaseString(input: unknown): string {
+  if (typeof input !== 'string') {
+    throw TypeError(`Unexpected type: ${typeof input}`);
+  }
+
+  return input.toLowerCase();
+}

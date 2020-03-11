@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import {
   Schema,
   Or,
-  NonEmptyString,
+  LowerCaseString,
   StringRange,
   Type,
   Optional,
@@ -15,7 +15,7 @@ describe('README.md', () => {
   it('Usage', () => {
     const UserSchema = {
       name: Optional(String),
-      username: compose(StringRange(3, 20), NonEmptyString),
+      username: compose(StringRange(3, 20), LowerCaseString),
       status: Or('active' as 'active', 'suspended' as 'suspended'),
       amount: ValidNumber,
     };
