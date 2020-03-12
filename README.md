@@ -23,7 +23,7 @@
 <br>
 
 **Funval** is a minimalist validation library that seamlessly integrates with your existing
-TypeScript schemas. Using only pure functions, *Funval* knows how to validate your data and
+business logic. Using only pure functions, *Funval* knows how to validate your data and
 automatically generates TypeScript interfaces to reduce code duplications and complexity.
 
 ```ts
