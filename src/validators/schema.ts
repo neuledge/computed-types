@@ -41,7 +41,7 @@ export function Maybe<T>(
 export function Optional<T>(
   schema: T,
   error?: ErrorLike,
-): SchemaValidator<T | undefined, [Input<T>?]> {
+): SchemaValidator<T | undefined, [(Input<T> | null)?]> {
   return (input?: Input<T> | null): ValidatorOutput<T | undefined> => {
     if (input == null) {
       return undefined;
@@ -78,9 +78,7 @@ export function Required<T>(
   };
 }
 
-export function Truthy<
-  T extends Exclude<AnyType, undefined | null | 0 | false | ''>
->(input: T, error?: ErrorLike): T {
+export function Truthy<T>(input: T, error?: ErrorLike): T {
   if (!input) {
     throw toError(error || `This value is required`);
   }
