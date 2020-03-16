@@ -20,7 +20,7 @@
     "lint": "eslint \"src/**\"",
     "fix": "npm run fix:lint",
     "fix:lint": "npm run lint -- --fix",
-    "mocha": "TS_NODE_FILES=true mocha -r ts-node/register src/**/*.test.ts --timeout 10000",
+    "mocha": "TS_NODE_FILES=true mocha -r ts-node/register \"src/**/*.test.ts\" --timeout 10000",
     "mocha:coverage": "nyc npm run mocha && nyc report --reporter=text-lcov | coveralls",
     "mocha:build": "mocha lib/**/*.test.js --timeout 10000",
     "test": "npm run type-check && npm run lint -- --quiet && npm run mocha",
