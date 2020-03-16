@@ -24,7 +24,7 @@ export function Bool(input: unknown): boolean {
 
   const value = BOOL_MAP[key as keyof typeof BOOL_MAP];
 
-  if (value !== null) {
+  if (value != null) {
     return value;
   }
 
