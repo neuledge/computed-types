@@ -1,9 +1,12 @@
 import { ObjectProperty } from './utils';
 
-export interface ErrorPath<T = unknown> {
+export type ErrorLike = string | Error;
+
+export type Path = ObjectProperty[];
+
+export interface ErrorPath {
   path: ObjectProperty[];
-  message: string;
-  payload?: T;
+  error: Error;
 }
 
 export default interface ValidationError extends Error {
@@ -12,39 +15,39 @@ export default interface ValidationError extends Error {
 
 // exported functions
 
-export function createValidationPathsFromError(
-  key: ObjectProperty,
-  err: Partial<ValidationError>,
-): ErrorPath[] {
-  const errorPaths = [];
-
-  if (err && Array.isArray(err.paths)) {
-    errorPaths.push(
-      ...err.paths.map(path => ({
-        path: [key].concat(path.path),
-        message: String(err.message || err),
-        payload: path.payload,
-      })),
-    );
-  } else {
-    errorPaths.push({
-      path: [key],
-      message: err ? String(err.message || err) : 'Unknown Error',
-    });
+export function getErrorPaths(error: ValidationError, path: Path): ErrorPath[] {
+  if (!error.paths) {
+    return [
+      {
+        path,
+        error,
+      },
+    ];
   }
 
-  return errorPaths;
+  return error.paths.map(ep => ({
+    path: [...path, ...ep.path],
+    error: ep.error,
+  }));
 }
 
-export function createError(
-  paths: ErrorPath[],
-  message?: string,
-): ValidationError {
-  if (!paths || !paths.length) {
-    throw new Error(message || 'Unknown Validation Error');
+export function toError(error: ErrorLike): Error {
+  if (typeof error === 'string') {
+    return new TypeError(error);
   }
 
-  const err: ValidationError = new TypeError(message || paths[0].message);
+  return error;
+}
+
+export function createValidationError(
+  paths: ErrorPath[],
+  error?: ErrorLike,
+): ValidationError {
+  if (!paths || !paths.length) {
+    throw toError(error || 'Unknown Validation Error');
+  }
+
+  const err: ValidationError = toError(error || paths[0].error);
   err.paths = paths;
 
   return err;

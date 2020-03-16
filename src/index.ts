@@ -1,4 +1,14 @@
-import { Maybe, Or, Optional } from './validators/logic';
+import {
+  Maybe,
+  Optional,
+  Default,
+  Required,
+  Truthy,
+  Or,
+  TypeOf,
+  Any,
+  Override,
+} from './validators/schema';
 import Schema, {
   SchemaType,
   FunctionValidator,
@@ -13,25 +23,17 @@ import {
   GreaterThanEqual,
   LessThan,
   LessThanEqual,
-  ValueBetween,
+  Between,
 } from './validators/comparison';
-import ValidationError, { ErrorPath } from './Error';
-import { TypeOf, Truthy, Any, Override, Required } from './validators/types';
+import ValidationError, { ErrorPath, createValidationError } from './Error';
 import {
-  NonEmptyString,
-  MinLength,
-  MaxLength,
+  ContentString,
+  TrimString,
   StringRange,
-  LowerCaseString,
+  StringMatch,
 } from './validators/string';
-import {
-  ValidNumber,
-  Integer,
-  FiniteNumber,
-  NonNegative,
-  Positive,
-} from './validators/number';
-import { Binary } from './validators/boolean';
+import { Float, Integer } from './validators/number';
+import { Bool } from './validators/boolean';
 
 export default Schema;
 
@@ -44,32 +46,30 @@ export {
   Async,
   ValidationError,
   ErrorPath,
+  createValidationError,
   Input,
   Output,
   Type,
   Maybe,
   Optional,
+  Default,
+  Required,
   Or,
   Equals,
   GreaterThan,
   GreaterThanEqual,
   LessThan,
   LessThanEqual,
-  ValueBetween,
+  Between,
   TypeOf,
   Truthy,
-  Required,
   Any,
   Override,
-  NonEmptyString,
-  LowerCaseString,
-  MinLength,
-  MaxLength,
+  ContentString,
+  TrimString,
   StringRange,
-  ValidNumber,
+  StringMatch,
+  Float,
   Integer,
-  FiniteNumber,
-  NonNegative,
-  Positive,
-  Binary,
+  Bool,
 };

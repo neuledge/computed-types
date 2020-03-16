@@ -1,6 +1,6 @@
 <h1 align="center" style="text-align:center">🦩 Funval</h1>
 
-<h4 align="center">A minimalist library for data validation using plain functions.</h4>
+<h4 align="center">A minimalist library for data validation using functions interfaces.</h4>
 
 <p align="center">
   <a href="https://www.npmjs.org/package/funval">
@@ -22,22 +22,23 @@
 </p>
 <br>
 
-**Funval** is a minimalist validation library that seamlessly integrates with your existing
-TypeScript schemas. Using only pure functions, *Funval* knows how to validate your data and
-automatically generates TypeScript interfaces to reduce code duplications and complexity.
+**Funval** is a minimalist validation library that seamlessly integrates with your business logic.
+Using only plain functions, *Funval* knows how to validate your data and automatically generates
+TypeScript interfaces to reduce code duplications and complexity.
 
 ```ts
-function Validator(input: unknown): string {
-  if (typeof input !== 'string') {
-    throw TypeError(`Unexpected type: ${typeof input}`);
+function PositiveNumber(input: unknown): number {
+  const value = Number(input);
+
+  if (isNaN(value)) {
+    throw new TypeError(`Invalid number`);
   }
 
-  const trimmed = input.trim();
-  if (!trimmed) {
-    throw TypeError(`This value is required`);
+  if (value <= 0) {
+    throw new TypeError(`Only positive numbers allowed`);
   }
 
-  return trimmed;
+  return value;
 }
 ```
 
@@ -63,14 +64,13 @@ npm i funval
 ## Usage
 
 ```ts
-import { Schema, Optional, Or, LowerCaseString, StringRange, Type } from 'funval';
-import compose from 'compose-function';
+import { Schema, Optional, Or, Type, Integer, Between } from 'funval';
 
 const UserSchema = {
   name: Optional(String),
-  username: compose(StringRange(3, 20), LowerCaseString),
+  username: /^[a-z0-9]{3,10}$/,
   status: Or('active' as 'active', 'suspended' as 'suspended'),
-  amount: Number,
+  amount: input => Between(1, 50)(Integer(input)),
 };
 
 const validator = Schema(UserSchema);
@@ -82,7 +82,7 @@ try {
     username: 'john1',
     // @ts-ignore Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
     status: 'unregistered',
-    amount: 20.3,
+    amount: 20,
   });
 } catch (err) {
   console.error(err.message, err.paths);
@@ -100,7 +100,7 @@ import * as EmailValidator from 'email-validator';
 
 function Email(input: string): string {
   if (!EmailValidator.validate(input)) {
-    throw new TypeError(`The given email "${input}" is invalid`);
+    throw new TypeError(`Invalid email address: "${input}"`);
   }
 
   return input;
@@ -161,6 +161,387 @@ const validator = Async(Schema(UserSchema));
 // will catch instead of throwing
 validator({ email: 'invalid-email' }).catch(err => console.err(err));
 ```
+
+<br>
+
+## Available Validators
+
+All the available validators ordered by type:
+
+* **Schema** -
+      [`Schema`](#schema),
+      [`Maybe`](#maybe),
+      [`Optional`](#optional),
+      [`Default`](#default),
+      [`Required`](#required),
+      [`Truthy`](#truthy),
+      [`Or`](#or),
+      [`TypeOf`](#typeof),
+      [`Any`](#any),
+      [`Override`](#override)
+
+* **Comparison** -
+      [`Equals`](#equals),
+      [`GreaterThan`](#greaterthan),
+      [`GreaterThanEqual`](#greaterthanequal),
+      [`LessThan`](#lessthan),
+      [`LessThanEqual`](#lessthanequal),
+      [`Between`](#between)
+
+* **Strings** -
+      [`ContentString`](#contentstring),
+      [`TrimString`](#trimstring)
+      [`StringRange`](#stringrange)
+      [`StringMatch`](#stringmatch)
+
+* **Numbers** -
+      [`Float`](#float),
+      [`Integer`](#integer)
+
+* **Booleans** -
+      [`Bool`](#bool)
+
+<br>
+
+### `Schema`
+
+```ts
+import { Schema } from 'funval';
+
+declare function Schema(schema: any, error?: string | Error): Validator;
+```
+
+Validate inputs using the given schema.
+
+**Throws:** If the input does not match the given schema.
+
+<br>
+
+### `Maybe`
+
+```ts
+import { Maybe } from 'funval';
+
+declare function Maybe(schema: any, error?: string | Error): Validator;
+```
+
+Same as [`Schema`](#schema) but ignores `undefined` or omitted inputs.
+
+**Throws:** If the input tested and does not match the given schema.
+
+<br>
+
+### `Optional`
+
+```ts
+import { Optional } from 'funval';
+
+declare function Optional(schema: any, error?: string | Error): Validator;
+```
+
+Same as [`Schema`](#schema) but ignores `undefined`, `null` or omitted inputs.
+
+**Throws:** If the input tested and does not match the given schema.
+
+<br>
+
+### `Default`
+
+```ts
+import { Default } from 'funval';
+
+declare function Default(schema: any, value: any): Validator;
+```
+
+Validate inputs using the given schema or use the given value if input equals to `undefined` or
+omitted.
+
+**Throws:** If the input tested and does not match the given schema.
+
+<br>
+
+### `Required`
+
+```ts
+import { Required } from 'funval';
+
+declare function Required(schema: any, error?: string | Error): Validator;
+```
+
+Validate inputs using the given schema.
+
+**Throws:** If input is `undefined` or does not match the given schema.
+
+<br>
+
+### `Truthy`
+
+```ts
+import { Truthy } from 'funval';
+
+declare function Truthy<T>(input: T): T;
+```
+
+Validate input is truthy.
+
+**Throws:** If input is not truthy.
+
+<br>
+
+### `Or`
+
+```ts
+import { Or } from 'funval';
+
+declare function Or(...candidates: any[]): Validator;
+```
+
+Validate inputs using any of the given candidates.
+
+**Throws:** If the input does not match to any of the given schemas.
+
+<br>
+
+### `TypeOf`
+
+```ts
+import { TypeOf } from 'funval';
+
+declare function TypeOf(
+  typeOf:
+    | 'string'
+    | 'number'
+    | 'object'
+    | 'boolean'
+    | 'undefined'
+    | 'symbol'
+    | 'bigint',
+  error?: string | Error,
+): Validator;
+```
+
+Check the input type is equals to the given type.
+
+**Throws:** If the input type is different from the given type.
+
+<br>
+
+### `Any`
+
+```ts
+import { Any } from 'funval';
+
+declare function Any(input: any): any;
+```
+
+Allow any type of input.
+
+**Throws:** Never.
+
+<br>
+
+### `Override`
+
+```ts
+import { Override } from 'funval';
+
+declare function Override(value: any): Validator;
+```                          
+
+Override any input and returns the given value.
+
+**Throws:** Never.
+
+<br>
+
+### `Equals`
+
+```ts
+import { Equals } from 'funval';
+
+declare function Equals(value: any, error?: string | Error): Validator;
+```
+
+Check the input is strictly equals to the given value.
+
+**Throws:** If the input does not equal to the given value.
+
+<br>
+
+### `GreaterThan`
+
+```ts
+import { GreaterThan } from 'funval';
+
+declare function GreaterThan(value: any, error?: string | Error): Validator;
+```
+
+Check the input is greater than the given value.
+
+**Throws:** If the input does not greater than the given value.
+
+<br>
+
+### `GreaterThanEqual`
+
+```ts
+import { GreaterThanEqual } from 'funval';
+
+declare function GreaterThanEqual(value: any, error?: string | Error): Validator;
+```
+
+Check the input is greater than or equals the given value.
+
+**Throws:** If the input does not greater than or equals the given value.
+
+<br>
+
+### `LessThan`
+
+```ts
+import { LessThan } from 'funval';
+
+declare function LessThan(value: any, error?: string | Error): Validator;
+```
+
+Check the input is less than the given value.
+
+**Throws:** If the input does not less than the given value.
+
+<br>
+
+### `LessThanEqual`
+
+```ts
+import { LessThanEqual } from 'funval';
+
+declare function LessThanEqual(value: any, error?: string | Error): Validator;
+```
+
+Check the input is less than or equals the given value.
+
+**Throws:** If the input does not less than or equals the given value.
+
+<br>
+
+### `Between`
+
+```ts
+import { Between } from 'funval';
+
+declare function Between(minValue: any | null, maxValue: any | null, error?: string | Error):
+Validator;
+```
+
+Check the input is between the given boundaries.
+
+**Throws:** If the input is not between the given boundaries.
+
+<br>
+
+### `ContentString`
+
+```ts
+import { ContentString } from 'funval';
+
+declare function ContentString(input: unknown): string;
+```
+
+Converts any input to a valid string.
+
+**Throws:** If input is either `null`, `undefined`, an object without proper `toString`
+implementation, empty or a whitespace string.
+
+<br>
+
+### `TrimString`
+
+```ts
+import { TrimString } from 'funval';
+
+declare function TrimString(input: unknown): string;
+```
+
+Same as [`ContentString`](#contentstring), but `trim` the output as well.
+
+**Throws:** If input is either `null`, `undefined`, an object without proper `toString`
+implementation, empty or a whitespace string.
+
+<br>
+
+### `StringRange`
+
+```ts
+import { StringRange } from 'funval';
+
+declare function StringRange(
+  minLength: number | null,
+  maxLength: number | null,
+  error?: string | Error,
+): Validator;
+```
+
+Converts any input to a valid string and make sure the string is in the given boundaries.
+
+**Throws:** If input is either `null`, `undefined`, an object without proper `toString`
+implementation, empty string, whitespace string, or string outside of the given boundaries.
+
+<br>
+
+### `StringMatch`
+
+```ts
+import { StringMatch } from 'funval';
+
+declare function StringMatch(regex: RegEx, error?: string | Error): Validator;
+```
+
+Validate the input is matches the given regular expression.
+
+**Throws:** If input does not match the given regular expression.
+
+<br>
+
+### `Float`
+
+```ts
+import { Float } from 'funval';
+
+declare function Float(input: unknown): number;
+```
+
+Converts any input to a valid float number.
+
+**Throws:** If the input can not convert to a valid number.
+
+<br>
+
+### `Integer`
+
+```ts
+import { Integer } from 'funval';
+
+declare function Integer(input: unknown): number;
+```
+
+Converts any input to a valid integer number.
+
+**Throws:** If the input can not convert to a valid number or the number is not an integer.
+
+<br>
+
+### `Bool`
+
+```ts
+import { Bool } from 'funval';
+
+declare function Bool(input: unknown): boolean;
+```
+
+Converts any input to a valid boolean.
+
+**Throws:** If the input can not convert unambiguously to a boolean.
+
 
 <br>
 

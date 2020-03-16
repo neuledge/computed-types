@@ -1,15 +1,29 @@
 import { AnyType, FunctionType, isPromiseLike } from './utils';
 import { Equals } from './validators/comparison';
 import ValidationError, {
-  createError,
-  createValidationPathsFromError,
+  createValidationError,
+  getErrorPaths,
   ErrorPath,
+  toError,
+  ErrorLike,
 } from './Error';
 import { Output, Input } from './Type';
+import { StringMatch } from './validators/string';
 
-export type SyncFunctionValidator<T = AnyType> = FunctionType<T>;
-export type AsyncFunctionValidator<T = AnyType> = FunctionType<PromiseLike<T>>;
-export type FunctionValidator<T = AnyType> = FunctionType<PromiseLike<T> | T>;
+export type SyncFunctionValidator<
+  T = AnyType,
+  I extends Array<AnyType> = [Input<T>]
+> = FunctionType<T, I>;
+
+export type AsyncFunctionValidator<
+  T = AnyType,
+  I extends Array<AnyType> = [Input<T>]
+> = FunctionType<PromiseLike<T>, I>;
+
+export type FunctionValidator<
+  T = AnyType,
+  I extends Array<AnyType> = [Input<T>]
+> = FunctionType<PromiseLike<T> | T, I>;
 
 export type SchemaType<T = AnyType> = [T] extends [FunctionType]
   ? FunctionValidator<T>
@@ -21,6 +35,8 @@ export type SyncSchemaType<T> = [T] extends [FunctionType]
   ? SyncFunctionValidator<T>
   : [T] extends [object]
   ? { [K in keyof T]: SyncSchemaType<T[K]> }
+  : [T] extends [string]
+  ? SyncFunctionValidator<T> | RegExp | T
   : SyncFunctionValidator<T> | T;
 
 export type ValidatorOutput<T> = T extends SyncSchemaType<Output<T>>
@@ -41,7 +57,7 @@ export type SchemaAsyncValidator<
 
 export default function Schema<T>(
   schema: T,
-  errorMsg?: string,
+  error?: ErrorLike,
 ): SchemaValidator<T> {
   switch (typeof schema) {
     case 'string':
@@ -50,30 +66,33 @@ export default function Schema<T>(
     case 'undefined':
     case 'symbol':
     case 'bigint':
-      return Equals(schema, errorMsg) as SchemaValidator<T>;
+      return (Equals(schema, error) as unknown) as SchemaValidator<T>;
 
     case 'function':
-      // TODO fix "as unknown" assumption
       return (schema as unknown) as SchemaValidator<T>;
 
     case 'object':
       if (schema === null) {
-        return Equals(schema, errorMsg) as SchemaValidator<T>;
+        return (Equals(schema, error) as unknown) as SchemaValidator<T>;
+      }
+
+      if (schema instanceof RegExp) {
+        return (StringMatch(schema, error) as unknown) as SchemaValidator<T>;
       }
 
       return (input: Input<T>): ValidatorOutput<T> => {
         if (typeof input !== 'object') {
-          throw new TypeError(
-            errorMsg || `Expecting value to be an object: ${typeof input}`,
+          throw toError(
+            error || `Expecting value to be an object: ${typeof input}`,
           );
         }
 
         if (input === null) {
-          throw new TypeError(errorMsg || `Expecting value to be non-nullable`);
+          throw toError(error || `Expecting value to be non-nullable`);
         }
 
         if (Array.isArray(schema) && !Array.isArray(input)) {
-          throw new TypeError(errorMsg || `Expecting value to an array`);
+          throw toError(error || `Expecting value to an array`);
         }
 
         const res: {
@@ -81,7 +100,7 @@ export default function Schema<T>(
         } = Array.isArray(schema) ? ([] as {}) : {};
 
         const promises: PromiseLike<void>[] = [];
-        const errorPaths: ErrorPath[] = [];
+        const errors: ErrorPath[] = [];
 
         for (const key in schema) {
           if (!Object.prototype.hasOwnProperty.call(schema, key)) continue;
@@ -104,30 +123,28 @@ export default function Schema<T>(
                   value => {
                     res[resKey] = value;
                   },
-                  (err: Partial<ValidationError>) => {
-                    errorPaths.push(
-                      ...createValidationPathsFromError(key, err),
-                    );
+                  (err: ValidationError) => {
+                    errors.push(...getErrorPaths(err, [key]));
                   },
                 ),
               );
             }
           } catch (e) {
-            errorPaths.push(...createValidationPathsFromError(key, e));
+            errors.push(...getErrorPaths(e, [key]));
           }
         }
 
         if (!promises.length) {
-          if (errorPaths.length) {
-            throw createError(errorPaths, errorMsg);
+          if (errors.length) {
+            throw createValidationError(errors, error);
           }
 
           return res as ValidatorOutput<T>;
         }
 
         return Promise.all(promises).then(() => {
-          if (errorPaths.length) {
-            throw createError(errorPaths, errorMsg);
+          if (errors.length) {
+            throw createValidationError(errors, error);
           }
 
           return res as Output<T>;

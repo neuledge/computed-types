@@ -47,6 +47,13 @@ describe('Schema', () => {
     assert.equal(validator('true'), true);
   });
 
+  it('RegExp', () => {
+    const validator = Schema(/^Foo/);
+
+    assert.equal(validator('Foo'), 'Foo');
+    assert.equal(validator('FooBar'), 'FooBar');
+  });
+
   it('schema', () => {
     const validator = Schema({ foo: String, bar: Number });
 

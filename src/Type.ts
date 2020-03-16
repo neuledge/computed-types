@@ -4,6 +4,8 @@ export type Output<T> = [T] extends [FunctionType]
   ? ResolvedValue<ReturnType<T>>
   : [T] extends [Primitive]
   ? T
+  : [T] extends [RegExp]
+  ? string
   : [T] extends [object]
   ? { [K in keyof T]: Output<T[K]> }
   : never;
@@ -37,6 +39,8 @@ export type Input<T> = T extends FunctionType
   ? Parameters<T>[0]
   : T extends Primitive
   ? T
+  : T extends RegExp
+  ? string
   : T extends object
   ? { [K in RequiredInputKeys<T>]: Input<T[K]> } &
       { [K in OptionalInputKeys<T>]?: Input<T[K]> }

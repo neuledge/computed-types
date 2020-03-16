@@ -1,31 +1,31 @@
 import { SyncFunctionValidator } from '../Schema';
-import compose from 'compose-function';
+import { ErrorLike, toError } from '../Error';
 
 // exported functions
 
 export function Equals<T>(
-  equalsTo: T,
-  errorMsg?: string,
-): SyncFunctionValidator<T> {
+  value: T,
+  error?: ErrorLike,
+): SyncFunctionValidator<T, [T]> {
   return (input: T): T => {
-    if (input !== equalsTo) {
-      throw new TypeError(
-        errorMsg || `Expect value to equals "${equalsTo}" (given: "${input}")`,
+    if (input !== value) {
+      throw toError(
+        error || `Expect value to equals "${value}" (given: "${input}")`,
       );
     }
 
-    return equalsTo;
+    return value;
   };
 }
 
 export function GreaterThan<T>(
   value: T,
-  errorMsg?: string,
-): SyncFunctionValidator<T> {
+  error?: ErrorLike,
+): SyncFunctionValidator<T, [T]> {
   return (input: T): T => {
-    if (input > value) {
-      throw new RangeError(
-        errorMsg ||
+    if (!(input > value)) {
+      throw toError(
+        error ||
           `Expect value to be greater then "${value}" (given: "${input}")`,
       );
     }
@@ -36,12 +36,12 @@ export function GreaterThan<T>(
 
 export function GreaterThanEqual<T>(
   value: T,
-  errorMsg?: string,
-): SyncFunctionValidator<T> {
+  error?: ErrorLike,
+): SyncFunctionValidator<T, [T]> {
   return (input: T): T => {
-    if (input >= value) {
-      throw new RangeError(
-        errorMsg ||
+    if (!(input >= value)) {
+      throw toError(
+        error ||
           `Expect value to be greater then or equal to "${value}" (given: "${input}")`,
       );
     }
@@ -52,13 +52,12 @@ export function GreaterThanEqual<T>(
 
 export function LessThan<T>(
   value: T,
-  errorMsg?: string,
-): SyncFunctionValidator<T> {
+  error?: ErrorLike,
+): SyncFunctionValidator<T, [T]> {
   return (input: T): T => {
-    if (input < value) {
-      throw new RangeError(
-        errorMsg ||
-          `Expect value to be less then "${value}" (given: "${input}")`,
+    if (!(input < value)) {
+      throw toError(
+        error || `Expect value to be less then "${value}" (given: "${input}")`,
       );
     }
 
@@ -68,12 +67,12 @@ export function LessThan<T>(
 
 export function LessThanEqual<T>(
   value: T,
-  errorMsg?: string,
-): SyncFunctionValidator<T> {
+  error?: ErrorLike,
+): SyncFunctionValidator<T, [T]> {
   return (input: T): T => {
-    if (input <= value) {
-      throw new RangeError(
-        errorMsg ||
+    if (!(input <= value)) {
+      throw toError(
+        error ||
           `Expect value to be less then or equal to "${value}" (given: "${input}")`,
       );
     }
@@ -82,13 +81,22 @@ export function LessThanEqual<T>(
   };
 }
 
-export function ValueBetween<T>(
+export function Between<T>(
   minValue: T,
   maxValue: T,
-  errorMsg?: string,
-): SyncFunctionValidator<T> {
-  return compose(
-    LessThanEqual<T>(maxValue, errorMsg),
-    GreaterThanEqual<T>(minValue, errorMsg),
-  );
+  error?: ErrorLike,
+): SyncFunctionValidator<T, [T]> {
+  return (input: T): T => {
+    if (
+      (minValue !== null && !(input >= minValue)) ||
+      (maxValue !== null && !(input <= maxValue))
+    ) {
+      throw toError(
+        error ||
+          `Expect value to be between "${minValue}" to "${maxValue}" (given: "${input}")`,
+      );
+    }
+
+    return input;
+  };
 }

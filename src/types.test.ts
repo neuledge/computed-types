@@ -25,6 +25,7 @@ const booleanType: AssertEqual<Output<boolean>, boolean> = 'ok';
 const objectType: AssertEqual<Output<object>, object> = 'ok';
 const symbolType: AssertEqual<Output<symbol>, symbol> = 'ok';
 const undefinedType: AssertEqual<Output<undefined>, undefined> = 'ok';
+const regexpType: AssertEqual<Output<RegExp>, string> = 'ok';
 
 const exactStr: AssertEqual<Output<'hello'>, 'hello'> = 'ok';
 const exact123: AssertEqual<Output<123>, 123> = 'ok';
@@ -62,6 +63,7 @@ const recStrAsyncOut: AssertEqual<
 const numInput: AssertEqual<Input<number>, number> = 'ok';
 const strInput: AssertEqual<Input<string>, string> = 'ok';
 const boolInput: AssertEqual<Input<boolean>, boolean> = 'ok';
+const regInput: AssertEqual<Input<RegExp>, string> = 'ok';
 const strBoolInput: AssertEqual<Input<string | boolean>, string | boolean> =
   'ok';
 

@@ -62,11 +62,7 @@
     "ts-node": "^8.6.2",
     "typescript": "^3.8.3"
   },
-  "dependencies": {
-    "@types/compose-function": "0.0.30",
-    "boolean": "^3.0.1",
-    "compose-function": "^3.0.3"
-  },
+  "dependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
