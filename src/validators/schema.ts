@@ -202,6 +202,24 @@ export function Or(
   };
 }
 
+export function ArrayOf<T>(
+  schema: T,
+  error?: ErrorLike,
+): FunctionType<ValidatorOutput<T>[], [Input<T>[]]> {
+  return (input: Input<T>[]): ValidatorOutput<T>[] => {
+    if (!Array.isArray(input)) {
+      throw toError(error || `Expect value to be an array`);
+    }
+
+    const res = input.map(Schema(schema, error));
+    if (!res.find(isPromiseLike)) {
+      return res;
+    }
+
+    return (Promise.all(res) as unknown) as ValidatorOutput<T>[];
+  };
+}
+
 export function TypeOf<
   T extends
     | 'string'

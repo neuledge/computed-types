@@ -1,4 +1,10 @@
-import { AllowPartial, FunctionType, Primitive, ResolvedValue } from './utils';
+import {
+  AllowPartial,
+  AnyType,
+  FunctionType,
+  Primitive,
+  ResolvedValue,
+} from './utils';
 
 export type Output<T> = [T] extends [FunctionType]
   ? ResolvedValue<ReturnType<T>>
@@ -41,6 +47,8 @@ export type Input<T> = T extends FunctionType
   ? T
   : T extends RegExp
   ? string
+  : T extends Array<AnyType>
+  ? { [K in keyof T]: Input<T[K]> }
   : T extends object
   ? { [K in RequiredInputKeys<T>]: Input<T[K]> } &
       { [K in OptionalInputKeys<T>]?: Input<T[K]> }

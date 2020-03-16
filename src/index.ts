@@ -8,6 +8,7 @@ import {
   TypeOf,
   Any,
   Override,
+  ArrayOf,
 } from './validators/schema';
 import Schema, {
   SchemaType,
@@ -61,6 +62,7 @@ export {
   LessThan,
   LessThanEqual,
   Between,
+  ArrayOf,
   TypeOf,
   Truthy,
   Any,

@@ -176,6 +176,7 @@ All the available validators ordered by type:
       [`Required`](#required),
       [`Truthy`](#truthy),
       [`Or`](#or),
+      [`ArrayOf`](#arrayof),
       [`TypeOf`](#typeof),
       [`Any`](#any),
       [`Override`](#override)
@@ -299,6 +300,20 @@ declare function Or(...candidates: any[]): Validator;
 Validate inputs using any of the given candidates.
 
 **Throws:** If the input does not match to any of the given schemas.
+
+<br>
+
+### `ArrayOf`
+
+```ts
+import { ArrayOf } from 'funval';
+
+declare function ArrayOf(itemSchema: any, error?: string | Error): Validator;
+```
+
+Validate the input is an array and that each item matches the given schema.
+
+**Throws:** If the given input is not an array or one of the items not matches the item schema.
 
 <br>
 

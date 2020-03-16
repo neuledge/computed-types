@@ -14,6 +14,10 @@ describe('Error', () => {
 
   it('createValidationError', () => {
     assert.throws(() => createValidationError([], 'foo'), /^foo$/);
+    assert.throws(
+      () => createValidationError([]),
+      /^Unknown Validation Error$/,
+    );
 
     const paths = [{ path: ['foo'], error: new Error('test') }];
     const err = createValidationError(paths, 'foo');

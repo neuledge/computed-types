@@ -52,9 +52,11 @@ describe('Schema', () => {
 
     assert.equal(validator('Foo'), 'Foo');
     assert.equal(validator('FooBar'), 'FooBar');
+
+    assert.throws(() => validator('foo'), TypeError);
   });
 
-  it('schema', () => {
+  it('object', () => {
     const validator = Schema({ foo: String, bar: Number });
 
     assert.deepEqual(validator({ foo: 'foo', bar: 123 }), {
@@ -66,5 +68,29 @@ describe('Schema', () => {
       foo: 'null',
       bar: 123,
     });
+
+    assert.throws(() => validator(123), TypeError);
+  });
+
+  it('null', () => {
+    const validator = Schema(null);
+
+    assert.equal(validator(null), null);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    assert.throws(() => validator(12 as any), TypeError);
+  });
+
+  it('Array', () => {
+    const validator = Schema([1 as 1, 'foo' as 'foo']);
+
+    assert.deepEqual(validator([1, 'foo']), [1, 'foo']);
+
+    assert.throws(() => validator([1, 'foo', 1]), TypeError);
+    assert.throws(() => validator([1]), TypeError);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    assert.throws(() => validator([2, 'foo'] as any), TypeError);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    assert.throws(() => validator({ foo: 1 } as any), TypeError);
   });
 });

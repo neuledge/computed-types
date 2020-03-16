@@ -91,8 +91,17 @@ export default function Schema<T>(
           throw toError(error || `Expecting value to be non-nullable`);
         }
 
-        if (Array.isArray(schema) && !Array.isArray(input)) {
-          throw toError(error || `Expecting value to an array`);
+        if (Array.isArray(schema)) {
+          if (!Array.isArray(input)) {
+            throw toError(error || `Expecting value to an array`);
+          }
+
+          if (schema.length !== input.length) {
+            throw toError(
+              error ||
+                `Expecting array length to be ${schema.length} (actual: ${input.length})`,
+            );
+          }
         }
 
         const res: {

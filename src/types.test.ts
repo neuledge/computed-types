@@ -1,11 +1,7 @@
 import { Input, Output } from './Type';
 import { ValidatorOutput } from './Schema';
 
-type AssertEqual<T, R> = [R] extends [T]
-  ? [T] extends [R]
-    ? 'ok'
-    : never
-  : never;
+type AssertEqual<T, R> = [R] extends [T] ? ([T] extends [R] ? 'ok' : T) : T;
 
 // type tests
 /* eslint-disable @typescript-eslint/no-unused-vars,@typescript-eslint/no-explicit-any */
@@ -31,6 +27,7 @@ const exactStr: AssertEqual<Output<'hello'>, 'hello'> = 'ok';
 const exact123: AssertEqual<Output<123>, 123> = 'ok';
 const exactTrue: AssertEqual<Output<true>, true> = 'ok';
 const exactFalse: AssertEqual<Output<false>, false> = 'ok';
+const exactArray: AssertEqual<Output<[1, 'foo']>, [1, 'foo']> = 'ok';
 
 const stringValidator: AssertEqual<Output<() => string>, string> = 'ok';
 const numberValidator: AssertEqual<Output<() => number>, number> = 'ok';
@@ -62,6 +59,7 @@ const recStrAsyncOut: AssertEqual<
 
 const numInput: AssertEqual<Input<number>, number> = 'ok';
 const strInput: AssertEqual<Input<string>, string> = 'ok';
+const arrInput: AssertEqual<Input<[1, 'foo']>, [1, 'foo']> = 'ok';
 const boolInput: AssertEqual<Input<boolean>, boolean> = 'ok';
 const regInput: AssertEqual<Input<RegExp>, string> = 'ok';
 const strBoolInput: AssertEqual<Input<string | boolean>, string | boolean> =
@@ -80,6 +78,11 @@ const propInput: AssertEqual<
 const reqPropInput: AssertEqual<
   Input<{ maybe: (input: undefined | string) => string }>,
   { maybe: string | undefined }
+> = 'ok';
+
+const maybeStrPropInput: AssertEqual<
+  Input<{ maybe: (input?: string) => string }>,
+  { maybe?: string }
 > = 'ok';
 
 const maybeAnyPropInput: AssertEqual<
