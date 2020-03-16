@@ -30,14 +30,14 @@ export function StringRange(
   error?: ErrorLike,
 ): SyncFunctionValidator<string, [string]> {
   return (input): string => {
-    if (input.length < (minLength as number)) {
+    if (minLength != null && input.length < minLength) {
       throw toError(
         error ||
           `Expect length to be minimum of ${minLength} characters (actual: ${input.length})`,
       );
     }
 
-    if (input.length > (maxLength as number)) {
+    if (maxLength != null && input.length > maxLength) {
       throw toError(
         error ||
           `Expect length to be maximum of ${maxLength} characters (actual: ${input.length})`,
