@@ -82,8 +82,8 @@ export function LessThanEqual<T>(
 }
 
 export function Between<T>(
-  minValue: T,
-  maxValue: T,
+  minValue: T | null,
+  maxValue: T | null,
   error?: ErrorLike,
 ): SyncFunctionValidator<T, [T]> {
   return (input: T): T => {
