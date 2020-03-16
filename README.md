@@ -45,11 +45,11 @@ function PositiveNumber(input: unknown): number {
 ### Main Features
 
 - **Easy to Read** - Uses functions as types (including `String`, `Number`, `Boolean`, etc...)
+- **Reusable Interfaces** - Create new validator using plain functions in seconds.
+- **TypeScript Validation** - Detect errors during compile time.
+- **Function Composition** - Pipe multiple validators to generate new ones.
 - **Asynchronous & Synchronous Support** - Automatically detected using promises.
 - **Pure Javascript** - Also works without TypeScript.
-- **Seamless Interfaces** - Create new validator using plain functions in seconds.
-- **Function Composition** - Pipe multiple validators to generate new ones.
-- **TypeScript Validation** - Detect errors during compile time. 
 
 <br>
 
@@ -346,7 +346,7 @@ Allow any type of input.
 import { Override } from 'funval';
 
 declare function Override(value: any): Validator;
-```                          
+```
 
 Override any input and returns the given value.
 
