@@ -1,6 +1,10 @@
 import 'mocha';
-import { assert } from 'chai';
-import Schema from './Schema';
+import { assert, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+
+use(chaiAsPromised);
+
+import Schema, { Async } from './Schema';
 
 describe('Schema', () => {
   it('String', () => {
@@ -92,5 +96,14 @@ describe('Schema', () => {
     assert.throws(() => validator([2, 'foo'] as any), TypeError);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     assert.throws(() => validator({ foo: 1 } as any), TypeError);
+  });
+
+  it('Async', async () => {
+    const validator = Schema(Async(Schema('foo')));
+
+    assert.equal(await validator('foo'), 'foo');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await assert.isRejected(validator('bar' as any) as PromiseLike<any>);
   });
 });
