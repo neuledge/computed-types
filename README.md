@@ -48,7 +48,7 @@ function PositiveNumber(input: unknown): number {
 - **Reusable Interfaces** - Create new validator using plain functions in seconds.
 - **TypeScript Validation** - Detect errors during compile time.
 - **Function Composition** - Pipe multiple validators to generate new ones.
-- **Asynchronous & Synchronous Support** - Automatically detected using promises.
+- **Asynchronous & Synchronous Support** - Automatically detected promises.
 - **Pure Javascript** - Also works without TypeScript.
 
 <br>
