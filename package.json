@@ -1,14 +1,18 @@
 {
   "name": "funval",
   "version": "0.2.0",
-  "description": "Functional validation schemas with built-in TypeScript support.",
+  "description": "A minimalist library for data validation using functions interfaces.",
   "keywords": [
     "validation",
     "function",
     "schema",
     "typescript",
     "functional",
-    "composition"
+    "composition",
+    "interfaces",
+    "data",
+    "input",
+    "neuledge"
   ],
   "scripts": {
     "type-check": "tsc --noEmit",
