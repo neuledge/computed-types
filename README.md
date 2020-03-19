@@ -27,17 +27,13 @@ Using only plain functions, *Funval* knows how to validate your data and automat
 TypeScript interfaces to reduce code duplications and complexity.
 
 ```ts
-function PositiveNumber(input: unknown): number {
+function ValidNumber(input: unknown): number {
   const value = Number(input);
 
   if (isNaN(value)) {
     throw new TypeError(`Invalid number`);
   }
-
-  if (value <= 0) {
-    throw new TypeError(`Only positive numbers allowed`);
-  }
-
+  
   return value;
 }
 ```
