@@ -31,7 +31,7 @@ function ValidNumber(input: unknown): number {
   const value = Number(input);
 
   if (isNaN(value)) {
-    throw new TypeError(`Invalid number`);
+    throw new TypeError('Invalid number');
   }
   
   return value;
