@@ -374,7 +374,7 @@ import { Test } from 'funval';
 declare function Test<T>(test: (input: T) => unknown, error?: string | Error): Validator;
 ```
 
-Create a validator from a given test function.
+Return the input value as is, only if the test function returns a truthy value.
 
 **Throws:** If the test function throws or the test function return a non-truthy value.
 
