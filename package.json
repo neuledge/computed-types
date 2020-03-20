@@ -1,6 +1,6 @@
 {
   "name": "funval",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A minimalist library for data validation using functions interfaces.",
   "keywords": [
     "validation",
@@ -41,9 +41,7 @@
   "main": "lib/index.js",
   "module": "lib/index.js",
   "files": [
-    "/lib",
-    "README.md",
-    "LICENSE"
+    "/lib/*"
   ],
   "devDependencies": {
     "@babel/cli": "^7.8.4",
