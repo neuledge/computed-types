@@ -13,6 +13,7 @@ import {
   Or,
   Override,
   Required,
+  Test,
   Truthy,
   TypeOf,
 } from './schema';
@@ -203,5 +204,14 @@ describe('schema', () => {
     assert.equal(foo(null), 'foo');
     assert.equal(foo(undefined), 'foo');
     assert.equal(foo({}), 'foo');
+  });
+
+  it('Test', () => {
+    const foo = Test((input: number) => input > 10);
+
+    assert.equal(foo(12), 12);
+
+    assert.throws(() => foo(1), TypeError);
+    assert.throws(() => foo(NaN), TypeError);
   });
 });

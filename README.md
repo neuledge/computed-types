@@ -180,6 +180,7 @@ All the available validators ordered by type:
       [`TypeOf`](#typeof),
       [`Any`](#any),
       [`Override`](#override)
+      [`Test`](#test)
 
 * **Comparison** -
       [`Equals`](#equals),
@@ -366,6 +367,20 @@ declare function Override(value: any): Validator;
 Override any input and returns the given value.
 
 **Throws:** Never.
+
+<br>
+
+### `Test`
+
+```ts
+import { Test } from 'funval';
+
+declare function Test<T>(test: (input: T) => unknown, error?: string | Error): Validator;
+```
+
+Create a validator from a given test function.
+
+**Throws:** If the test function throws or the test function return a non-truthy value.
 
 <br>
 

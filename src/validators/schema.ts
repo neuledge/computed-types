@@ -244,3 +244,16 @@ export function Any<T>(input: T): T {
 export function Override<T>(value: T): SyncFunctionValidator<T, [unknown?]> {
   return (): T => value;
 }
+
+export function Test<T>(
+  test: (input: T) => unknown,
+  error?: ErrorLike,
+): SyncFunctionValidator<T, [T]> {
+  return (input): T => {
+    if (!test(input)) {
+      throw toError(error || `Invalid input`);
+    }
+
+    return input;
+  };
+}
