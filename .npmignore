@@ -1,7 +1,6 @@
-src/
-.babelrc
-.eslintrc
-.gitignore
-.prettierrc
-.travis.yml
-tsconfig.json
+*
+!lib/
+!LICENSE
+!package.json
+!package-lock.json
+!README.md
