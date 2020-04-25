@@ -25,7 +25,7 @@ export function getErrorPaths(error: ValidationError, path: Path): ErrorPath[] {
     ];
   }
 
-  return error.paths.map(ep => ({
+  return error.paths.map((ep) => ({
     path: [...path, ...ep.path],
     error: ep.error,
   }));

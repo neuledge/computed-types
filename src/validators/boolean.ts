@@ -18,9 +18,7 @@ export function Bool(input: unknown): boolean {
     return input;
   }
 
-  const key = String(input)
-    .trim()
-    .toLowerCase();
+  const key = String(input).trim().toLowerCase();
 
   const value = BOOL_MAP[key as keyof typeof BOOL_MAP];
 

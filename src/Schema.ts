@@ -129,7 +129,7 @@ export default function Schema<T>(
             } else {
               promises.push(
                 value.then(
-                  value => {
+                  (value) => {
                     res[resKey] = value;
                   },
                   (err: ValidationError) => {
@@ -171,5 +171,5 @@ export function Async<
   I extends Parameters<T>[0]
 >(validator: T): FunctionType<PromiseLike<V>, [I]> {
   return (input: I): Promise<V> =>
-    new Promise(resolve => resolve(validator(input)));
+    new Promise((resolve) => resolve(validator(input)));
 }
