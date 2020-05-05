@@ -28,23 +28,25 @@ export function StringRange(
   minLength: number | null,
   maxLength: number | null,
   error?: ErrorLike,
-): SyncFunctionValidator<string, [string]> {
+): SyncFunctionValidator<string, [unknown]> {
   return (input): string => {
-    if (minLength != null && input.length < minLength) {
+    const str = ContentString(input);
+
+    if (minLength != null && str.length < minLength) {
       throw toError(
         error ||
-          `Expect length to be minimum of ${minLength} characters (actual: ${input.length})`,
+          `Expect length to be minimum of ${minLength} characters (actual: ${str.length})`,
       );
     }
 
-    if (maxLength != null && input.length > maxLength) {
+    if (maxLength != null && str.length > maxLength) {
       throw toError(
         error ||
-          `Expect length to be maximum of ${maxLength} characters (actual: ${input.length})`,
+          `Expect length to be maximum of ${maxLength} characters (actual: ${str.length})`,
       );
     }
 
-    return input;
+    return str;
   };
 }
 

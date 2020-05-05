@@ -1,6 +1,10 @@
 // exported functions
 
 export function Float(input: unknown): number {
+  if (input == null) {
+    throw new TypeError(`Missing number`);
+  }
+
   const res = Number(input);
 
   if (isNaN(res)) {

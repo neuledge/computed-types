@@ -1,6 +1,6 @@
 {
   "name": "funval",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "A minimalist library for data validation using functions interfaces.",
   "keywords": [
     "validation",
@@ -38,9 +38,9 @@
   "author": "Moshe Simantov <me@moshe.io>",
   "repository": "https://github.com/neuledge/funval",
   "license": "MIT",
-  "main": "lib/index.js",
-  "module": "lib/index.js",
-  "types": "lib/index.d.js",
+  "main": "lib/index",
+  "module": "lib/index",
+  "types": "lib/index",
   "files": [
     "/lib/*"
   ],
