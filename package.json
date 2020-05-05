@@ -1,6 +1,6 @@
 {
   "name": "funval",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "A minimalist library for data validation using functions interfaces.",
   "keywords": [
     "validation",
@@ -40,6 +40,7 @@
   "license": "MIT",
   "main": "lib/index.js",
   "module": "lib/index.js",
+  "types": "lib/index.d.js",
   "files": [
     "/lib/*"
   ],
