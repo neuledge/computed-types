@@ -1,64 +1,103 @@
-import { SyncFunctionValidator } from '../Schema';
 import { ErrorLike, toError } from '../Error';
+import Validator, { FunctionValidator, Input } from './Validator';
+import boolean from './boolean';
 
-// exported functions
-
-export function ContentString(input: unknown): string {
-  if (
-    input == null ||
-    (typeof input === 'object' &&
-      (input as object).toString === Object.prototype.toString)
-  ) {
-    throw new TypeError(`Expect value to be string`);
+export class StringValidator<I extends Input = [string]> extends Validator<
+  string,
+  I
+> {
+  public toLowerCase(): FunctionValidator<string, I> & StringValidator<I> {
+    return this.transform((str) => str.toLowerCase());
   }
 
-  const value = String(input);
-  if (value.match(/^\s*$/)) {
-    throw new TypeError(`Expect value to be a non-empty string`);
+  public toUpperCase(): FunctionValidator<string, I> & StringValidator<I> {
+    return this.transform((str) => str.toUpperCase());
   }
 
-  return value;
+  public toLocaleLowerCase(
+    ...input: Parameters<string['toLocaleLowerCase']>
+  ): FunctionValidator<string, I> & StringValidator<I> {
+    return this.transform((str) => str.toLocaleLowerCase(...input));
+  }
+
+  public toLocaleUpperCase(
+    ...input: Parameters<string['toLocaleUpperCase']>
+  ): FunctionValidator<string, I> & StringValidator<I> {
+    return this.transform((str) => str.toLocaleUpperCase(...input));
+  }
+
+  public normalize(
+    ...input: Parameters<string['normalize']>
+  ): FunctionValidator<string, I> & StringValidator<I> {
+    return this.transform((str) => str.normalize(...input));
+  }
+
+  public trim(): FunctionValidator<string, I> & StringValidator<I> {
+    return this.transform((str) => str.trim());
+  }
+
+  public min(
+    length: number,
+    error?: ErrorLike,
+  ): FunctionValidator<string, I> & StringValidator<I> {
+    return this.transform((str): string => {
+      if (str.length < length) {
+        throw toError(
+          error ||
+            `Expect length to be minimum of ${length} characters (actual: ${str.length})`,
+        );
+      }
+
+      return str;
+    });
+  }
+
+  public max(
+    length: number,
+    error?: ErrorLike,
+  ): FunctionValidator<string, I> & StringValidator<I> {
+    return this.transform((str): string => {
+      if (str.length > length) {
+        throw toError(
+          error ||
+            `Expect length to be maximum of ${length} characters (actual: ${str.length})`,
+        );
+      }
+
+      return str;
+    });
+  }
+
+  public between(
+    minLength: number,
+    maxLength: number,
+    error?: ErrorLike,
+  ): FunctionValidator<string, I> & StringValidator<I> {
+    return this.max(minLength, error).max(maxLength, error);
+  }
+
+  public regexp(
+    regexp: RegExp | string,
+    error?: ErrorLike,
+  ): FunctionValidator<string, I> & StringValidator<I> {
+    return this.transform((str): string => {
+      if (str.match(regexp) === null) {
+        throw toError(error || `Invalid string format (expected: ${regexp})`);
+      }
+
+      return str;
+    });
+  }
 }
 
-export function TrimString(input: unknown): string {
-  return ContentString(input).trim();
-}
-
-export function StringRange(
-  minLength: number | null,
-  maxLength: number | null,
-  error?: ErrorLike,
-): SyncFunctionValidator<string, [unknown]> {
-  return (input): string => {
-    const str = ContentString(input);
-
-    if (minLength != null && str.length < minLength) {
-      throw toError(
-        error ||
-          `Expect length to be minimum of ${minLength} characters (actual: ${str.length})`,
-      );
+const string = StringValidator.proxy<string, [string], StringValidator>(
+  (input: string): string => {
+    if (typeof input !== 'string') {
+      throw TypeError(`Expect value to be string`);
     }
 
-    if (maxLength != null && str.length > maxLength) {
-      throw toError(
-        error ||
-          `Expect length to be maximum of ${maxLength} characters (actual: ${str.length})`,
-      );
-    }
+    return input;
+  },
+);
 
-    return str;
-  };
-}
-
-export function StringMatch(
-  regex: RegExp,
-  error?: string | Error,
-): SyncFunctionValidator<string, [unknown]> {
-  return (input: unknown): string => {
-    if (typeof input === 'string' && regex.test(input)) {
-      return input;
-    }
-
-    throw toError(error || 'Regular expression not match');
-  };
-}
+export default string;

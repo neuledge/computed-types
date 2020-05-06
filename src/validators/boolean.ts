@@ -1,30 +1,18 @@
-const BOOL_MAP = {
-  true: true,
-  false: false,
-  t: true,
-  f: false,
-  yes: true,
-  no: false,
-  y: true,
-  n: false,
-  1: true,
-  0: false,
-};
+import Validator, { Input } from './Validator';
 
-// exported functions
+export class BooleanValidator<I extends Input = [boolean]> extends Validator<
+  boolean,
+  I
+> {}
 
-export function Bool(input: unknown): boolean {
-  if (typeof input === 'boolean') {
+const boolean = BooleanValidator.proxy<boolean, [boolean], BooleanValidator>(
+  (input: boolean): boolean => {
+    if (typeof input !== 'boolean') {
+      throw new TypeError(`Expect value to be boolean`);
+    }
+
     return input;
-  }
+  },
+);
 
-  const key = String(input).trim().toLowerCase();
-
-  const value = BOOL_MAP[key as keyof typeof BOOL_MAP];
-
-  if (value != null) {
-    return value;
-  }
-
-  throw new TypeError(`Invalid boolean value`);
-}
+export default boolean;
