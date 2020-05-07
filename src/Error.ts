@@ -1,7 +1,5 @@
 import { ObjectProperty } from './utils';
 
-export type ErrorLike = string | Error;
-
 export type Path = ObjectProperty[];
 
 export interface ErrorPath {
@@ -29,14 +27,6 @@ export function getErrorPaths(error: ValidationError, path: Path): ErrorPath[] {
     path: [...path, ...ep.path],
     error: ep.error,
   }));
-}
-
-export function toError(error: ErrorLike): Error {
-  if (typeof error === 'string') {
-    return new TypeError(error);
-  }
-
-  return error;
 }
 
 export function createValidationError(

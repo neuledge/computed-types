@@ -151,4 +151,6 @@ describe('Validator', () => {
     assert.throws(() => validator(0), TypeError, 'error: 0');
     assert.throws(() => validator('foo' as any), TypeError, 'error: foo');
   });
+
+  // Tests for types convert is under `unknown.test.ts`
 });

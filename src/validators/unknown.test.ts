@@ -6,13 +6,17 @@ import unknown from './unknown';
 
 describe('unknown', () => {
   it('unknown()', () => {
+    const s = Symbol('s');
+    const obj = { foo: 1 };
+
     assert.equal(unknown(true), true);
     assert.equal(unknown(false), false);
     assert.equal(unknown('string'), 'string');
     assert.equal(unknown(1234), 1234);
+    assert.equal(unknown(s), s);
     assert.equal(unknown(null), null);
     assert.equal(unknown(undefined), undefined);
-    assert.deepEqual(unknown({ foo: 1 }), { foo: 1 });
+    assert.equal(unknown(obj), obj);
   });
 
   it('unknown.boolean()', () => {
@@ -43,7 +47,11 @@ describe('unknown', () => {
     assert.throws(() => unknown.boolean()({}), TypeError);
     assert.throws(() => unknown.boolean()({ foo: 1 }), TypeError);
 
-    assert.throws(() => unknown.boolean('test')(null), TypeError, 'test');
+    assert.throws(
+      () => unknown.boolean('undefined')(undefined),
+      TypeError,
+      'undefined',
+    );
   });
 
   it('unknown.string()', () => {
@@ -72,6 +80,36 @@ describe('unknown', () => {
     assert.throws(() => unknown.string()({}), TypeError);
     assert.throws(() => unknown.string()({ foo: 1 }), TypeError);
 
-    assert.throws(() => unknown.string('test')(null), TypeError, 'test');
+    assert.throws(
+      () => unknown.string('undefined')(undefined),
+      TypeError,
+      'undefined',
+    );
+  });
+
+  it('unknown.number()', () => {
+    assert.equal(unknown.number()(1), 1);
+    assert.equal(unknown.number()(1.1), 1.1);
+    assert.equal(unknown.number()('1.1'), 1.1);
+    assert.equal(unknown.number()('-10.1'), -10.1);
+    assert.isNaN(unknown.number()('NaN'));
+    assert.equal(unknown.number()([1]), 1);
+    assert.equal(unknown.number()([-1.44]), -1.44);
+    assert.equal(unknown.number()(true), 1);
+    assert.equal(unknown.number()(false), 0);
+    assert.equal(unknown.number()(null), 0);
+    assert.equal(unknown.number()([]), 0);
+    assert.equal(unknown.number()(''), 0);
+
+    assert.throws(() => unknown.number()({}), TypeError);
+    assert.throws(() => unknown.number()(undefined), TypeError);
+    assert.throws(() => unknown.number()([1, 2]), TypeError);
+    assert.throws(() => unknown.number()({ foo: 1 }), TypeError);
+
+    assert.throws(
+      () => unknown.number('undefined')(undefined),
+      TypeError,
+      'undefined',
+    );
   });
 });
