@@ -50,6 +50,23 @@ export default class Validator<O, I extends Input> {
     this.validator = validator;
   }
 
+  public object(
+    error?: ErrorLike<[O]>,
+  ): ValidatorProxy<object, I, ObjectValidator<I>> {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return this.convert<object, ObjectValidator<I>, typeof ObjectValidator>(
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      ObjectValidator,
+      (input): object => {
+        if (typeof input !== 'object') {
+          throw toError(error || `Expect value to be object`, input);
+        }
+
+        return (input as unknown) as object;
+      },
+    );
+  }
+
   public string(
     error?: ErrorLike<[O]>,
   ): ValidatorProxy<string, I, StringValidator<I>> {
@@ -206,6 +223,7 @@ export default class Validator<O, I extends Input> {
 }
 
 // circular dependencies: import those after creating the validator class
+import { ObjectValidator } from './object';
 import { StringValidator } from './string';
 import { NumberValidator } from './number';
 import { BooleanValidator } from './boolean';
