@@ -11,6 +11,19 @@ export type TransformValidator<T, O, I extends Input, S> = [T] extends [O]
   ? FunctionValidator<T, I> & Validator<T, I> & S
   : FunctionValidator<T, I> & Validator<T, I>;
 
+export interface ValidatorConstructor<
+  O,
+  I extends Input = [O],
+  T extends Validator<O, I> = Validator<O, I>
+> {
+  new (validator: FunctionValidator<O, I>): T;
+
+  proxy(
+    this: ValidatorConstructor<O, I, T>,
+    validator: FunctionValidator<O, I>,
+  ): FunctionValidator<O, I> & T;
+}
+
 export default class Validator<O, I extends Input> {
   public readonly validator: FunctionValidator<O, I>;
 

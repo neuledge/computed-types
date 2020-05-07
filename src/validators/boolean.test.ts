@@ -5,27 +5,9 @@ import boolean from './boolean';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 describe('boolean', () => {
-  it('Bool', () => {
+  it('boolean()', () => {
     assert.equal(boolean(true), true);
     assert.equal(boolean(false), false);
-    // assert.equal(Bool('true'), true);
-    // assert.equal(Bool('false'), false);
-    // assert.equal(Bool('1'), true);
-    // assert.equal(Bool('0'), false);
-    // assert.equal(Bool('t'), true);
-    // assert.equal(Bool('f'), false);
-    // assert.equal(Bool('T'), true);
-    // assert.equal(Bool('F'), false);
-    // assert.equal(Bool('True'), true);
-    // assert.equal(Bool('False'), false);
-    // assert.equal(Bool('Yes'), true);
-    // assert.equal(Bool('No'), false);
-    // assert.equal(Bool('Y'), true);
-    // assert.equal(Bool('N'), false);
-    // assert.equal(Bool(1), true);
-    // assert.equal(Bool(0), false);
-    // assert.equal(Bool([1]), true);
-    // assert.equal(Bool([0]), false);
 
     assert.throws(() => boolean('true' as any), TypeError);
     assert.throws(() => boolean(0 as any), TypeError);
