@@ -196,7 +196,7 @@ describe('Validator', () => {
 
       assert.equal(validator('yes'), 'yes');
       assert.equal(validator('no'), 'no');
-      assert.match(validator('random'), /^(yes|now)$/);
+      assert.match(validator('random'), /^(yes|no)$/);
     });
   });
 });
