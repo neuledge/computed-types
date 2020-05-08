@@ -1,44 +1,44 @@
-import ErrorLike from './ErrorLike';
-import Validator, { Input, ValidatorProxy } from './Validator';
+import ErrorLike from './schema/ErrorLike';
+import Validator, { ValidatorProxy } from './Validator';
+import FunctionType, { FunctionParameters } from './schema/FunctionType';
 
-export class StringValidator<I extends Input = [string]> extends Validator<
-  string,
-  I
-> {
-  public toLowerCase(): ValidatorProxy<string, I, this> {
+export class StringValidator<
+  P extends FunctionParameters = [string]
+> extends Validator<FunctionType<string, P>> {
+  public toLowerCase(): ValidatorProxy<this> {
     return this.transform((str) => str.toLowerCase());
   }
 
-  public toUpperCase(): ValidatorProxy<string, I, this> {
+  public toUpperCase(): ValidatorProxy<this> {
     return this.transform((str) => str.toUpperCase());
   }
 
   public toLocaleLowerCase(
     ...input: Parameters<string['toLocaleLowerCase']>
-  ): ValidatorProxy<string, I, this> {
+  ): ValidatorProxy<this> {
     return this.transform((str) => str.toLocaleLowerCase(...input));
   }
 
   public toLocaleUpperCase(
     ...input: Parameters<string['toLocaleUpperCase']>
-  ): ValidatorProxy<string, I, this> {
+  ): ValidatorProxy<this> {
     return this.transform((str) => str.toLocaleUpperCase(...input));
   }
 
   public normalize(
     ...input: Parameters<string['normalize']>
-  ): ValidatorProxy<string, I, this> {
+  ): ValidatorProxy<this> {
     return this.transform((str) => str.normalize(...input));
   }
 
-  public trim(): ValidatorProxy<string, I, this> {
+  public trim(): ValidatorProxy<this> {
     return this.transform((str) => str.trim());
   }
 
   public min(
     length: number,
     error?: ErrorLike<[string]>,
-  ): ValidatorProxy<string, I, this> {
+  ): ValidatorProxy<this> {
     return this.test(
       (str) => str.length >= length,
       error ||
@@ -50,7 +50,7 @@ export class StringValidator<I extends Input = [string]> extends Validator<
   public max(
     length: number,
     error?: ErrorLike<[string]>,
-  ): ValidatorProxy<string, I, this> {
+  ): ValidatorProxy<this> {
     return this.test(
       (str) => str.length <= length,
       error ||
@@ -63,7 +63,7 @@ export class StringValidator<I extends Input = [string]> extends Validator<
     minLength: number,
     maxLength: number,
     error?: ErrorLike<[string]>,
-  ): ValidatorProxy<string, I, this> {
+  ): ValidatorProxy<this> {
     return this.test(
       (str) => str.length >= minLength && str.length <= maxLength,
       error ||
@@ -75,7 +75,7 @@ export class StringValidator<I extends Input = [string]> extends Validator<
   public regexp(
     regexp: RegExp | string,
     error?: ErrorLike<[string]>,
-  ): ValidatorProxy<string, I, this> {
+  ): ValidatorProxy<this> {
     return this.test(
       (str) => str.match(regexp) != null,
       error || `Invalid string format (expected: ${regexp})`,
@@ -83,14 +83,12 @@ export class StringValidator<I extends Input = [string]> extends Validator<
   }
 }
 
-const string = StringValidator.proxy<string, [string], StringValidator>(
-  (input: string): string => {
-    if (typeof input !== 'string') {
-      throw TypeError(`Expect value to be string`);
-    }
+const string = new StringValidator((input: string): string => {
+  if (typeof input !== 'string') {
+    throw TypeError(`Expect value to be string`);
+  }
 
-    return input;
-  },
-);
+  return input;
+}).proxy();
 
 export default string;

@@ -1,19 +1,19 @@
-import Validator, { Input, ValidatorProxy } from './Validator';
+import Validator, { ValidatorProxy } from './Validator';
 import { StringValidator } from './string';
-import ErrorLike from './ErrorLike';
+import ErrorLike from './schema/ErrorLike';
+import FunctionType, { FunctionParameters } from './schema/FunctionType';
 
-export class NumberValidator<I extends Input = [number]> extends Validator<
-  number,
-  I
-> {
-  public float(error?: ErrorLike<[number]>): ValidatorProxy<number, I, this> {
+export class NumberValidator<
+  P extends FunctionParameters = [number]
+> extends Validator<FunctionType<number, P>> {
+  public float(error?: ErrorLike<[number]>): ValidatorProxy<this> {
     return this.test(
       (val) => !isNaN(val) && Number.isFinite(val),
       error || `Expect value to be a number`,
     );
   }
 
-  public integer(error?: ErrorLike<[number]>): ValidatorProxy<number, I, this> {
+  public integer(error?: ErrorLike<[number]>): ValidatorProxy<this> {
     return this.test(
       (val) => Number.isInteger(val),
       error || `Expect value to be an integer`,
@@ -22,53 +22,41 @@ export class NumberValidator<I extends Input = [number]> extends Validator<
 
   public toExponential(
     ...input: Parameters<number['toExponential']>
-  ): ValidatorProxy<string, I, StringValidator<I>> {
-    return this.convert<string, StringValidator<I>, typeof StringValidator>(
-      StringValidator,
+  ): ValidatorProxy<StringValidator<P>> {
+    return this.transform(
       (val) => val.toExponential(...input),
+      StringValidator,
     );
   }
 
   public toFixed(
     ...input: Parameters<number['toFixed']>
-  ): ValidatorProxy<string, I, StringValidator<I>> {
-    return this.convert<string, StringValidator<I>, typeof StringValidator>(
-      StringValidator,
-      (val) => val.toFixed(...input),
-    );
+  ): ValidatorProxy<StringValidator<P>> {
+    return this.transform((val) => val.toFixed(...input), StringValidator);
   }
 
   public toLocaleString(
     ...input: Parameters<number['toLocaleString']>
-  ): ValidatorProxy<string, I, StringValidator<I>> {
-    return this.convert<string, StringValidator<I>, typeof StringValidator>(
-      StringValidator,
+  ): ValidatorProxy<StringValidator<P>> {
+    return this.transform(
       (val) => val.toLocaleString(...input),
+      StringValidator,
     );
   }
 
   public toPrecision(
     ...input: Parameters<number['toPrecision']>
-  ): ValidatorProxy<string, I, StringValidator<I>> {
-    return this.convert<string, StringValidator<I>, typeof StringValidator>(
-      StringValidator,
-      (val) => val.toPrecision(...input),
-    );
+  ): ValidatorProxy<StringValidator<P>> {
+    return this.transform((val) => val.toPrecision(...input), StringValidator);
   }
 
   public toString(
     ...input: Parameters<number['toString']>
-  ): ValidatorProxy<string, I, StringValidator<I>> {
-    return this.convert<string, StringValidator<I>, typeof StringValidator>(
-      StringValidator,
-      (val) => val.toString(...input),
-    );
+  ): ValidatorProxy<StringValidator<P>> {
+    return this.transform((val) => val.toString(...input), StringValidator);
   }
 
-  public min(
-    min: number,
-    error?: ErrorLike<[number]>,
-  ): ValidatorProxy<number, I, this> {
+  public min(min: number, error?: ErrorLike<[number]>): ValidatorProxy<this> {
     return this.test(
       (val) => val >= min,
       error ||
@@ -77,10 +65,7 @@ export class NumberValidator<I extends Input = [number]> extends Validator<
     );
   }
 
-  public max(
-    max: number,
-    error?: ErrorLike<[number]>,
-  ): ValidatorProxy<number, I, this> {
+  public max(max: number, error?: ErrorLike<[number]>): ValidatorProxy<this> {
     return this.test(
       (val) => val <= max,
       error ||
@@ -95,7 +80,7 @@ export class NumberValidator<I extends Input = [number]> extends Validator<
   public gt(
     boundary: number,
     error?: ErrorLike<[number]>,
-  ): ValidatorProxy<number, I, this> {
+  ): ValidatorProxy<this> {
     return this.test(
       (val) => val > boundary,
       error ||
@@ -107,7 +92,7 @@ export class NumberValidator<I extends Input = [number]> extends Validator<
   public lt(
     boundary: number,
     error?: ErrorLike<[number]>,
-  ): ValidatorProxy<number, I, this> {
+  ): ValidatorProxy<this> {
     return this.test(
       (val) => val < boundary,
       error ||
@@ -120,7 +105,7 @@ export class NumberValidator<I extends Input = [number]> extends Validator<
     min: number,
     max: number,
     error?: ErrorLike<[number]>,
-  ): ValidatorProxy<number, I, this> {
+  ): ValidatorProxy<this> {
     return this.test(
       (val) => val >= min && val <= max,
       error ||
@@ -130,14 +115,12 @@ export class NumberValidator<I extends Input = [number]> extends Validator<
   }
 }
 
-const number = NumberValidator.proxy<number, [number], NumberValidator>(
-  (input: number): number => {
-    if (typeof input !== 'number') {
-      throw TypeError(`Expect value to be number`);
-    }
+const number = new NumberValidator((input: number): number => {
+  if (typeof input !== 'number') {
+    throw TypeError(`Expect value to be number`);
+  }
 
-    return input;
-  },
-);
+  return input;
+}).proxy();
 
 export default number;

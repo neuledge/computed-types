@@ -1,18 +1,16 @@
-import Validator, { Input } from './Validator';
+import Validator from './Validator';
+import FunctionType, { FunctionParameters } from './schema/FunctionType';
 
-export class ObjectValidator<I extends Input = [object]> extends Validator<
-  object,
-  I
-> {}
+export class ObjectValidator<
+  P extends FunctionParameters = [object]
+> extends Validator<FunctionType<object, P>> {}
 
-const object = ObjectValidator.proxy<object, [object], ObjectValidator>(
-  (input: object): object => {
-    if (typeof input !== 'object' || input === null) {
-      throw new TypeError(`Expect value to be object`);
-    }
+const object = new ObjectValidator((input: object): object => {
+  if (typeof input !== 'object' || input === null) {
+    throw new TypeError(`Expect value to be object`);
+  }
 
-    return input;
-  },
-);
+  return input;
+}).proxy();
 
 export default object;

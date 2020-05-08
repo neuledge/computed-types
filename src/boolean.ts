@@ -1,18 +1,16 @@
-import Validator, { Input } from './Validator';
+import Validator from './Validator';
+import FunctionType, { FunctionParameters } from './schema/FunctionType';
 
-export class BooleanValidator<I extends Input = [boolean]> extends Validator<
-  boolean,
-  I
-> {}
+export class BooleanValidator<
+  P extends FunctionParameters = [boolean]
+> extends Validator<FunctionType<boolean, P>> {}
 
-const boolean = BooleanValidator.proxy<boolean, [boolean], BooleanValidator>(
-  (input: boolean): boolean => {
-    if (typeof input !== 'boolean') {
-      throw new TypeError(`Expect value to be boolean`);
-    }
+const boolean = new BooleanValidator((input: boolean): boolean => {
+  if (typeof input !== 'boolean') {
+    throw new TypeError(`Expect value to be boolean`);
+  }
 
-    return input;
-  },
-);
+  return input;
+}).proxy();
 
 export default boolean;
