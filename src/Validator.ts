@@ -45,7 +45,7 @@ export default class Validator<F extends FunctionType> {
   ): ValidatorProxy<this> {
     return this.transform((input) => {
       if (!fn(input)) {
-        throw toError(error || `Validation check failed`, input);
+        throw toError(error || `Validation test failed`, input);
       }
 
       return input;
