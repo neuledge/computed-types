@@ -1,7 +1,8 @@
 import Validator, { ValidatorProxy } from './Validator';
 import { StringValidator } from './string';
-import ErrorLike from './schema/ErrorLike';
+import { ErrorLike } from './schema/errors';
 import FunctionType, { FunctionParameters } from './schema/FunctionType';
+import { type } from './schema/validations';
 
 export class NumberValidator<
   P extends FunctionParameters = [number]
@@ -115,12 +116,6 @@ export class NumberValidator<
   }
 }
 
-const number = new NumberValidator((input: number): number => {
-  if (typeof input !== 'number') {
-    throw TypeError(`Expect value to be number`);
-  }
-
-  return input;
-}).proxy();
+const number = new NumberValidator(type('number')).proxy();
 
 export default number;

@@ -9,6 +9,8 @@ type IfDeepEqual<T, R, Y, N> = IfEqual<RemoveAny<T>, RemoveAny<R>, Y, N>;
 
 // exported types
 
+export type ObjectProperty = string | number | symbol;
+
 export type Primitive =
   | string
   | number
@@ -18,6 +20,16 @@ export type Primitive =
   | undefined
   | void
   | bigint;
+
+export type Typeof = {
+  string: string;
+  number: number;
+  object: object;
+  boolean: boolean;
+  symbol: symbol;
+  bigint: bigint;
+  undefined: undefined;
+};
 
 export type ResolvedValue<T> =
   // do not escape T to [T] to support `number | Promise<string>`
@@ -35,4 +47,8 @@ export function typeCheck<T, R, Y = ['ok'] extends [T] ? never : 'ok'>(
   ok: IfDeepEqual<T, R, IfAny<T, IfAny<R, Y, T>, IfAny<R, T, Y>>, T>,
 ): unknown {
   return ok;
+}
+
+export function isPromiseLike(value: unknown): value is PromiseLike<unknown> {
+  return value && typeof (value as PromiseLike<unknown>).then === 'function';
 }

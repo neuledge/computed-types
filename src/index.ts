@@ -3,7 +3,7 @@ import object from './object';
 import string from './string';
 import number from './number';
 import boolean from './boolean';
-import ErrorLike from './schema/ErrorLike';
+import { ErrorLike } from './schema/errors';
 import { SchemaParameters, SchemaValidatorFunction } from './schema/io';
 import Validator, { ValidatorProxy } from './Validator';
 import compiler from './schema/compiler';

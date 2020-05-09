@@ -1,6 +1,6 @@
 import Validator, { ValidatorProxy } from './Validator';
 import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import ErrorLike, { toError } from './schema/ErrorLike';
+import { ErrorLike, toError } from './schema/errors';
 import { ObjectValidator } from './object';
 import { StringValidator } from './string';
 import { NumberValidator } from './number';

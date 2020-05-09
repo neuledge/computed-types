@@ -1,6 +1,7 @@
-import ErrorLike from './schema/ErrorLike';
+import { ErrorLike } from './schema/errors';
 import Validator, { ValidatorProxy } from './Validator';
 import FunctionType, { FunctionParameters } from './schema/FunctionType';
+import { regexp, type } from './schema/validations';
 
 export class StringValidator<
   P extends FunctionParameters = [string]
@@ -73,22 +74,13 @@ export class StringValidator<
   }
 
   public regexp(
-    regexp: RegExp | string,
+    exp: RegExp | string,
     error?: ErrorLike<[string]>,
   ): ValidatorProxy<this> {
-    return this.test(
-      (str) => str.match(regexp) != null,
-      error || `Invalid string format (expected: ${regexp})`,
-    );
+    return this.transform(regexp(exp, error));
   }
 }
 
-const string = new StringValidator((input: string): string => {
-  if (typeof input !== 'string') {
-    throw TypeError(`Expect value to be string`);
-  }
-
-  return input;
-}).proxy();
+const string = new StringValidator(type('string')).proxy();
 
 export default string;

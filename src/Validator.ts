@@ -1,5 +1,6 @@
 import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import ErrorLike, { toError } from './schema/ErrorLike';
+import { ErrorLike } from './schema/errors';
+import { equals, message, test } from './schema/validations';
 
 export type ValidatorProxy<
   V extends { validator: FunctionType },
@@ -33,23 +34,14 @@ export default class Validator<F extends FunctionType> {
     value: T,
     error?: ErrorLike<[ReturnType<F>]>,
   ): ValidatorProxy<this, FunctionType<T, Parameters<F>>> {
-    return this.test(
-      (input): boolean => input === value,
-      error || `Expect value to equal "${value}"`,
-    );
+    return this.transform(equals(value, error));
   }
 
   public test(
-    fn: FunctionType<unknown, [ReturnType<F>]>,
+    tester: FunctionType<unknown, [ReturnType<F>]>,
     error?: ErrorLike<[ReturnType<F>]>,
   ): ValidatorProxy<this> {
-    return this.transform((input) => {
-      if (!fn(input)) {
-        throw toError(error || `Validation test failed`, input);
-      }
-
-      return input;
-    });
+    return this.transform(test(tester, error));
   }
 
   // public transform<T>(
@@ -86,15 +78,7 @@ export default class Validator<F extends FunctionType> {
     const Class = (this as any).constructor;
     const { validator } = this;
 
-    return new Class(
-      (...args: Parameters<F>): ReturnType<F> => {
-        try {
-          return validator(...args);
-        } catch (e) {
-          throw toError(error, ...args);
-        }
-      },
-    ).proxy();
+    return new Class(message(validator, error)).proxy();
   }
 }
 
