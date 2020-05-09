@@ -1,7 +1,8 @@
 import 'mocha';
 import { typeCheck } from './utils';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-function,
+ @typescript-eslint/no-unused-vars */
 
 describe('schema/utils', () => {
   describe('typeCheck', () => {
@@ -115,6 +116,28 @@ describe('schema/utils', () => {
 
     it('never', () => {
       typeCheck<never, never, true>(true);
+    });
+
+    describe('functions', () => {
+      it('return value', () => {
+        typeCheck<() => void, () => void>('ok');
+        typeCheck<() => boolean, () => boolean>('ok');
+        typeCheck<() => number, () => number>('ok');
+
+        typeCheck<() => true, () => void>(() => true);
+        typeCheck<() => boolean, () => void>(() => true);
+        typeCheck<() => number, () => void>(() => 1);
+      });
+
+      it('parameters', () => {
+        typeCheck<() => void, () => void>('ok');
+        typeCheck<(x: number) => void, (x: number) => void>('ok');
+        typeCheck<(x: boolean) => void, (x: boolean) => void>('ok');
+        typeCheck<(x: 1) => void, (x: 1) => void>('ok');
+        typeCheck<() => void, (x: 1) => void>(() => {});
+        typeCheck<(x: 1) => void, (x: 2) => void>((x: 1) => {});
+        typeCheck<(x: false) => void, (x: true) => void>((x: false) => {});
+      });
     });
   });
 });

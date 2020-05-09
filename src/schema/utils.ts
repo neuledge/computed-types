@@ -1,11 +1,25 @@
+import FunctionType from './FunctionType';
+
 type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
+
 type RemoveAny<T> = [T] extends [object]
   ? {
       [K in keyof T]: RemoveAny<T[K]>;
     }
   : IfAny<T, never, T>;
+
 type IfEqual<T, R, Y, N> = [R] extends [T] ? ([T] extends [R] ? Y : N) : N;
-type IfDeepEqual<T, R, Y, N> = IfEqual<RemoveAny<T>, RemoveAny<R>, Y, N>;
+
+type IfDeepEqual<T, R, Y, N> = [T] extends [FunctionType]
+  ? [R] extends [FunctionType]
+    ? IfEqual<
+        RemoveAny<ReturnType<T>>,
+        RemoveAny<ReturnType<R>>,
+        IfEqual<RemoveAny<Parameters<T>>, RemoveAny<Parameters<R>>, Y, N>,
+        N
+      >
+    : N
+  : IfEqual<RemoveAny<T>, RemoveAny<R>, Y, N>;
 
 // exported types
 
