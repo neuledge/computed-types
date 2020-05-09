@@ -3,8 +3,14 @@ import { typeCheck } from './utils';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-describe('utils', () => {
+describe('schema/utils', () => {
   describe('typeCheck', () => {
+    it('string', () => {
+      typeCheck<string, string, true>(true);
+      typeCheck<string, 1>('string');
+      typeCheck<string, 'foo'>('string');
+    });
+
     it('number', () => {
       typeCheck<number, number>('ok');
       typeCheck<number, 1>(1 as number);
@@ -75,7 +81,7 @@ describe('utils', () => {
     });
 
     it('unknown', () => {
-      typeCheck<unknown, unknown>('ok');
+      typeCheck<unknown, unknown, true>(true);
       typeCheck<unknown, never>('any');
       typeCheck<unknown, any>('any');
       typeCheck<unknown, boolean>('any');
@@ -86,7 +92,7 @@ describe('utils', () => {
     });
 
     it('any', () => {
-      typeCheck<any, any>('ok');
+      typeCheck<any, any, true>(true);
       typeCheck<any, never>('any');
       typeCheck<any, boolean>('any');
       typeCheck<any, string>('any');
@@ -108,7 +114,7 @@ describe('utils', () => {
     });
 
     it('never', () => {
-      typeCheck<never, never>('ok');
+      typeCheck<never, never, true>(true);
     });
   });
 });

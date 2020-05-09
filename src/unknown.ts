@@ -5,6 +5,8 @@ import { ObjectValidator } from './object';
 import { StringValidator } from './string';
 import { NumberValidator } from './number';
 import { BooleanValidator } from './boolean';
+import { SchemaReturnType } from './schema/io';
+import compiler from './schema/compiler';
 
 const BOOL_MAP = {
   true: true,
@@ -22,10 +24,23 @@ const BOOL_MAP = {
 export class UnknownValidator<
   P extends FunctionParameters = [unknown]
 > extends Validator<FunctionType<unknown, P>> {
+  public schema<S>(
+    schema: S,
+    error?: ErrorLike<[unknown]>,
+  ): ValidatorProxy<Validator<FunctionType<SchemaReturnType<S>, P>>> {
+    return this.transform(
+      compiler<unknown>(schema, error) as FunctionType<
+        SchemaReturnType<S>,
+        [unknown]
+      >,
+      Validator,
+    );
+  }
+
   public object(
     error?: ErrorLike<[unknown]>,
   ): ValidatorProxy<ObjectValidator<P>> {
-    return this.transform((input): object => {
+    return this.transform((input) => {
       if (typeof input !== 'object') {
         throw toError(error || `Expect value to be object`, input);
       }
@@ -37,7 +52,7 @@ export class UnknownValidator<
   public string(
     error?: ErrorLike<[unknown]>,
   ): ValidatorProxy<StringValidator<P>> {
-    return this.transform((input): string => {
+    return this.transform((input) => {
       if (typeof input === 'string') {
         return input;
       }
@@ -57,7 +72,7 @@ export class UnknownValidator<
   public number(
     error?: ErrorLike<[unknown]>,
   ): ValidatorProxy<NumberValidator<P>> {
-    return this.transform((input): number => {
+    return this.transform((input) => {
       if (typeof input === 'number') {
         return input;
       }
@@ -75,7 +90,7 @@ export class UnknownValidator<
   public boolean(
     error?: ErrorLike<[unknown]>,
   ): ValidatorProxy<BooleanValidator<P>> {
-    return this.transform((input): boolean => {
+    return this.transform((input) => {
       if (typeof input === 'boolean') {
         return input;
       }
