@@ -5,7 +5,7 @@ import { ObjectValidator } from './object';
 import { StringValidator } from './string';
 import { NumberValidator } from './number';
 import { BooleanValidator } from './boolean';
-import { SchemaReturnType } from './schema/io';
+import { SchemaResolveType } from './schema/io';
 import compiler from './schema/compiler';
 
 const BOOL_MAP = {
@@ -27,10 +27,10 @@ export class UnknownValidator<
   public schema<S>(
     schema: S,
     error?: ErrorLike<[unknown]>,
-  ): ValidatorProxy<Validator<FunctionType<SchemaReturnType<S>, P>>> {
+  ): ValidatorProxy<Validator<FunctionType<SchemaResolveType<S>, P>>> {
     return this.transform(
       compiler<unknown>(schema, error) as FunctionType<
-        SchemaReturnType<S>,
+        SchemaResolveType<S>,
         [unknown]
       >,
       Validator,

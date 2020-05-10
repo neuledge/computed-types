@@ -40,6 +40,7 @@ describe('schema/utils', () => {
       typeCheck<boolean, object>(true);
       typeCheck<boolean, string>(true);
       typeCheck<boolean, any>(true);
+      typeCheck<boolean, void>(true);
       typeCheck<boolean, 1>(true);
     });
 
@@ -118,15 +119,58 @@ describe('schema/utils', () => {
       typeCheck<never, never, true>(true);
     });
 
+    it('PromiseLike', () => {
+      typeCheck<PromiseLike<string>, PromiseLike<string>>('ok');
+      typeCheck<PromiseLike<string>, PromiseLike<number>>(
+        Promise.resolve('string'),
+      );
+      typeCheck<PromiseLike<string>, Promise<string>>(
+        Promise.resolve('string'),
+      );
+    });
+
+    it('Promise', () => {
+      typeCheck<Promise<string>, Promise<string>>('ok');
+      typeCheck<Promise<string>, Promise<number>>(Promise.resolve('string'));
+      typeCheck<PromiseLike<string>, Promise<string>>(
+        Promise.resolve('string'),
+      );
+    });
+
+    it('return type', () => {
+      typeCheck<
+        ReturnType<() => string | PromiseLike<number>>,
+        string | PromiseLike<number>,
+        true
+      >(true);
+
+      typeCheck<
+        ReturnType<() => string | PromiseLike<number>>,
+        string | PromiseLike<boolean>,
+        true
+      >('string');
+    });
+
     describe('functions', () => {
       it('return value', () => {
         typeCheck<() => void, () => void>('ok');
         typeCheck<() => boolean, () => boolean>('ok');
         typeCheck<() => number, () => number>('ok');
 
+        typeCheck<() => true, () => number>(() => true);
+        typeCheck<() => true, () => boolean>(() => true);
         typeCheck<() => true, () => void>(() => true);
         typeCheck<() => boolean, () => void>(() => true);
+        typeCheck<() => boolean, () => true>(() => true);
         typeCheck<() => number, () => void>(() => 1);
+        typeCheck<() => [1, 'foo'], () => [1, 'foo']>('ok');
+        typeCheck<() => [1, 'foo'], () => void>(() => [1, 'foo']);
+        typeCheck<() => [1, 'foo'], () => ['foo', 1]>(() => [1, 'foo']);
+
+        typeCheck<() => PromiseLike<number>, () => PromiseLike<number>>('ok');
+        typeCheck<() => PromiseLike<number>, () => PromiseLike<string>>(() =>
+          Promise.resolve(1),
+        );
       });
 
       it('parameters', () => {
@@ -137,6 +181,17 @@ describe('schema/utils', () => {
         typeCheck<() => void, (x: 1) => void>(() => {});
         typeCheck<(x: 1) => void, (x: 2) => void>((x: 1) => {});
         typeCheck<(x: false) => void, (x: true) => void>((x: false) => {});
+        typeCheck<(x: [1, 'foo']) => void, (x: [1, 'foo']) => void>('ok');
+        typeCheck<(x: [1, 'foo']) => void, () => void>((x: [1, 'foo']) => {});
+        typeCheck<(x: [1, 'foo']) => void, (x: ['foo', 1]) => void>(
+          (x: [1, 'foo']) => {},
+        );
+        typeCheck<(x: [1, 'foo']) => [1, 'foo'], (x: [1, 'foo']) => [1, 'foo']>(
+          'ok',
+        );
+        typeCheck<(x: [1, 'foo']) => [1, 'foo'], (x: [1, 'foo']) => ['foo', 1]>(
+          (x: [1, 'foo']) => x,
+        );
       });
     });
   });

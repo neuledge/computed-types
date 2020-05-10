@@ -1,7 +1,10 @@
 import 'mocha';
 import { typeCheck } from './utils';
-import { SchemaParameters, SchemaReturnType } from './io';
-// import { either } from './logic';
+import {
+  SchemaParameters,
+  SchemaResolveType,
+  SchemaValidatorFunction,
+} from './io';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -107,6 +110,8 @@ describe('schema/io', () => {
         [{ foo?: string }]
       >('ok');
 
+      typeCheck<SchemaParameters<{ foo: () => void }>, [{}]>('ok');
+
       typeCheck<
         SchemaParameters<{
           foo: { bar: (x: string | undefined) => void };
@@ -136,122 +141,221 @@ describe('schema/io', () => {
 
   describe('SchemaReturnType', () => {
     it('primitives', () => {
-      typeCheck<SchemaReturnType<null>, null>('ok');
-      typeCheck<SchemaReturnType<void>, void>('ok');
-      typeCheck<SchemaReturnType<number>, number>('ok');
-      typeCheck<SchemaReturnType<string>, string, true>(true);
-      typeCheck<SchemaReturnType<boolean>, boolean>('ok');
-      typeCheck<[SchemaReturnType<unknown>], [unknown]>('ok');
-      typeCheck<SchemaReturnType<undefined>, undefined>('ok');
-      typeCheck<[SchemaReturnType<any>], [any]>('ok');
+      typeCheck<SchemaResolveType<null>, null>('ok');
+      typeCheck<SchemaResolveType<void>, void>('ok');
+      typeCheck<SchemaResolveType<number>, number>('ok');
+      typeCheck<SchemaResolveType<string>, string, true>(true);
+      typeCheck<SchemaResolveType<boolean>, boolean>('ok');
+      typeCheck<[SchemaResolveType<unknown>], [unknown]>('ok');
+      typeCheck<SchemaResolveType<undefined>, undefined>('ok');
+      typeCheck<[SchemaResolveType<any>], [any]>('ok');
     });
 
     it('primitives constructors', () => {
-      typeCheck<SchemaReturnType<StringConstructor>, string, true>(true);
-      typeCheck<SchemaReturnType<NumberConstructor>, number>('ok');
-      typeCheck<SchemaReturnType<BooleanConstructor>, boolean>('ok');
-      typeCheck<SchemaReturnType<ObjectConstructor>, object>('ok');
-      typeCheck<SchemaReturnType<SymbolConstructor>, symbol>('ok');
+      typeCheck<SchemaResolveType<StringConstructor>, string, true>(true);
+      typeCheck<SchemaResolveType<NumberConstructor>, number>('ok');
+      typeCheck<SchemaResolveType<BooleanConstructor>, boolean>('ok');
+      typeCheck<SchemaResolveType<ObjectConstructor>, object>('ok');
+      typeCheck<SchemaResolveType<SymbolConstructor>, symbol>('ok');
     });
 
     it('primitives values', () => {
-      typeCheck<SchemaReturnType<'foo'>, 'foo'>('ok');
-      typeCheck<SchemaReturnType<'foo'>, 'bar'>('foo');
-      typeCheck<SchemaReturnType<123>, 123>('ok');
-      typeCheck<SchemaReturnType<123>, number>(123);
-      typeCheck<SchemaReturnType<true>, true>('ok');
-      typeCheck<SchemaReturnType<true>, false>(true);
-      typeCheck<SchemaReturnType<true>, boolean>(true);
+      typeCheck<SchemaResolveType<'foo'>, 'foo'>('ok');
+      typeCheck<SchemaResolveType<'foo'>, 'bar'>('foo');
+      typeCheck<SchemaResolveType<123>, 123>('ok');
+      typeCheck<SchemaResolveType<123>, number>(123);
+      typeCheck<SchemaResolveType<true>, true>('ok');
+      typeCheck<SchemaResolveType<true>, false>(true);
+      typeCheck<SchemaResolveType<true>, boolean>(true);
     });
 
     it('plain arrays', () => {
-      typeCheck<SchemaReturnType<[]>, []>('ok');
-      typeCheck<SchemaReturnType<[number]>, [number]>('ok');
-      typeCheck<SchemaReturnType<[number, string]>, [number, string]>('ok');
-      typeCheck<SchemaReturnType<[unknown]>, [unknown]>('ok');
-      typeCheck<SchemaReturnType<[unknown]>, [unknown?]>([[1]]);
-      typeCheck<SchemaReturnType<[unknown?]>, [unknown?]>('ok');
-      typeCheck<SchemaReturnType<[number?]>, [number?]>('ok');
-      typeCheck<SchemaReturnType<[number?]>, [number]>([]);
-      typeCheck<SchemaReturnType<string[]>, string[]>('ok');
-      typeCheck<SchemaReturnType<[1, 'foo']>, [1, 'foo']>('ok');
-      typeCheck<SchemaReturnType<['foo', 1]>, [1, 'foo']>(['foo', 1]);
+      typeCheck<SchemaResolveType<[]>, []>('ok');
+      typeCheck<SchemaResolveType<[number]>, [number]>('ok');
+      typeCheck<SchemaResolveType<[number, string]>, [number, string]>('ok');
+      typeCheck<SchemaResolveType<[unknown]>, [unknown]>('ok');
+      typeCheck<SchemaResolveType<[unknown]>, [unknown?]>([[1]]);
+      typeCheck<SchemaResolveType<[unknown?]>, [unknown?]>('ok');
+      typeCheck<SchemaResolveType<[number?]>, [number?]>('ok');
+      typeCheck<SchemaResolveType<[number?]>, [number]>([]);
+      typeCheck<SchemaResolveType<string[]>, string[]>('ok');
+      typeCheck<SchemaResolveType<[1, 'foo']>, [1, 'foo']>('ok');
+      typeCheck<SchemaResolveType<['foo', 1]>, [1, 'foo']>(['foo', 1]);
     });
 
     it('regexp', () => {
-      typeCheck<SchemaReturnType<RegExp>, string, true>(true);
-      typeCheck<SchemaReturnType<RegExp>, ''>('string');
+      typeCheck<SchemaResolveType<RegExp>, string, true>(true);
+      typeCheck<SchemaResolveType<RegExp>, ''>('string');
     });
 
     it('or', () => {
-      typeCheck<SchemaReturnType<string | number>, string | number, true>(true);
-      typeCheck<SchemaReturnType<string | number>, string>('string');
-      typeCheck<SchemaReturnType<string | number>, number>('string');
-      typeCheck<SchemaReturnType<string | number>, 1>('string');
-      typeCheck<SchemaReturnType<string | number>, 'str'>('string');
+      typeCheck<SchemaResolveType<string | number>, string | number, true>(
+        true,
+      );
+      typeCheck<SchemaResolveType<string | number>, string>('string');
+      typeCheck<SchemaResolveType<string | number>, number>('string');
+      typeCheck<SchemaResolveType<string | number>, 1>('string');
+      typeCheck<SchemaResolveType<string | number>, 'str'>('string');
     });
 
     it('validators', () => {
-      typeCheck<SchemaReturnType<() => void>, void>('ok');
-      typeCheck<[SchemaReturnType<() => unknown>], [unknown]>('ok');
-      typeCheck<[SchemaReturnType<() => string>], [string]>('ok');
-      typeCheck<[SchemaReturnType<() => 'foo'>], ['foo']>('ok');
-      typeCheck<SchemaReturnType<() => number>, number>('ok');
-      typeCheck<SchemaReturnType<() => boolean>, boolean>('ok');
-      typeCheck<SchemaReturnType<() => false>, false>('ok');
-      typeCheck<SchemaReturnType<() => 1>, 1>('ok');
+      typeCheck<SchemaResolveType<() => void>, void>('ok');
+      typeCheck<[SchemaResolveType<() => unknown>], [unknown]>('ok');
+      typeCheck<[SchemaResolveType<() => string>], [string]>('ok');
+      typeCheck<[SchemaResolveType<() => 'foo'>], ['foo']>('ok');
+      typeCheck<SchemaResolveType<() => number>, number>('ok');
+      typeCheck<SchemaResolveType<() => boolean>, boolean>('ok');
+      typeCheck<SchemaResolveType<() => false>, false>('ok');
+      typeCheck<SchemaResolveType<() => 1>, 1>('ok');
     });
 
     it('promises', () => {
-      typeCheck<SchemaReturnType<() => Promise<string>>, string, true>(true);
-      typeCheck<SchemaReturnType<() => string | Promise<string>>, string, true>(
-        true,
-      );
+      typeCheck<SchemaResolveType<() => Promise<string>>, string, true>(true);
       typeCheck<
-        SchemaReturnType<() => number | Promise<string>>,
+        SchemaResolveType<() => string | Promise<string>>,
+        string,
+        true
+      >(true);
+      typeCheck<
+        SchemaResolveType<() => number | Promise<string>>,
         number | string,
         true
       >(true);
     });
 
     it('objects', () => {
-      typeCheck<SchemaReturnType<{}>, {}, true>(true);
-      typeCheck<SchemaReturnType<{ foo: string }>, { foo: string }>('ok');
-      typeCheck<SchemaReturnType<{ foo?: string }>, { foo?: string }>('ok');
+      typeCheck<SchemaResolveType<{}>, {}, true>(true);
+      typeCheck<SchemaResolveType<{ foo: string }>, { foo: string }>('ok');
+      typeCheck<SchemaResolveType<{ foo?: string }>, { foo?: string }>('ok');
     });
 
     it('validators properties', () => {
-      typeCheck<SchemaReturnType<{ foo: () => string }>, { foo: string }>('ok');
-      typeCheck<SchemaReturnType<{ foo: () => 1 }>, { foo: 1 }>('ok');
-      typeCheck<SchemaReturnType<{ foo: () => 1 | 'foo' }>, { foo: 1 | 'foo' }>(
+      typeCheck<SchemaResolveType<{ foo: () => string }>, { foo: string }>(
         'ok',
       );
-      typeCheck<SchemaReturnType<{ foo: () => void }>, { foo: void }>('ok');
+      typeCheck<SchemaResolveType<{ foo: () => 1 }>, { foo: 1 }>('ok');
+      typeCheck<
+        SchemaResolveType<{ foo: () => 1 | 'foo' }>,
+        { foo: 1 | 'foo' }
+      >('ok');
+      typeCheck<SchemaResolveType<{ foo: () => void }>, { foo: void }>('ok');
 
       typeCheck<
-        SchemaReturnType<{ foo: () => Promise<number> }>,
+        SchemaResolveType<{ foo: () => Promise<number> }>,
         { foo: number }
       >('ok');
     });
 
     it('optional properties', () => {
-      typeCheck<SchemaReturnType<{ foo: (x: string) => void }>, { foo: void }>(
+      typeCheck<SchemaResolveType<{ foo: (x: string) => void }>, { foo: void }>(
         'ok',
       );
 
-      typeCheck<SchemaReturnType<{ foo: (x?: string) => void }>, { foo: void }>(
-        'ok',
-      );
+      typeCheck<
+        SchemaResolveType<{ foo: (x?: string) => void }>,
+        { foo: void }
+      >('ok');
     });
 
     it('optional array items', () => {
-      typeCheck<SchemaReturnType<[(x: string | undefined) => void]>, [void]>(
+      typeCheck<SchemaResolveType<[(x: string | undefined) => void]>, [void]>(
         'ok',
       );
 
-      typeCheck<SchemaReturnType<[(x?: string | undefined) => void]>, [void]>(
+      typeCheck<SchemaResolveType<[(x?: string | undefined) => void]>, [void]>(
         'ok',
       );
+    });
+  });
+
+  describe('SchemaValidatorFunction', () => {
+    it('sync', () => {
+      typeCheck<SchemaValidatorFunction<() => string>, () => string>('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<() => string | number>,
+        () => string | number
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<{ foo: () => string | number }>,
+        (x: { foo?: undefined }) => { foo: string | number }
+      >('ok');
+    });
+
+    it('async', () => {
+      typeCheck<
+        SchemaValidatorFunction<() => PromiseLike<string>>,
+        () => PromiseLike<string>
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<() => PromiseLike<string | number>>,
+        () => PromiseLike<string | number>
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<() => Promise<string | number>>,
+        () => PromiseLike<string | number>
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<() => PromiseLike<true>>,
+        () => PromiseLike<true>
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<() => Promise<string>>,
+        () => PromiseLike<string>
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<{ foo(): Promise<string | number> }>,
+        (x: { foo?: undefined }) => PromiseLike<{ foo: string | number }>
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<{
+          foo: () => Promise<string | number>;
+          bar: string;
+        }>,
+        (x: {
+          foo?: undefined;
+          bar: string;
+        }) => PromiseLike<{ foo: string | number; bar: string }>
+      >('ok');
+    });
+
+    it('maybe async', () => {
+      typeCheck<
+        SchemaValidatorFunction<() => string | PromiseLike<number>>,
+        () => string | number | PromiseLike<number | string>
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<() => unknown>,
+        () => unknown | PromiseLike<unknown>
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<{
+          foo: () => Promise<string> | number;
+          bar: string;
+        }>,
+        (x: {
+          foo?: undefined;
+          bar: string;
+        }) =>
+          | PromiseLike<{ foo: string | number; bar: string }>
+          | { foo: string | number; bar: string }
+      >('ok');
+
+      typeCheck<
+        SchemaValidatorFunction<{ foo: () => unknown }>,
+        (x: {
+          foo?: undefined;
+        }) => { foo: unknown } | PromiseLike<{ foo: unknown }>
+      >('ok');
     });
   });
 });

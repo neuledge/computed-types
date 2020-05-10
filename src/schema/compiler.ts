@@ -1,6 +1,6 @@
 import {
   SchemaParameters,
-  SchemaReturnType,
+  SchemaResolveType,
   SchemaValidatorFunction,
 } from './io';
 import { createValidationError, ErrorLike, ObjectPath } from './errors';
@@ -109,7 +109,9 @@ export default function compiler<S>(
 
   const tasksCount = tasks.length;
 
-  return (...args: SchemaParameters<S>): SchemaReturnType<S> => {
+  return ((
+    ...args: SchemaParameters<S>
+  ): SchemaResolveType<S> | Promise<SchemaResolveType<S>> => {
     const [obj, res] = typeValidator(...args);
 
     const promises: PromiseLike<void>[] = [];
@@ -125,7 +127,7 @@ export default function compiler<S>(
         throw createValidationError(errors, error, ...args);
       }
 
-      return res as SchemaReturnType<S>;
+      return res as SchemaResolveType<S>;
     }
 
     return Promise.all(promises).then(() => {
@@ -134,6 +136,6 @@ export default function compiler<S>(
       }
 
       return res;
-    }) as SchemaReturnType<S>;
-  };
+    }) as SchemaResolveType<S>;
+  }) as SchemaValidatorFunction<S>;
 }

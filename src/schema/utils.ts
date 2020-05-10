@@ -2,24 +2,26 @@ import FunctionType from './FunctionType';
 
 type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 
-type RemoveAny<T> = [T] extends [object]
+type EqualReformat<T> = T extends FunctionType
+  ? [
+      '$$FunctionType$$',
+      EqualReformat<ReturnType<T>>,
+      EqualReformat<Parameters<T>>,
+    ]
+  : T extends object
   ? {
-      [K in keyof T]: RemoveAny<T[K]>;
+      [K in keyof T]: EqualReformat<T[K]>;
     }
   : IfAny<T, never, T>;
 
 type IfEqual<T, R, Y, N> = [R] extends [T] ? ([T] extends [R] ? Y : N) : N;
 
-type IfDeepEqual<T, R, Y, N> = [T] extends [FunctionType]
-  ? [R] extends [FunctionType]
-    ? IfEqual<
-        RemoveAny<ReturnType<T>>,
-        RemoveAny<ReturnType<R>>,
-        IfEqual<RemoveAny<Parameters<T>>, RemoveAny<Parameters<R>>, Y, N>,
-        N
-      >
-    : N
-  : IfEqual<RemoveAny<T>, RemoveAny<R>, Y, N>;
+type IfDeepEqual<T, R, Y, N> = IfEqual<
+  EqualReformat<T>,
+  EqualReformat<R>,
+  Y,
+  N
+>;
 
 // exported types
 
@@ -57,7 +59,7 @@ export type ResolvedValue<T> =
 
 // exported functions
 
-export function typeCheck<T, R, Y = ['ok'] extends [T] ? never : 'ok'>(
+export function typeCheck<T, R, Y = 'ok' extends T ? never : 'ok'>(
   ok: IfDeepEqual<T, R, IfAny<T, IfAny<R, Y, T>, IfAny<R, T, Y>>, T>,
 ): unknown {
   return ok;

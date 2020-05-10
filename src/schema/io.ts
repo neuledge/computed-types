@@ -4,9 +4,9 @@ import { Primitive, ResolvedValue } from './utils';
 type SchemaOptionalKeys<S> = Exclude<
   {
     [K in keyof S]: [S[K]] extends [FunctionType]
-      ? Parameters<S[K]> extends Required<Parameters<S[K]>>
-        ? never
-        : K
+      ? [] extends Parameters<S[K]>
+        ? K
+        : never
       : [undefined] extends [S[K]]
       ? K
       : never;
@@ -41,17 +41,42 @@ export type SchemaParameters<S> = [S] extends [FunctionType]
   ? [unknown]
   : never;
 
-export type SchemaReturnType<S> = [S] extends [FunctionType]
+export type SchemaResolveType<S> = S extends FunctionType
   ? ResolvedValue<ReturnType<S>>
-  : [S] extends [Primitive]
+  : S extends Primitive
   ? S
-  : [S] extends [RegExp]
+  : S extends RegExp
   ? string
-  : [S] extends [object]
-  ? { [K in keyof S]: SchemaReturnType<S[K]> }
-  : [unknown] extends [S]
+  : S extends object
+  ? { [K in keyof S]: SchemaResolveType<S[K]> }
+  : unknown extends S
   ? unknown
   : never;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RemoveAsync<T> = T extends PromiseLike<any> ? never : T;
+
+type IsAsync<S> = [ResolvedValue<S>] extends [S]
+  ? [unknown] extends [S]
+    ? unknown
+    : false
+  : [RemoveAsync<S>] extends [never]
+  ? true
+  : unknown;
+
+type IsSchemaAsync<S> = S extends FunctionType
+  ? IsAsync<ReturnType<S>>
+  : S extends object
+  ? S extends RegExp
+    ? false
+    : { [K in keyof S]: IsSchemaAsync<S[K]> }[keyof S]
+  : IsAsync<S>;
+
+export type SchemaReturnType<S> = [unknown] extends [IsSchemaAsync<S>]
+  ? PromiseLike<SchemaResolveType<S>> | SchemaResolveType<S>
+  : [true] extends [IsSchemaAsync<S>]
+  ? PromiseLike<SchemaResolveType<S>>
+  : SchemaResolveType<S>;
 
 export type SchemaValidatorFunction<S> = FunctionType<
   SchemaReturnType<S>,
