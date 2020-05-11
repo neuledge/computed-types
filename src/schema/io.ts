@@ -1,4 +1,4 @@
-import FunctionType from './FunctionType';
+import FunctionType, { MergeFirstParameter } from './FunctionType';
 import { Primitive, ResolvedValue } from './utils';
 
 type SchemaOptionalKeys<S> = Exclude<
@@ -23,7 +23,7 @@ type SchemaKeysObject<S> = {
     [K in keyof S & SchemaOptionalKeys<S>]?: K;
   };
 
-export type SchemaParameters<S> = [S] extends [FunctionType]
+type SchemaRawParameters<S> = [S] extends [FunctionType]
   ? Parameters<S>
   : [S] extends [Primitive]
   ? [S]
@@ -32,14 +32,16 @@ export type SchemaParameters<S> = [S] extends [FunctionType]
   : [S] extends [Array<any>] // eslint-disable-line @typescript-eslint/no-explicit-any
   ? [
       {
-        [K in keyof S]: SchemaParameters<S[K]>[0];
+        [K in keyof S]: SchemaRawParameters<S[K]>[0];
       },
     ]
   : [S] extends [object]
-  ? [{ [K in keyof SchemaKeysObject<S>]: SchemaParameters<S[K]>[0] }]
+  ? [{ [K in keyof SchemaKeysObject<S>]: SchemaRawParameters<S[K]>[0] }]
   : [unknown] extends [S]
   ? [unknown]
   : never;
+
+export type SchemaParameters<S> = MergeFirstParameter<SchemaRawParameters<S>>;
 
 export type SchemaResolveType<S> = S extends FunctionType
   ? ResolvedValue<ReturnType<S>>
@@ -56,11 +58,11 @@ export type SchemaResolveType<S> = S extends FunctionType
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RemoveAsync<T> = T extends PromiseLike<any> ? never : T;
 
-type IsAsync<S> = [ResolvedValue<S>] extends [S]
-  ? [unknown] extends [S]
+type IsAsync<S> = ResolvedValue<S> extends S
+  ? unknown extends S
     ? unknown
     : false
-  : [RemoveAsync<S>] extends [never]
+  : RemoveAsync<S> extends never
   ? true
   : unknown;
 
@@ -72,9 +74,9 @@ type IsSchemaAsync<S> = S extends FunctionType
     : { [K in keyof S]: IsSchemaAsync<S[K]> }[keyof S]
   : IsAsync<S>;
 
-export type SchemaReturnType<S> = [unknown] extends [IsSchemaAsync<S>]
+export type SchemaReturnType<S> = unknown extends IsSchemaAsync<S>
   ? PromiseLike<SchemaResolveType<S>> | SchemaResolveType<S>
-  : [true] extends [IsSchemaAsync<S>]
+  : true extends IsSchemaAsync<S>
   ? PromiseLike<SchemaResolveType<S>>
   : SchemaResolveType<S>;
 
