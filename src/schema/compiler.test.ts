@@ -1,7 +1,10 @@
 import 'mocha';
-import { assert } from 'chai';
+import { assert, use } from 'chai';
 import { typeCheck } from './utils';
 import compiler from './compiler';
+import chaiAsPromised from 'chai-as-promised';
+
+use(chaiAsPromised);
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -79,6 +82,38 @@ describe('schema', () => {
       assert.throws(() => validator(123 as any), TypeError);
     });
 
+    it('deep object', () => {
+      const validator = compiler({
+        foo: String,
+        bar: { hello: String, world: Boolean },
+      });
+      typeCheck<
+        typeof validator,
+        (x: {
+          foo?: any;
+          bar: { hello?: any; world?: unknown };
+        }) => { foo: string; bar: { hello: string; world: boolean } }
+      >('ok');
+
+      assert.deepEqual(validator({ foo: 'foo', bar: { hello: 'hi' } }), {
+        foo: 'foo',
+        bar: { hello: 'hi', world: false },
+      });
+
+      assert.deepEqual(
+        validator({ foo: 'foo', bar: { hello: 'hi' }, test: 2 } as any),
+        {
+          foo: 'foo',
+          bar: { hello: 'hi', world: false },
+        },
+      );
+
+      assert.throws(
+        () => validator({ foo: 'foo', bar: 123 } as any),
+        TypeError,
+      );
+    });
+
     it('null', () => {
       const validator = compiler(null);
       typeCheck<typeof validator, (x: null) => null>('ok');
@@ -117,6 +152,35 @@ describe('schema', () => {
       assert.equal(await validator(1), 2);
     });
 
-    // TODO tests
+    it('deep async', async () => {
+      const validator = compiler({
+        foo: String,
+        bar: {
+          hello: (x: number): Promise<number> => Promise.resolve(x * 2),
+          world: Number,
+        },
+      });
+      typeCheck<
+        typeof validator,
+        (x: {
+          foo?: any;
+          bar: { hello: number; world?: any };
+        }) => PromiseLike<{
+          foo: string;
+          bar: { hello: number; world: number };
+        }>
+      >('ok');
+
+      await assert.isFulfilled(validator({ bar: { hello: 1 } }));
+      await assert.isRejected(validator({} as any));
+
+      assert.deepEqual(await validator({ bar: { hello: 1 } }), {
+        foo: 'undefined',
+        bar: {
+          hello: 2,
+          world: NaN,
+        },
+      });
+    });
   });
 });

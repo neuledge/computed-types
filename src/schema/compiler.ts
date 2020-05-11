@@ -112,7 +112,17 @@ export default function compiler<S>(
   return ((
     ...args: SchemaParameters<S>
   ): SchemaResolveType<S> | Promise<SchemaResolveType<S>> => {
-    const [obj, res] = typeValidator(...args);
+    let obj: object;
+    let res: Record<string, unknown>;
+    let mainError: Error | undefined;
+
+    try {
+      [obj, res] = typeValidator(...args);
+    } catch (e) {
+      obj = {};
+      res = {};
+      mainError = e || new TypeError(`Unknown Validation Error`);
+    }
 
     const promises: PromiseLike<void>[] = [];
     const errors: PathError[] = [];
@@ -123,16 +133,16 @@ export default function compiler<S>(
     }
 
     if (!promises.length) {
-      if (errors.length) {
-        throw createValidationError(errors, error, ...args);
+      if (errors.length || mainError) {
+        throw createValidationError(errors, mainError || error, ...args);
       }
 
       return res as SchemaResolveType<S>;
     }
 
     return Promise.all(promises).then(() => {
-      if (errors.length) {
-        throw createValidationError(errors, error, ...args);
+      if (errors.length || mainError) {
+        throw createValidationError(errors, mainError || error, ...args);
       }
 
       return res;
