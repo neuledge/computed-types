@@ -2,6 +2,7 @@ import { SchemaParameters, SchemaReturnType } from './io';
 import FunctionType from './FunctionType';
 import compiler from './compiler';
 import { isPromiseLike } from './utils';
+import { ErrorLike } from './errors';
 
 export function either<A>(
   a: A,
@@ -149,4 +150,24 @@ export function either<A, S>(
     SchemaReturnType<A> | SchemaReturnType<S>,
     SchemaParameters<A | S>
   >;
+}
+
+export function optional<S>(
+  schema: S,
+  error?: ErrorLike<SchemaParameters<S>>,
+): FunctionType<
+  SchemaReturnType<S> | undefined,
+  SchemaParameters<S, [undefined?]>
+> {
+  const validator = compiler(schema, error);
+
+  return (
+    ...args: SchemaParameters<S, [undefined?]>
+  ): SchemaReturnType<S> | undefined => {
+    if (args[0] === undefined) {
+      return undefined;
+    }
+
+    return validator(...(args as SchemaParameters<S>));
+  };
 }

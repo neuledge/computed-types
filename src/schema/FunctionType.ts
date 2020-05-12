@@ -4,6 +4,8 @@ export type MergeFirstParameter<P extends FunctionParameters> = [P] extends [[]]
   ? []
   : [P] extends [[unknown]]
   ? [P[0]]
+  : [P] extends [[unknown?]]
+  ? [P[0]?]
   : P;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

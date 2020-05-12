@@ -11,7 +11,10 @@ import {
 } from './schema/io';
 import Validator, { ValidatorProxy } from './Validator';
 import compiler from './schema/compiler';
-import { either as eitherFn } from './schema/logic';
+import {
+  either as eitherSchema,
+  optional as optionalSchema,
+} from './schema/logic';
 import FunctionType from './schema/FunctionType';
 
 export { unknown, object, string, number, boolean };
@@ -164,7 +167,7 @@ function either<A, S>(
   const validators = candidates.map((schema) => compiler(schema));
 
   return new Validator(
-    eitherFn(...(validators as [unknown])),
+    eitherSchema(...(validators as [unknown])),
   ).proxy() as ValidatorProxy<
     Validator<
       FunctionType<
@@ -176,7 +179,19 @@ function either<A, S>(
 }
 Schema.either = either;
 
-// TODO Schema.optional
+Schema.optional = function optional<S>(
+  schema: S,
+  error?: ErrorLike<SchemaParameters<S>>,
+): ValidatorProxy<
+  Validator<
+    FunctionType<
+      SchemaReturnType<S> | undefined,
+      SchemaParameters<S, [undefined?]>
+    >
+  >
+> {
+  return new Validator(optionalSchema(schema, error)).proxy();
+};
 
 // TODO Validator.concat
 

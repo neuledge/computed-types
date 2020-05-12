@@ -1,4 +1,7 @@
-import FunctionType, { MergeFirstParameter } from './FunctionType';
+import FunctionType, {
+  FunctionParameters,
+  MergeFirstParameter,
+} from './FunctionType';
 import { Primitive, ResolvedValue } from './utils';
 
 type SchemaOptionalKeys<S> = Exclude<
@@ -41,7 +44,10 @@ type SchemaRawParameters<S> = [S] extends [FunctionType]
   ? [unknown]
   : never;
 
-export type SchemaParameters<S> = MergeFirstParameter<SchemaRawParameters<S>>;
+export type SchemaParameters<
+  S,
+  X extends FunctionParameters = never
+> = MergeFirstParameter<SchemaRawParameters<S> | X>;
 
 export type SchemaResolveType<S> = S extends FunctionType
   ? ResolvedValue<ReturnType<S>>
