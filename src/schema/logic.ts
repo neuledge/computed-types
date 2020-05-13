@@ -3,10 +3,9 @@ import {
   SchemaReturnType,
   SchemaValidatorFunction,
 } from './io';
-import FunctionType from './FunctionType';
+import FunctionType, { MergeFirstParameter } from './FunctionType';
 import compiler from './compiler';
 import { deepConcat, isPromiseLike } from './utils';
-import { ErrorLike } from './errors';
 
 export function either<A>(
   ...candidates: [A]
@@ -183,22 +182,20 @@ export function merge(...args: [unknown, ...unknown[]]): FunctionType {
   };
 }
 
-export function optional<S>(
-  schema: S,
-  error?: ErrorLike<SchemaParameters<S>>,
+export function optional<F extends FunctionType, R = undefined>(
+  validator: F,
+  defaultValue?: R,
 ): FunctionType<
-  SchemaReturnType<S> | undefined,
-  SchemaParameters<S, [undefined?]>
+  ReturnType<F> | R,
+  MergeFirstParameter<Parameters<F> | [undefined?]>
 > {
-  const validator = compiler(schema, error);
-
   return (
-    ...args: SchemaParameters<S, [undefined?]>
-  ): SchemaReturnType<S> | undefined => {
+    ...args: MergeFirstParameter<Parameters<F> | [undefined?]>
+  ): ReturnType<F> | R => {
     if (args[0] === undefined) {
-      return undefined;
+      return defaultValue as R;
     }
 
-    return validator(...(args as SchemaParameters<S>));
+    return validator(...args);
   };
 }

@@ -74,28 +74,6 @@ describe('Schema', () => {
     });
   });
 
-  describe('.optional', () => {
-    it('sync candidate', () => {
-      const validator = Schema.optional((x: number): string => {
-        if (x <= 0) {
-          throw new RangeError(`Negative input`);
-        }
-
-        return String(x);
-      });
-
-      typeCheck<typeof validator, (x?: number) => string | undefined>('ok');
-      assert.equal(validator(1), '1');
-
-      const trans = validator.transform((str) => (str ? str.length : -1));
-      typeCheck<typeof trans, (x?: number) => number>('ok');
-      assert.equal(trans(1), 1);
-      assert.equal(trans(10), 2);
-      assert.equal(trans(), -1);
-      assert.throw(() => validator(-1), RangeError, 'Negative input');
-    });
-  });
-
   describe('.merge', () => {
     it('basic use case', () => {
       const validator = Schema.merge({ foo: 'foo' as 'foo' }, { bar: 1 as 1 });

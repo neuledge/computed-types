@@ -178,17 +178,6 @@ describe('schema/logic', () => {
   });
 
   describe('optional', () => {
-    it('string', () => {
-      const validator = optional('foo' as 'foo');
-
-      typeCheck<typeof validator, (x?: 'foo') => 'foo' | undefined>('ok');
-      assert.equal(validator(), undefined);
-      assert.equal(validator(undefined), undefined);
-      assert.equal(validator('foo'), 'foo');
-      assert.throw(() => validator(null as any), TypeError);
-      assert.throw(() => validator(-1 as any), TypeError);
-    });
-
     it('function', () => {
       const validator = optional((x: number): string => {
         if (x <= 0) {

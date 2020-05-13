@@ -6,11 +6,7 @@ import {
 } from './schema/io';
 import Validator, { ValidatorProxy } from './Validator';
 import compiler from './schema/compiler';
-import {
-  either as eitherSchema,
-  optional as optionalSchema,
-  merge as mergeSchemas,
-} from './schema/logic';
+import { either as eitherSchema, merge as mergeSchemas } from './schema/logic';
 import FunctionType from './schema/FunctionType';
 
 export default function Schema<S>(
@@ -142,20 +138,6 @@ function either<A, S>(
   >;
 }
 Schema.either = either;
-
-Schema.optional = function optional<S>(
-  schema: S,
-  error?: ErrorLike<SchemaParameters<S>>,
-): ValidatorProxy<
-  Validator<
-    FunctionType<
-      SchemaReturnType<S> | undefined,
-      SchemaParameters<S, [undefined?]>
-    >
-  >
-> {
-  return new Validator(optionalSchema(schema, error)).proxy();
-};
 
 function merge<A>(
   ...args: [A]

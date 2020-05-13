@@ -143,6 +143,26 @@ describe('Validator', () => {
       assert.throws(() => validator('error'), ReferenceError);
     });
 
+    describe('.optional', () => {
+      it('()', () => {
+        const validator = positiveNumber.optional();
+
+        typeCheck<typeof validator, (x?: number) => number | undefined>('ok');
+        assert.equal(validator(1), 1);
+        assert.equal(validator(), undefined);
+        assert.equal(validator(undefined), undefined);
+      });
+
+      it('(123)', () => {
+        const validator = positiveNumber.optional(123);
+
+        typeCheck<typeof validator, (x?: number) => number>('ok');
+        assert.equal(validator(1), 1);
+        assert.equal(validator(), 123);
+        assert.equal(validator(undefined), 123);
+      });
+    });
+
     it('.destruct()', () => {
       const validator = positiveNumber.destruct();
 
