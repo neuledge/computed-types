@@ -53,13 +53,15 @@ npm i computed-types
 import Schema, { Type, string, number, array } from 'computed-types';
 
 const UserSchema = {
-  name: string.trim().normalize().between(3, 40).optional(),
-  username: /^[a-z0-9]{3,10}$/,
-  status: Schema.either('active' as 'active', 'suspended' as 'suspended'),
-  items: array.of({
-    id: string,
-    amount: number.gte(1).integer()
-  }).min(1),
+ name: string.trim().normalize().between(3, 40).optional(),
+ username: /^[a-z0-9]{3,10}$/,
+ status: Schema.either('active' as 'active', 'suspended' as 'suspended'),
+ items: array
+   .of({
+     id: string,
+     amount: number.gte(1).integer(),
+   })
+   .min(1),
 };
 type User = Type<typeof UserSchema>;
 
@@ -69,7 +71,7 @@ const [err, user] = validator({
   username: 'john1',
   // @ts-ignore Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
   status: 'unregistered',
-  items: [{id: 'item-1', amount: 20}],
+  items: [{ id: 'item-1', amount: 20 }],
 });
 
 console.log(err);
