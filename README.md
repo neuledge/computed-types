@@ -22,7 +22,7 @@
 </p>
 <br>
 
-**computed-types**  (formerly: [Funval](https://www.npmjs.org/package/funval)) is a strongly-typed
+**Computed-Types**  (formerly: [Funval](https://www.npmjs.org/package/funval)) is a strongly-typed
 validation library that seamlessly validates runtime types with perfect synchronization to
 TypeScript types. Using only plain functions, *computed-types* knows how to validate your data and
 automatically generates TypeScript interfaces to reduce code duplications and complexity.
