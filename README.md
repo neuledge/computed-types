@@ -6,14 +6,14 @@
   <a href="https://www.npmjs.org/package/funval">
     <img src="http://img.shields.io/npm/v/funval.svg" alt="View On NPM">
   </a>
-  <a href="https://travis-ci.org/neuledge/funval">
-    <img src="https://travis-ci.org/neuledge/funval.svg?branch=master" alt="Build Status">
+  <a href="https://travis-ci.org/neuledge/computed-types">
+    <img src="https://travis-ci.org/neuledge/computed-types.svg?branch=funval" alt="Build Status">
   </a>
   <a href="https://libraries.io/npm/funval/">
     <img src="https://img.shields.io/librariesio/release/npm/funval" alt="Dependency Status">
   </a>
-  <a href="https://coveralls.io/github/neuledge/funval?branch=master">
-    <img src="https://coveralls.io/repos/github/neuledge/funval/badge.svg?branch=master"
+  <a href="https://coveralls.io/github/neuledge/computed-types?branch=funval">
+    <img src="https://coveralls.io/repos/github/neuledge/computed-types/badge.svg?branch=funval"
       alt="Coverage Status" />
   </a>
   <a href="LICENSE">
@@ -21,6 +21,9 @@
   </a>
 </p>
 <br>
+
+**WARNING**: This package is deprecated and no longer maintain. Please switch to it's successor
+[Computed-Types](https://github.com/neuledge/computed-types).
 
 **Funval** is a minimalist validation library that seamlessly integrates with your business logic.
 Using only plain functions, *Funval* knows how to validate your data and automatically generates
