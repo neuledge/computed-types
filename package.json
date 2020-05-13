@@ -1,6 +1,6 @@
 {
   "name": "funval",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A minimalist library for data validation using functions interfaces.",
   "keywords": [
     "validation",
@@ -36,7 +36,7 @@
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
   },
   "author": "Moshe Simantov <me@moshe.io>",
-  "repository": "https://github.com/neuledge/funval",
+  "repository": "https://github.com/neuledge/computed-types/tree/funval",
   "license": "MIT",
   "main": "lib/index",
   "module": "lib/index",
