@@ -67,4 +67,22 @@ describe('array', () => {
     assert.throws(() => fooArr(['foo', 'bar'] as any), TypeError);
     assert.throws(() => fooArr(['foo', 1] as any), TypeError);
   });
+
+  it('array.of() async', async () => {
+    const posArr = array.of(async (x: number) => {
+      if (typeof x !== 'number' || x < 0) {
+        throw new RangeError(`Negative number`);
+      }
+
+      return x;
+    });
+    typeCheck<ReturnType<typeof posArr>, PromiseLike<number[]>>('ok');
+    typeCheck<Parameters<typeof posArr>, [number[]]>('ok');
+
+    assert.deepEqual(await posArr([1]), [1]);
+    assert.deepEqual(await posArr([1, 0]), [1, 0]);
+
+    await assert.isRejected(posArr([1, -1] as any), RangeError);
+    await assert.isRejected(posArr(['foo', 1] as any), RangeError);
+  });
 });

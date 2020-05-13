@@ -10,6 +10,10 @@ use(chaiAsPromised);
 
 describe('schema/logic', () => {
   describe('either', () => {
+    it('no candidates', () => {
+      assert.throw(() => either(...(([] as unknown) as [unknown])), RangeError);
+    });
+
     it('sync candidate', () => {
       const validator = either((x: number): string => {
         if (x <= 0) {
@@ -97,6 +101,10 @@ describe('schema/logic', () => {
   });
 
   describe('merge', () => {
+    it('no items', () => {
+      assert.throw(() => merge(...(([] as unknown) as [unknown])), RangeError);
+    });
+
     it('one item', () => {
       const validator = merge('foo' as 'foo');
 
