@@ -46,7 +46,7 @@ type SchemaRawParameters<S> = [S] extends [FunctionType]
 
 export type SchemaParameters<
   S,
-  X extends FunctionParameters = never
+  X extends FunctionParameters = [never]
 > = MergeFirstParameter<SchemaRawParameters<S> | X>;
 
 export type SchemaResolveType<S> = S extends FunctionType

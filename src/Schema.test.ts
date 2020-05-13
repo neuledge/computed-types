@@ -2,7 +2,7 @@ import 'mocha';
 import { assert, use } from 'chai';
 import { typeCheck } from './schema/utils';
 import chaiAsPromised from 'chai-as-promised';
-import Schema from './index';
+import Schema from './Schema';
 
 use(chaiAsPromised);
 
@@ -90,6 +90,26 @@ describe('Schema', () => {
       assert.equal(trans(10), 2);
       assert.equal(trans(), -1);
       assert.throw(() => validator(-1), RangeError, 'Negative input');
+    });
+  });
+
+  describe('.merge', () => {
+    it('basic use case', () => {
+      const validator = Schema.merge({ foo: 'foo' as 'foo' }, { bar: 1 as 1 });
+
+      typeCheck<
+        typeof validator,
+        (x: { foo: 'foo'; bar: 1 }) => { foo: 'foo'; bar: 1 }
+      >('ok');
+      assert.deepEqual(validator({ foo: 'foo', bar: 1 }), {
+        foo: 'foo',
+        bar: 1,
+      });
+
+      const trans = validator.transform((obj) => Object.keys(obj));
+      typeCheck<typeof trans, (x: { foo: 'foo'; bar: 1 }) => string[]>('ok');
+
+      assert.deepEqual(trans({ foo: 'foo', bar: 1 }), ['foo', 'bar']);
     });
   });
 });

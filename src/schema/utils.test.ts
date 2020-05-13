@@ -1,5 +1,6 @@
 import 'mocha';
-import { typeCheck } from './utils';
+import { assert } from 'chai';
+import { typeCheck, deepConcat } from './utils';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-function,
  @typescript-eslint/no-unused-vars */
@@ -193,6 +194,56 @@ describe('schema/utils', () => {
           (x: [1, 'foo']) => x,
         );
       });
+    });
+  });
+
+  describe('deepConcat', () => {
+    it('1 element', () => {
+      const obj = { foo: 1 };
+
+      assert.equal(deepConcat('foo'), 'foo');
+      assert.equal(deepConcat(null), null);
+      assert.equal(deepConcat(undefined), undefined);
+      assert.equal(deepConcat(1), 1);
+      assert.equal(deepConcat(obj), obj);
+    });
+
+    it('plain elements', () => {
+      assert.equal(deepConcat('foo', 'foo'), 'foo');
+      assert.equal(deepConcat(null, null), null);
+      assert.equal(deepConcat(undefined, undefined), undefined);
+      assert.equal(deepConcat(undefined, undefined, 1), 1);
+      assert.equal(deepConcat(undefined, 1, undefined), 1);
+      assert.equal(deepConcat(1, 1), 1);
+      assert.equal(deepConcat(true, true), true);
+      assert.equal(deepConcat(null, undefined), null);
+      assert.equal(deepConcat(undefined, 'foo'), 'foo');
+
+      assert.throw(() => deepConcat(true, false), TypeError);
+      assert.throw(() => deepConcat('foo', false), TypeError);
+      assert.throw(() => deepConcat('foo', 'bar'), TypeError);
+      assert.throw(() => deepConcat('foo', undefined, 'bar'), TypeError);
+      assert.throw(() => deepConcat(1, 1.1), TypeError);
+      assert.throw(() => deepConcat(1, {}), TypeError);
+      assert.throw(() => deepConcat(1, { foo: 1 }), TypeError);
+    });
+
+    it('deep elements', () => {
+      assert.deepEqual(deepConcat({ foo: 1 }, { bar: 2 }), { foo: 1, bar: 2 });
+      assert.deepEqual(
+        deepConcat(
+          { foo: 1, x: { hello: 'world' } },
+          { foo: 1, x: { me: 'hi' } },
+          { bar: 3 },
+        ),
+        { foo: 1, bar: 3, x: { hello: 'world', me: 'hi' } },
+      );
+      assert.deepEqual(deepConcat({ foo: 1 }, undefined, { bar: 2 }), {
+        foo: 1,
+        bar: 2,
+      });
+
+      assert.throw(() => deepConcat({ foo: 1 }, { foo: 2, bar: 2 }), TypeError);
     });
   });
 });

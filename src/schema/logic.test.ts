@@ -1,7 +1,7 @@
 import 'mocha';
 import { assert, use } from 'chai';
 import { typeCheck } from './utils';
-import { either, optional } from './logic';
+import { merge, either, optional } from './logic';
 import chaiAsPromised from 'chai-as-promised';
 
 use(chaiAsPromised);
@@ -93,6 +93,52 @@ describe('schema/logic', () => {
       assert.equal(validator(1), '1');
       await assert.becomes(validator(true) as PromiseLike<number>, 1);
       await assert.isRejected(validator('' as any) as any);
+    });
+  });
+
+  describe('merge', () => {
+    it('one item', () => {
+      const validator = merge('foo' as 'foo');
+
+      typeCheck<typeof validator, (x: 'foo') => 'foo'>('ok');
+      assert.equal(validator('foo'), 'foo');
+      assert.throw(() => validator('bar' as any), TypeError);
+    });
+
+    it('never string items', () => {
+      const validator = merge('foo' as 'foo', 'bar' as 'bar');
+
+      typeCheck<typeof validator, (x: never) => never>('ok');
+      assert.throw(() => validator('foo' as never), TypeError);
+      assert.throw(() => validator('bar' as never), TypeError);
+    });
+
+    it('never [string,object] items', () => {
+      const validator = merge('foo' as 'foo', {});
+
+      typeCheck<typeof validator, (x: 'foo' & {}) => 'foo' & {}>('ok');
+      assert.throw(() => validator('foo'), TypeError);
+      assert.throw(() => validator({} as any), TypeError);
+      assert.throw(() => validator('bar' as never), TypeError);
+    });
+
+    it('never [object,undefined] items', () => {
+      const validator = merge({}, undefined);
+
+      typeCheck<typeof validator, (x: never) => never>('ok');
+      assert.throw(() => validator(undefined as never), TypeError);
+      assert.throw(() => validator({} as never), TypeError);
+      assert.throw(() => validator('bar' as never), TypeError);
+    });
+
+    it('merging object [string,object] items', () => {
+      const validator = merge({}, { foo: 'bar' as 'bar' });
+
+      typeCheck<typeof validator, (x: { foo: 'bar' }) => { foo: 'bar' }>('ok');
+      assert.deepEqual(validator({ foo: 'bar' }), { foo: 'bar' });
+      assert.deepEqual(validator({ foo: 'bar', x: 1 } as any), { foo: 'bar' });
+      assert.throw(() => validator({} as any), TypeError);
+      assert.throw(() => validator(undefined as any), TypeError);
     });
   });
 

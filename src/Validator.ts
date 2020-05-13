@@ -44,13 +44,6 @@ export default class Validator<F extends FunctionType> {
     return this.transform(test(tester, error));
   }
 
-  // public transform<T>(
-  //   fn: FunctionType<T, [ReturnType<F>]>,
-  // ): ValidatorProxy<
-  //   [T] extends [ReturnType<F>]
-  //     ? this
-  //     : Validator<FunctionType<T, Parameters<F>>>
-  // >;
   public transform<T, V extends Validator<FunctionType<T, Parameters<F>>>>(
     fn: FunctionType<T, [ReturnType<F>]>,
     constructor: ValidatorConstructor<V> = this
@@ -72,6 +65,8 @@ export default class Validator<F extends FunctionType> {
       (...args: P0): ReturnType<F> => validator(...fn(...args)),
     ).proxy();
   }
+
+  // TODO catch
 
   public message(error: ErrorLike<Parameters<F>>): ValidatorProxy<this> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,32 +1,30 @@
-import { SchemaParameters, SchemaReturnType } from './io';
+import {
+  SchemaParameters,
+  SchemaReturnType,
+  SchemaValidatorFunction,
+} from './io';
 import FunctionType from './FunctionType';
 import compiler from './compiler';
-import { isPromiseLike } from './utils';
+import { deepConcat, isPromiseLike } from './utils';
 import { ErrorLike } from './errors';
 
 export function either<A>(
-  a: A,
+  ...candidates: [A]
 ): FunctionType<SchemaReturnType<A>, SchemaParameters<A>>;
 export function either<A, B>(
-  a: A,
-  b: B,
+  ...candidates: [A, B]
 ): FunctionType<
   SchemaReturnType<A> | SchemaReturnType<B>,
   SchemaParameters<A | B>
 >;
 export function either<A, B, C>(
-  a: A,
-  b: B,
-  c: C,
+  ...candidates: [A, B, C]
 ): FunctionType<
   SchemaReturnType<A> | SchemaReturnType<B> | SchemaReturnType<C>,
   SchemaParameters<A | B | C>
 >;
 export function either<A, B, C, D>(
-  a: A,
-  b: B,
-  c: C,
-  d: D,
+  ...candidates: [A, B, C, D]
 ): FunctionType<
   | SchemaReturnType<A>
   | SchemaReturnType<B>
@@ -35,11 +33,7 @@ export function either<A, B, C, D>(
   SchemaParameters<A | B | C | D>
 >;
 export function either<A, B, C, D, E>(
-  a: A,
-  b: B,
-  c: C,
-  d: D,
-  e: E,
+  ...candidates: [A, B, C, D, E]
 ): FunctionType<
   | SchemaReturnType<A>
   | SchemaReturnType<B>
@@ -49,12 +43,7 @@ export function either<A, B, C, D, E>(
   SchemaParameters<A | B | C | D | E>
 >;
 export function either<A, B, C, D, E, F>(
-  a: A,
-  b: B,
-  c: C,
-  d: D,
-  e: E,
-  f: F,
+  ...candidates: [A, B, C, D, E, F]
 ): FunctionType<
   | SchemaReturnType<A>
   | SchemaReturnType<B>
@@ -65,13 +54,7 @@ export function either<A, B, C, D, E, F>(
   SchemaParameters<A | B | C | D | E | F>
 >;
 export function either<A, B, C, D, E, F, G>(
-  a: A,
-  b: B,
-  c: C,
-  d: D,
-  e: E,
-  f: F,
-  g: G,
+  ...candidates: [A, B, C, D, E, F, G]
 ): FunctionType<
   | SchemaReturnType<A>
   | SchemaReturnType<B>
@@ -83,14 +66,7 @@ export function either<A, B, C, D, E, F, G>(
   SchemaParameters<A | B | C | D | E | F | G>
 >;
 export function either<A, B, C, D, E, F, G, H>(
-  a: A,
-  b: B,
-  c: C,
-  d: D,
-  e: E,
-  f: F,
-  g: G,
-  h: H,
+  ...candidates: [A, B, C, D, E, F, G, H]
 ): FunctionType<
   | SchemaReturnType<A>
   | SchemaReturnType<B>
@@ -109,7 +85,7 @@ export function either<A, S>(
   SchemaParameters<A | S>
 > {
   if (!candidates.length) {
-    throw new RangeError(`Expecting at least one candidate`);
+    throw new RangeError(`Expecting at least one argument`);
   }
 
   const validators = candidates.map((schema) => compiler(schema));
@@ -150,6 +126,61 @@ export function either<A, S>(
     SchemaReturnType<A> | SchemaReturnType<S>,
     SchemaParameters<A | S>
   >;
+}
+
+export function merge<A>(...args: [A]): SchemaValidatorFunction<A>;
+export function merge<A, B>(...args: [A, B]): SchemaValidatorFunction<A & B>;
+export function merge<A, B, C>(
+  ...args: [A, B, C]
+): SchemaValidatorFunction<A & B & C>;
+export function merge<A, B, C, D>(
+  ...args: [A, B, C, D]
+): SchemaValidatorFunction<A & B & C & D>;
+export function merge<A, B, C, D, E>(
+  ...args: [A, B, C, D, E]
+): SchemaValidatorFunction<A & B & C & D & E>;
+export function merge<A, B, C, D, E, F>(
+  ...args: [A, B, C, D, E, F]
+): SchemaValidatorFunction<A & B & C & D & E & F>;
+export function merge<A, B, C, D, E, F, G>(
+  ...args: [A, B, C, D, E, F, G]
+): SchemaValidatorFunction<A & B & C & D & E & F & G>;
+export function merge<A, B, C, D, E, F, G, H>(
+  ...args: [A, B, C, D, E, F, G, H]
+): SchemaValidatorFunction<A & B & C & D & E & F & G & H>;
+export function merge(...args: [unknown, ...unknown[]]): FunctionType {
+  if (!args.length) {
+    throw new RangeError(`Expecting at least one argument`);
+  }
+
+  const validators = args.map((schema) => compiler<unknown>(schema));
+  const validatorsCount = validators.length;
+
+  if (validatorsCount === 1) {
+    return validators[0];
+  }
+
+  return (...args: unknown[]): unknown => {
+    let isAsync;
+    const res = [];
+
+    for (let i = 0; i < validatorsCount; i += 1) {
+      const ret = validators[i](...(args as [unknown]));
+      if (isPromiseLike(ret)) {
+        isAsync = true;
+      }
+
+      res.push(ret);
+    }
+
+    if (!isAsync) {
+      return deepConcat(...(res as [unknown, unknown[]]));
+    }
+
+    return Promise.all(res).then((resolved) =>
+      deepConcat(...(resolved as [unknown])),
+    );
+  };
 }
 
 export function optional<S>(
