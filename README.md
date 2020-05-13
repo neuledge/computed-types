@@ -22,8 +22,10 @@
 </p>
 <br>
 
-**WARNING**: This package is deprecated and no longer maintain. Please switch to it's successor
+<hr />
+**WARNING**: This package is deprecated and no longer maintain. Please switch to it's successor:
 [Computed-Types](https://github.com/neuledge/computed-types).
+<hr />
 
 **Funval** is a minimalist validation library that seamlessly integrates with your business logic.
 Using only plain functions, *Funval* knows how to validate your data and automatically generates
