@@ -1,46 +1,36 @@
-<h1 align="center" style="text-align:center">🦩 Funval</h1>
+<h1 align="center" style="text-align:center">🦩 Computed Types</h1>
 
-<h4 align="center">A minimalist library for data validation using functions interfaces.</h4>
+<h4 align="center">Runtime validation types for TypeScript.</h4>
 
 <p align="center">
-  <a href="https://www.npmjs.org/package/funval">
-    <img src="http://img.shields.io/npm/v/funval.svg" alt="View On NPM">
+  <a href="https://www.npmjs.org/package/computed-types">
+    <img src="http://img.shields.io/npm/v/computed-types.svg" alt="View On NPM">
   </a>
-  <a href="https://travis-ci.org/neuledge/funval">
-    <img src="https://travis-ci.org/neuledge/funval.svg?branch=master" alt="Build Status">
+  <a href="https://travis-ci.org/neuledge/computed-types">
+    <img src="https://travis-ci.org/neuledge/computed-types.svg?branch=master" alt="Build Status">
   </a>
-  <a href="https://libraries.io/npm/funval/">
-    <img src="https://img.shields.io/librariesio/release/npm/funval" alt="Dependency Status">
+  <a href="https://libraries.io/npm/computed-types/">
+    <img src="https://img.shields.io/librariesio/release/npm/computed-types" alt="Dependency Status">
   </a>
-  <a href="https://coveralls.io/github/neuledge/funval?branch=master">
-    <img src="https://coveralls.io/repos/github/neuledge/funval/badge.svg?branch=master"
+  <a href="https://coveralls.io/github/neuledge/computed-types?branch=master">
+    <img src="https://coveralls.io/repos/github/neuledge/computed-types/badge.svg?branch=master"
       alt="Coverage Status" />
   </a>
   <a href="LICENSE">
-    <img src="https://img.shields.io/npm/l/funval.svg" alt="License">
+    <img src="https://img.shields.io/npm/l/computed-types.svg" alt="License">
   </a>
 </p>
 <br>
 
-**Funval** is a minimalist validation library that seamlessly integrates with your business logic.
-Using only plain functions, *Funval* knows how to validate your data and automatically generates
-TypeScript interfaces to reduce code duplications and complexity.
-
-```ts
-function ValidNumber(input: unknown): number {
-  const value = Number(input);
-
-  if (isNaN(value)) {
-    throw new TypeError('Invalid number');
-  }
-  
-  return value;
-}
-```
+**computed-types**  (formerly: [Funval](https://www.npmjs.org/package/funval)) is a strongly-typed
+validation library that seamlessly validates runtime types with perfect synchronization to
+TypeScript types. Using only plain functions, *computed-types* knows how to validate your data and
+automatically generates TypeScript interfaces to reduce code duplications and complexity.
 
 ### Main Features
 
-- **Easy to Read** - Uses functions as types (including `String`, `Number`, `Boolean`, etc...)
+- **Easy to Read** - Uses runtime types like TypeScript (including `string`, `number`, `boolean`,
+ etc...)
 - **Reusable Interfaces** - Create new validator using plain functions in seconds.
 - **TypeScript Validation** - Detect errors during compile time.
 - **Function Composition** - Pipe multiple validators to generate new ones.
@@ -52,7 +42,7 @@ function ValidNumber(input: unknown): number {
 ## Install
 
 ```bash
-npm i funval
+npm i computed-types
 ```
 
 <br>
@@ -60,42 +50,52 @@ npm i funval
 ## Usage
 
 ```ts
-import { Schema, Optional, Or, Type, Integer, Between } from 'funval';
+import Schema, { Type, string, number, array } from 'computed-types';
 
 const UserSchema = {
-  name: Optional(String),
+  name: string.trim().normalize().between(3, 40).optional(),
   username: /^[a-z0-9]{3,10}$/,
-  status: Or('active' as 'active', 'suspended' as 'suspended'),
-  amount: input => Between(1, 50)(Integer(input)),
+  status: Schema.either('active' as 'active', 'suspended' as 'suspended'),
+  items: array.of({
+    id: string,
+    amount: number.gte(1).integer()
+  }).min(1),
 };
+type User = Type<typeof UserSchema>;
 
-const validator = Schema(UserSchema);
+const validator = Schema(UserSchema).destruct();
 
-let user: Type<typeof UserSchema>;
+const [err, user] = validator({
+  username: 'john1',
+  // @ts-ignore Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
+  status: 'unregistered',
+  items: [{id: 'item-1', amount: 20}],
+});
 
-try {
-  user = validator({
-    username: 'john1',
-    // @ts-ignore Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
-    status: 'unregistered',
-    amount: 20,
-  });
-} catch (err) {
-  console.error(err.message, err.paths);
-}
+console.log(err);
+// TypeError: Expect value to equal "suspended" {
+//   errors: [
+//     {
+//       error: TypeError: Expect value to equal "suspended",
+//       path: ['status']
+//     }
+//   ]
+// }
+
 ```
 
 <br>
 
-## Creating Validators
+## Creating new Types
 
-A validator is any function that can return a value without throwing any exceptions:
+A computed type is any function that can return a value without throwing any exceptions. For
+example this type will validate email addresses:
 
 ```ts
 import * as EmailValidator from 'email-validator';
 
-function Email(input: string): string {
-  if (!EmailValidator.validate(input)) {
+function Email(input: unknown): string {
+  if (!EmailValidator.validate(String(input))) {
     throw new TypeError(`Invalid email address: "${input}"`);
   }
 
@@ -103,7 +103,8 @@ function Email(input: string): string {
 }
 ```
 
-You can use the above validator on schemas as an `Email` type:
+Using the function interface, this type will receive any `unknown` value and try to convert it to
+ a valid email address as a `string`. You can use the above validator on schemas as an `Email` type:
 
 ```ts
 const UserSchema = {
@@ -133,7 +134,8 @@ async function AvailableUsername(input: string): Promise<string> {
 }
 ```
 
-*Funval* automatically detects promise and convert the return type of the `Validator` to promise as well:
+*Computed-types* automatically detects promise and convert the return type of the `Validator` to
+promise as well:
 ```ts
 const UserSchema = {
   username: AvailableUsername,
@@ -142,432 +144,6 @@ const validator = Schema(UserSchema);
 
 const user = await validator({ username: 'test' });
 ```
-
-If you prefer, you can safely convert any validator to an asynchronous validator using the `Async`
-helper:
-
-```ts
-import { Async, Schema } from 'funval';
-
-const UserSchema = {
-  email: Email,
-};
-const validator = Async(Schema(UserSchema));
-
-// will catch instead of throwing
-validator({ email: 'invalid-email' }).catch(err => console.err(err));
-```
-
-<br>
-
-## Available Validators
-
-All the available validators ordered by type:
-
-* **Schema** -
-      [`Schema`](#schema),
-      [`Maybe`](#maybe),
-      [`Optional`](#optional),
-      [`Default`](#default),
-      [`Required`](#required),
-      [`Truthy`](#truthy),
-      [`Or`](#or),
-      [`ArrayOf`](#arrayof),
-      [`TypeOf`](#typeof),
-      [`Any`](#any),
-      [`Override`](#override)
-      [`Test`](#test)
-
-* **Comparison** -
-      [`Equals`](#equals),
-      [`GreaterThan`](#greaterthan),
-      [`GreaterThanEqual`](#greaterthanequal),
-      [`LessThan`](#lessthan),
-      [`LessThanEqual`](#lessthanequal),
-      [`Between`](#between)
-
-* **Strings** -
-      [`ContentString`](#contentstring),
-      [`TrimString`](#trimstring)
-      [`StringRange`](#stringrange)
-      [`StringMatch`](#stringmatch)
-
-* **Numbers** -
-      [`Float`](#float),
-      [`Integer`](#integer)
-
-* **Booleans** -
-      [`Bool`](#bool)
-
-<br>
-
-### `Schema`
-
-```ts
-import { Schema } from 'funval';
-
-declare function Schema(schema: any, error?: string | Error): Validator;
-```
-
-Validate inputs using the given schema.
-
-**Throws:** If the input does not match the given schema.
-
-<br>
-
-### `Maybe`
-
-```ts
-import { Maybe } from 'funval';
-
-declare function Maybe(schema: any, error?: string | Error): Validator;
-```
-
-Same as [`Schema`](#schema) but ignores `undefined` or omitted inputs.
-
-**Throws:** If the input tested and does not match the given schema.
-
-<br>
-
-### `Optional`
-
-```ts
-import { Optional } from 'funval';
-
-declare function Optional(schema: any, error?: string | Error): Validator;
-```
-
-Same as [`Schema`](#schema) but ignores `undefined`, `null` or omitted inputs.
-
-**Throws:** If the input tested and does not match the given schema.
-
-<br>
-
-### `Default`
-
-```ts
-import { Default } from 'funval';
-
-declare function Default(schema: any, value: any): Validator;
-```
-
-Validate inputs using the given schema or use the given value if input equals to `undefined` or
-omitted.
-
-**Throws:** If the input tested and does not match the given schema.
-
-<br>
-
-### `Required`
-
-```ts
-import { Required } from 'funval';
-
-declare function Required(schema: any, error?: string | Error): Validator;
-```
-
-Validate inputs using the given schema.
-
-**Throws:** If input is `undefined` or does not match the given schema.
-
-<br>
-
-### `Truthy`
-
-```ts
-import { Truthy } from 'funval';
-
-declare function Truthy<T>(input: T): T;
-```
-
-Validate input is truthy.
-
-**Throws:** If input is not truthy.
-
-<br>
-
-### `Or`
-
-```ts
-import { Or } from 'funval';
-
-declare function Or(...candidates: any[]): Validator;
-```
-
-Validate inputs using any of the given candidates.
-
-**Throws:** If the input does not match to any of the given schemas.
-
-<br>
-
-### `ArrayOf`
-
-```ts
-import { ArrayOf } from 'funval';
-
-declare function ArrayOf(itemSchema: any, error?: string | Error): Validator;
-```
-
-Validate the input is an array and that each item matches the given schema.
-
-**Throws:** If the given input is not an array or one of the items not matches the item schema.
-
-<br>
-
-### `TypeOf`
-
-```ts
-import { TypeOf } from 'funval';
-
-declare function TypeOf(
-  typeOf:
-    | 'string'
-    | 'number'
-    | 'object'
-    | 'boolean'
-    | 'undefined'
-    | 'symbol'
-    | 'bigint',
-  error?: string | Error,
-): Validator;
-```
-
-Check the input type is equals to the given type.
-
-**Throws:** If the input type is different from the given type.
-
-<br>
-
-### `Any`
-
-```ts
-import { Any } from 'funval';
-
-declare function Any(input: any): any;
-```
-
-Allow any type of input.
-
-**Throws:** Never.
-
-<br>
-
-### `Override`
-
-```ts
-import { Override } from 'funval';
-
-declare function Override(value: any): Validator;
-```
-
-Override any input and returns the given value.
-
-**Throws:** Never.
-
-<br>
-
-### `Test`
-
-```ts
-import { Test } from 'funval';
-
-declare function Test<T>(test: (input: T) => unknown, error?: string | Error): Validator;
-```
-
-Return the input value as is, only if the test function returns a truthy value.
-
-**Throws:** If the test function throws or the test function return a non-truthy value.
-
-<br>
-
-### `Equals`
-
-```ts
-import { Equals } from 'funval';
-
-declare function Equals(value: any, error?: string | Error): Validator;
-```
-
-Check the input is strictly equals to the given value.
-
-**Throws:** If the input does not equal to the given value.
-
-<br>
-
-### `GreaterThan`
-
-```ts
-import { GreaterThan } from 'funval';
-
-declare function GreaterThan(value: any, error?: string | Error): Validator;
-```
-
-Check the input is greater than the given value.
-
-**Throws:** If the input does not greater than the given value.
-
-<br>
-
-### `GreaterThanEqual`
-
-```ts
-import { GreaterThanEqual } from 'funval';
-
-declare function GreaterThanEqual(value: any, error?: string | Error): Validator;
-```
-
-Check the input is greater than or equals the given value.
-
-**Throws:** If the input does not greater than or equals the given value.
-
-<br>
-
-### `LessThan`
-
-```ts
-import { LessThan } from 'funval';
-
-declare function LessThan(value: any, error?: string | Error): Validator;
-```
-
-Check the input is less than the given value.
-
-**Throws:** If the input does not less than the given value.
-
-<br>
-
-### `LessThanEqual`
-
-```ts
-import { LessThanEqual } from 'funval';
-
-declare function LessThanEqual(value: any, error?: string | Error): Validator;
-```
-
-Check the input is less than or equals the given value.
-
-**Throws:** If the input does not less than or equals the given value.
-
-<br>
-
-### `Between`
-
-```ts
-import { Between } from 'funval';
-
-declare function Between(minValue: any | null, maxValue: any | null, error?: string | Error):
-Validator;
-```
-
-Check the input is between the given boundaries.
-
-**Throws:** If the input is not between the given boundaries.
-
-<br>
-
-### `ContentString`
-
-```ts
-import { ContentString } from 'funval';
-
-declare function ContentString(input: unknown): string;
-```
-
-Converts any input to a valid string.
-
-**Throws:** If input is either `null`, `undefined`, an object without proper `toString`
-implementation, empty or a whitespace string.
-
-<br>
-
-### `TrimString`
-
-```ts
-import { TrimString } from 'funval';
-
-declare function TrimString(input: unknown): string;
-```
-
-Same as [`ContentString`](#contentstring), but `trim` the output as well.
-
-**Throws:** If input is either `null`, `undefined`, an object without proper `toString`
-implementation, empty or a whitespace string.
-
-<br>
-
-### `StringRange`
-
-```ts
-import { StringRange } from 'funval';
-
-declare function StringRange(
-  minLength: number | null,
-  maxLength: number | null,
-  error?: string | Error,
-): Validator;
-```
-
-Converts any input to a valid string and make sure the string is in the given boundaries.
-
-**Throws:** If input is either `null`, `undefined`, an object without proper `toString`
-implementation, empty string, whitespace string, or string outside of the given boundaries.
-
-<br>
-
-### `StringMatch`
-
-```ts
-import { StringMatch } from 'funval';
-
-declare function StringMatch(regex: RegEx, error?: string | Error): Validator;
-```
-
-Validate the input is matches the given regular expression.
-
-**Throws:** If input does not match the given regular expression.
-
-<br>
-
-### `Float`
-
-```ts
-import { Float } from 'funval';
-
-declare function Float(input: unknown): number;
-```
-
-Converts any input to a valid float number.
-
-**Throws:** If the input can not convert to a valid number.
-
-<br>
-
-### `Integer`
-
-```ts
-import { Integer } from 'funval';
-
-declare function Integer(input: unknown): number;
-```
-
-Converts any input to a valid integer number.
-
-**Throws:** If the input can not convert to a valid number or the number is not an integer.
-
-<br>
-
-### `Bool`
-
-```ts
-import { Bool } from 'funval';
-
-declare function Bool(input: unknown): boolean;
-```
-
-Converts any input to a valid boolean.
-
-**Throws:** If the input can not convert unambiguously to a boolean.
-
 
 <br>
 

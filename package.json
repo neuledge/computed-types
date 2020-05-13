@@ -1,12 +1,14 @@
 {
-  "name": "funval",
-  "version": "0.3.0",
-  "description": "A minimalist library for data validation using functions interfaces.",
+  "name": "computed-types",
+  "version": "1.0.0-alpha",
+  "description": "Runtime validation types for TypeScript.",
   "keywords": [
+    "runtime",
     "validation",
+    "type",
+    "typescript",
     "function",
     "schema",
-    "typescript",
     "functional",
     "composition",
     "interfaces",
@@ -36,7 +38,7 @@
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
   },
   "author": "Moshe Simantov <me@moshe.io>",
-  "repository": "https://github.com/neuledge/funval",
+  "repository": "https://github.com/neuledge/computed-types",
   "license": "MIT",
   "main": "lib/index",
   "module": "lib/index",
