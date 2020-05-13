@@ -1,6 +1,6 @@
 import { ErrorLike, toError } from './errors';
 import FunctionType, { FunctionParameters } from './FunctionType';
-import { Typeof } from './utils';
+import { isPromiseLike, MaybeAsync, ResolvedValue, Typeof } from './utils';
 
 export function type<
   T extends keyof Typeof,
@@ -41,13 +41,51 @@ export function test<P extends FunctionParameters>(
   };
 }
 
+export function destruct<F extends FunctionType>(
+  validator: F,
+  error?: ErrorLike<Parameters<F>>,
+): FunctionType<
+  MaybeAsync<ReturnType<F>, [Error | null, ResolvedValue<ReturnType<F>>?]>,
+  Parameters<F>
+> {
+  return ((
+    ...args: Parameters<F>
+  ):
+    | [Error | null, ResolvedValue<ReturnType<F>>?]
+    | PromiseLike<[Error | null, ResolvedValue<ReturnType<F>>?]> => {
+    try {
+      const res = validator(...args);
+      if (!isPromiseLike(res)) {
+        return [null, res];
+      }
+
+      return res.then(
+        (ret) => [null, ret],
+        (err) => [error ? toError(error, ...args) : err],
+      ) as PromiseLike<[Error | null, ResolvedValue<ReturnType<F>>?]>;
+    } catch (err) {
+      return [error ? toError(error, ...args) : err];
+    }
+  }) as FunctionType<
+    MaybeAsync<ReturnType<F>, [Error | null, ResolvedValue<ReturnType<F>>?]>,
+    Parameters<F>
+  >;
+}
+
 export function message<R, P extends FunctionParameters>(
   validator: FunctionType<R, P>,
   error: ErrorLike<P>,
 ): FunctionType<R, P> {
   return (...args: P): R => {
     try {
-      return validator(...args);
+      const res = validator(...args);
+      if (!isPromiseLike(res)) {
+        return res;
+      }
+
+      return (res.then(null, (): never => {
+        throw toError(error, ...args);
+      }) as unknown) as R;
     } catch (e) {
       throw toError(error, ...args);
     }

@@ -1,4 +1,5 @@
 import FunctionType from './FunctionType';
+import { RemoveAsync } from './io';
 
 type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 
@@ -50,6 +51,20 @@ export type Typeof = {
 export type ResolvedValue<T> =
   // do not escape T to [T] to support `number | Promise<string>`
   T extends PromiseLike<infer R> ? R : T;
+
+export type IsAsync<S> = ResolvedValue<S> extends S
+  ? unknown extends S
+    ? unknown
+    : false
+  : RemoveAsync<S> extends never
+  ? true
+  : unknown;
+
+export type MaybeAsync<T, V> = unknown extends IsAsync<T>
+  ? PromiseLike<V> | V
+  : true extends IsAsync<T>
+  ? PromiseLike<V>
+  : V;
 
 // export type RequiredKeys<T> = {
 //   [k in keyof T]-?: undefined extends T[k] ? never : k;

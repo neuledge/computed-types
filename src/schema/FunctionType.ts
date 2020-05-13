@@ -1,6 +1,10 @@
 export type FunctionParameters = unknown[];
 
-export type MergeFirstParameter<P extends FunctionParameters> = [P] extends [[]]
+export type MergeFirstParameter<P extends FunctionParameters> = [P] extends [
+  never,
+]
+  ? [never]
+  : [P] extends [[]]
   ? []
   : [P] extends [[unknown]]
   ? [P[0]]

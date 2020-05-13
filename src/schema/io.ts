@@ -2,7 +2,7 @@ import FunctionType, {
   FunctionParameters,
   MergeFirstParameter,
 } from './FunctionType';
-import { Primitive, ResolvedValue } from './utils';
+import { IsAsync, Primitive, ResolvedValue } from './utils';
 
 type SchemaOptionalKeys<S> = Exclude<
   {
@@ -46,7 +46,7 @@ type SchemaRawParameters<S> = [S] extends [FunctionType]
 
 export type SchemaParameters<
   S,
-  X extends FunctionParameters = [never]
+  X extends FunctionParameters = never
 > = MergeFirstParameter<SchemaRawParameters<S> | X>;
 
 export type SchemaResolveType<S> = S extends FunctionType
@@ -63,14 +63,6 @@ export type SchemaResolveType<S> = S extends FunctionType
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RemoveAsync<T> = T extends PromiseLike<any> ? never : T;
-
-type IsAsync<S> = ResolvedValue<S> extends S
-  ? unknown extends S
-    ? unknown
-    : false
-  : RemoveAsync<S> extends never
-  ? true
-  : unknown;
 
 type IsSchemaAsync<S> = S extends FunctionType
   ? IsAsync<ReturnType<S>>
