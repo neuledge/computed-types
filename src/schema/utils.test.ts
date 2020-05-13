@@ -242,8 +242,16 @@ describe('schema/utils', () => {
         foo: 1,
         bar: 2,
       });
+      assert.deepEqual(deepConcat(['foo'], ['foo', 1]), ['foo', 1]);
+      assert.deepEqual(deepConcat(['foo'], [undefined, 1]), ['foo', 1]);
+      assert.deepEqual(deepConcat(['foo', { bar: 1 }], ['foo', { hello: 2 }]), [
+        'foo',
+        { bar: 1, hello: 2 } as any,
+      ]);
 
       assert.throw(() => deepConcat({ foo: 1 }, { foo: 2, bar: 2 }), TypeError);
+      assert.throw(() => deepConcat({ foo: 1 }, null), TypeError);
+      assert.throw(() => deepConcat({ foo: 1 }, true), TypeError);
     });
   });
 });

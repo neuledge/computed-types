@@ -98,6 +98,33 @@ describe('schema/logic', () => {
       await assert.becomes(validator(true) as PromiseLike<number>, 1);
       await assert.isRejected(validator('' as any) as any);
     });
+
+    it('[async,async] candidates', async () => {
+      const validator = either(
+        async (x: number): Promise<string> => {
+          if (typeof x !== 'number' || x <= 0) {
+            throw new RangeError(`Negative input`);
+          }
+
+          return String(x);
+        },
+        async (x: boolean): Promise<number> => {
+          if (typeof x !== 'boolean') {
+            throw new RangeError(`Non boolean`);
+          }
+
+          return x ? 1 : 0;
+        },
+      );
+
+      typeCheck<
+        typeof validator,
+        (x: number | boolean) => PromiseLike<string> | PromiseLike<number>
+      >('ok');
+      await assert.becomes(validator(1), '1');
+      await assert.becomes(validator(true), 1);
+      await assert.isRejected(validator('' as any) as any);
+    });
   });
 
   describe('merge', () => {
