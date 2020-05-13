@@ -37,10 +37,13 @@ export function createValidationError<P extends FunctionParameters>(
   error: ErrorLike<P> | null | undefined,
   ...args: P
 ): ValidationError {
-  const err: ValidationError = toError(
-    error || (errors.length ? errors[0].error : 'Unknown Validation Error'),
-    ...args,
-  );
+  if (!error) {
+    error = errors[0]
+      ? errors[0].error.message || errors[0].error
+      : 'Unknown Validation Error';
+  }
+
+  const err: ValidationError = toError(error, ...args);
   err.errors = errors;
 
   return err;

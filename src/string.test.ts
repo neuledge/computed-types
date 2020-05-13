@@ -1,6 +1,7 @@
 import 'mocha';
 import { assert } from 'chai';
 import string from './string';
+import { typeCheck } from './schema/utils';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -107,5 +108,18 @@ describe('string', () => {
     assert.throws(() => string.regexp(/^foo$/i)(''), TypeError);
     assert.throws(() => string.regexp(/^foo$/i, 'test')(''), TypeError, 'test');
     assert.throws(() => string.regexp(/^foo$/i)(null as any), TypeError);
+  });
+
+  it('name use case', () => {
+    const validator = string.trim().normalize().between(3, 40).optional();
+
+    typeCheck<Parameters<typeof validator>, [string?]>('ok');
+    typeCheck<[ReturnType<typeof validator>], [string | undefined]>('ok');
+
+    assert.equal(validator('John Doe'), 'John Doe');
+    assert.equal(validator('John Doe '), 'John Doe');
+    assert.equal(validator(), undefined);
+
+    assert.throws(() => validator('av    '), RangeError);
   });
 });
