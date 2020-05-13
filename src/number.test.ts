@@ -29,7 +29,7 @@ describe('number', () => {
     assert.throws(() => number(false as any), TypeError);
   });
 
-  it('number.float()', () => {
+  it('.float()', () => {
     assert.equal(number.float()(123), 123);
     assert.equal(number.float()(12.3), 12.3);
     assert.equal(number.float()(-12.3), -12.3);
@@ -44,7 +44,7 @@ describe('number', () => {
     assert.throws(() => number.float()('12.3' as any), TypeError);
   });
 
-  it('number.integer()', () => {
+  it('.integer()', () => {
     assert.equal(number.integer()(123), 123);
     assert.equal(number.integer()(0), 0);
     assert.equal(number.integer()(-3), -3);
@@ -59,5 +59,94 @@ describe('number', () => {
     assert.throws(() => number.integer()('hello' as any), TypeError);
   });
 
-  // TODO add more tests
+  it('.toExponential()', () => {
+    assert.equal(number.toExponential()(1234), '1.234e+3');
+  });
+
+  it('.toExponential().toUpperCase()', () => {
+    assert.equal(number.toExponential().toUpperCase()(1234), '1.234E+3');
+  });
+
+  it('.toFixed()', () => {
+    assert.equal(number.toFixed(1)(12.34), '12.3');
+  });
+
+  it('.toLocaleString()', () => {
+    assert.equal(number.toLocaleString()(1234), '1,234');
+    assert.equal(number.toLocaleString('en-US')(1234), '1,234');
+  });
+
+  it('.toPrecision()', () => {
+    assert.equal(number.toPrecision()(123.456), '123.456');
+    assert.equal(number.toPrecision(2)(123.456), '1.2e+2');
+    assert.equal(number.toPrecision(3)(123.456), '123');
+  });
+
+  it('.toString()', () => {
+    assert.equal(number.toString()(123.456), '123.456');
+    assert.equal(number.toString(16)(123.456), '7b.74bc6a7ef9dc');
+  });
+
+  it('.min()', () => {
+    assert.equal(number.min(3)(3), 3);
+    assert.equal(number.min(3)(3.5), 3.5);
+
+    assert.throw(() => number.min(3)(2.9), RangeError);
+    assert.throw(() => number.min(3)(NaN), RangeError);
+    assert.throw(() => number.min(3)(null as any), TypeError);
+    assert.throw(() => number.min(3, 'test')(1), TypeError, 'test');
+  });
+
+  it('.max()', () => {
+    assert.equal(number.max(3)(3), 3);
+    assert.equal(number.max(3)(2.9), 2.9);
+
+    assert.throw(() => number.max(3)(4.1), RangeError);
+    assert.throw(() => number.max(3)(NaN), RangeError);
+    assert.throw(() => number.max(3)(null as any), TypeError);
+    assert.throw(() => number.max(3, 'test')(6), TypeError, 'test');
+  });
+
+  it('.gte()', () => {
+    assert.equal(number.gte(3)(3), 3);
+    assert.equal(number.gte(3)(3.1), 3.1);
+
+    assert.throw(() => number.gte(3)(2.9), RangeError);
+  });
+
+  it('.lte()', () => {
+    assert.equal(number.lte(3)(3), 3);
+    assert.equal(number.lte(3)(2.9), 2.9);
+
+    assert.throw(() => number.lte(3)(3.1), RangeError);
+  });
+
+  it('.gt()', () => {
+    assert.equal(number.gt(3)(3.1), 3.1);
+
+    assert.throw(() => number.gt(3)(3), RangeError);
+    assert.throw(() => number.gt(3)(NaN), RangeError);
+    assert.throw(() => number.gt(3)(2.9), RangeError);
+    assert.throw(() => number.gt(3, 'test')(2.9), TypeError, 'test');
+  });
+
+  it('.lt()', () => {
+    assert.equal(number.lt(3)(2.9), 2.9);
+
+    assert.throw(() => number.lt(3)(3), RangeError);
+    assert.throw(() => number.lt(3)(NaN), RangeError);
+    assert.throw(() => number.lt(3)(3.1), RangeError);
+    assert.throw(() => number.lt(3, 'test')(3.1), TypeError, 'test');
+  });
+
+  it('.between()', () => {
+    assert.equal(number.between(1, 3)(1), 1);
+    assert.equal(number.between(1, 3)(1.5), 1.5);
+    assert.equal(number.between(1, 3)(3), 3);
+
+    assert.throw(() => number.between(1, 3)(0.9), RangeError);
+    assert.throw(() => number.between(1, 3)(3.1), RangeError);
+    assert.throw(() => number.between(1, 3)(NaN), RangeError);
+    assert.throw(() => number.between(1, 3, 'test')(NaN), TypeError, 'test');
+  });
 });

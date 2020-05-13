@@ -22,47 +22,46 @@ export class NumberValidator<
   }
 
   public toExponential(
-    ...input: Parameters<number['toExponential']>
+    ...args: Parameters<number['toExponential']>
   ): ValidatorProxy<StringValidator<P>> {
-    return this.transform(
-      (val) => val.toExponential(...input),
-      StringValidator,
-    );
+    return this.transform((val) => val.toExponential(...args), StringValidator);
   }
 
   public toFixed(
-    ...input: Parameters<number['toFixed']>
+    ...args: Parameters<number['toFixed']>
   ): ValidatorProxy<StringValidator<P>> {
-    return this.transform((val) => val.toFixed(...input), StringValidator);
+    return this.transform((val) => val.toFixed(...args), StringValidator);
   }
 
   public toLocaleString(
-    ...input: Parameters<number['toLocaleString']>
+    ...args: Parameters<number['toLocaleString']>
   ): ValidatorProxy<StringValidator<P>> {
     return this.transform(
-      (val) => val.toLocaleString(...input),
+      (val) => val.toLocaleString(...args),
       StringValidator,
     );
   }
 
   public toPrecision(
-    ...input: Parameters<number['toPrecision']>
+    ...args: Parameters<number['toPrecision']>
   ): ValidatorProxy<StringValidator<P>> {
-    return this.transform((val) => val.toPrecision(...input), StringValidator);
+    return this.transform((val) => val.toPrecision(...args), StringValidator);
   }
 
   public toString(
-    ...input: Parameters<number['toString']>
+    ...args: Parameters<number['toString']>
   ): ValidatorProxy<StringValidator<P>> {
-    return this.transform((val) => val.toString(...input), StringValidator);
+    return this.transform((val) => val.toString(...args), StringValidator);
   }
 
   public min(min: number, error?: ErrorLike<[number]>): ValidatorProxy<this> {
     return this.test(
       (val) => val >= min,
       error ||
-        ((val): string =>
-          `Expect value to be greater or equal than ${min} (actual: ${val})`),
+        ((val): RangeError =>
+          new RangeError(
+            `Expect value to be greater or equal than ${min} (actual: ${val})`,
+          )),
     );
   }
 
@@ -70,8 +69,10 @@ export class NumberValidator<
     return this.test(
       (val) => val <= max,
       error ||
-        ((val): string =>
-          `Expect value to be lower or equal than ${max} (actual: ${val})`),
+        ((val): RangeError =>
+          new RangeError(
+            `Expect value to be lower or equal than ${max} (actual: ${val})`,
+          )),
     );
   }
 
@@ -85,8 +86,10 @@ export class NumberValidator<
     return this.test(
       (val) => val > boundary,
       error ||
-        ((val): string =>
-          `Expect value to be greater than ${boundary} (actual: ${val})`),
+        ((val): RangeError =>
+          new RangeError(
+            `Expect value to be greater than ${boundary} (actual: ${val})`,
+          )),
     );
   }
 
@@ -97,8 +100,10 @@ export class NumberValidator<
     return this.test(
       (val) => val < boundary,
       error ||
-        ((val): string =>
-          `Expect value to be lower than ${boundary} (actual: ${val})`),
+        ((val): RangeError =>
+          new RangeError(
+            `Expect value to be lower than ${boundary} (actual: ${val})`,
+          )),
     );
   }
 
@@ -110,8 +115,10 @@ export class NumberValidator<
     return this.test(
       (val) => val >= min && val <= max,
       error ||
-        ((val): string =>
-          `Expect value to be between ${min} and ${max} (actual: ${val})`),
+        ((val): RangeError =>
+          new RangeError(
+            `Expect value to be between ${min} and ${max} (actual: ${val})`,
+          )),
     );
   }
 }

@@ -6,7 +6,7 @@ import { isPromiseLike, MaybeAsync, ResolvedValue } from './schema/utils';
 export type ValidatorProxy<
   V extends { validator: FunctionType },
   F extends FunctionType = V['validator']
-> = F & Omit<V, 'validator' | 'proxy'> & { validator: F };
+> = Omit<V, 'validator' | 'proxy'> & { validator: F } & F;
 
 export interface ValidatorConstructor<
   V extends Validator<F>,
