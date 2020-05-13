@@ -43,8 +43,10 @@ export class StringValidator<
     return this.test(
       (str) => str.length >= length,
       error ||
-        ((str): string =>
-          `Expect length to be minimum of ${length} characters (actual: ${str.length})`),
+        ((str): RangeError =>
+          new RangeError(
+            `Expect length to be minimum of ${length} characters (actual: ${str.length})`,
+          )),
     );
   }
 
@@ -55,8 +57,10 @@ export class StringValidator<
     return this.test(
       (str) => str.length <= length,
       error ||
-        ((str): string =>
-          `Expect length to be maximum of ${length} characters (actual: ${str.length})`),
+        ((str): RangeError =>
+          new RangeError(
+            `Expect length to be maximum of ${length} characters (actual: ${str.length})`,
+          )),
     );
   }
 
@@ -68,8 +72,10 @@ export class StringValidator<
     return this.test(
       (str) => str.length >= minLength && str.length <= maxLength,
       error ||
-        ((str): string =>
-          `Expect length to be between ${minLength} and ${maxLength} characters (actual: ${str.length})`),
+        ((str): RangeError =>
+          new RangeError(
+            `Expect length to be between ${minLength} and ${maxLength} characters (actual: ${str.length})`,
+          )),
     );
   }
 
