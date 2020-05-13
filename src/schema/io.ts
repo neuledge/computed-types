@@ -72,11 +72,14 @@ type IsSchemaAsync<S> = S extends FunctionType
     : { [K in keyof S]: IsSchemaAsync<S[K]> }[keyof S]
   : IsAsync<S>;
 
-export type SchemaReturnType<S> = unknown extends IsSchemaAsync<S>
-  ? PromiseLike<SchemaResolveType<S>> | SchemaResolveType<S>
+export type SchemaReturnType<
+  S,
+  R = SchemaResolveType<S>
+> = unknown extends IsSchemaAsync<S>
+  ? PromiseLike<R> | R
   : true extends IsSchemaAsync<S>
-  ? PromiseLike<SchemaResolveType<S>>
-  : SchemaResolveType<S>;
+  ? PromiseLike<R>
+  : R;
 
 export type SchemaValidatorFunction<S> = FunctionType<
   SchemaReturnType<S>,

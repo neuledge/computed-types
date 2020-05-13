@@ -7,6 +7,8 @@ import { NumberValidator } from './number';
 import { BooleanValidator } from './boolean';
 import { SchemaResolveType } from './schema/io';
 import compiler from './schema/compiler';
+import { ArrayValidator } from './array';
+import { array, type } from './schema/validations';
 
 const BOOL_MAP = {
   true: true,
@@ -40,13 +42,13 @@ export class UnknownValidator<
   public object(
     error?: ErrorLike<[unknown]>,
   ): ValidatorProxy<ObjectValidator<P>> {
-    return this.transform((input) => {
-      if (typeof input !== 'object') {
-        throw toError(error || `Expect value to be object`, input);
-      }
+    return this.transform(type('object', error), ObjectValidator);
+  }
 
-      return (input as unknown) as object;
-    }, ObjectValidator);
+  public array(
+    error?: ErrorLike<[unknown]>,
+  ): ValidatorProxy<ArrayValidator<unknown[], P>> {
+    return this.transform(array(null, error), ArrayValidator);
   }
 
   public string(

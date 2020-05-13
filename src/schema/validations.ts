@@ -115,7 +115,7 @@ export function regexp<P extends FunctionParameters = [string]>(
 export function array<
   R extends Array<unknown>,
   P extends FunctionParameters = [R]
->(length: number | null, error?: ErrorLike<P>): FunctionType<R, P> {
+>(length: number | null = null, error?: ErrorLike<P>): FunctionType<R, P> {
   const isArray = (...args: P): R => {
     if (!Array.isArray(args[0])) {
       throw toError(error || `Expecting value to be an array`, ...args);

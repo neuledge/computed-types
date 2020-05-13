@@ -62,12 +62,15 @@ describe('Schema', () => {
       await assert.becomes(validator(true) as PromiseLike<number>, 1);
       await assert.isRejected(validator('' as any) as any);
 
-      const trans = validator.transform(async (str) => (await str) + '-foo');
-      typeCheck<typeof trans, (x: number | boolean) => Promise<string>>('ok');
+      const trans = validator.transform((str): string => str + '-foo');
+      typeCheck<
+        typeof trans,
+        (x: number | boolean) => string | PromiseLike<string>
+      >('ok');
 
-      await assert.becomes(trans(1), '1-foo');
-      await assert.becomes(trans(false), '0-foo');
-      await assert.isRejected(trans(-1));
+      await assert.equal(trans(1) as string, '1-foo');
+      await assert.becomes(trans(false) as PromiseLike<string>, '0-foo');
+      await assert.isRejected(trans(-1) as PromiseLike<string>);
     });
   });
 

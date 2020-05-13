@@ -1,7 +1,7 @@
 import FunctionType, { FunctionParameters } from './schema/FunctionType';
 import { ErrorLike } from './schema/errors';
 import { destruct, equals, message, test } from './schema/validations';
-import { MaybeAsync, ResolvedValue } from './schema/utils';
+import { isPromiseLike, MaybeAsync, ResolvedValue } from './schema/utils';
 
 export type ValidatorProxy<
   V extends { validator: FunctionType },
@@ -31,28 +31,43 @@ export default class Validator<F extends FunctionType> {
     }) as ValidatorProxy<this>;
   }
 
-  public equals<T extends ReturnType<F>>(
+  public equals<T extends ResolvedValue<ReturnType<F>>>(
     value: T,
-    error?: ErrorLike<[ReturnType<F>]>,
+    error?: ErrorLike<[ResolvedValue<ReturnType<F>>]>,
   ): ValidatorProxy<this, FunctionType<T, Parameters<F>>> {
     return this.transform(equals(value, error));
   }
 
   public test(
-    tester: FunctionType<unknown, [ReturnType<F>]>,
-    error?: ErrorLike<[ReturnType<F>]>,
+    tester: FunctionType<unknown, [ResolvedValue<ReturnType<F>>]>,
+    error?: ErrorLike<[ResolvedValue<ReturnType<F>>]>,
   ): ValidatorProxy<this> {
     return this.transform(test(tester, error));
   }
 
-  public transform<T, V extends Validator<FunctionType<T, Parameters<F>>>>(
-    fn: FunctionType<T, [ReturnType<F>]>,
+  public transform<
+    T,
+    V extends Validator<
+      FunctionType<MaybeAsync<ReturnType<F>, T>, Parameters<F>>
+    >
+  >(
+    fn: FunctionType<T, [ResolvedValue<ReturnType<F>>]>,
     constructor: ValidatorConstructor<V> = this
       .constructor as ValidatorConstructor<V>,
   ): ValidatorProxy<V> {
     const { validator } = this;
 
-    return new constructor((...args) => fn(validator(...args))).proxy();
+    return new constructor(((...args): T | PromiseLike<T> => {
+      const res = validator(...args);
+
+      if (!isPromiseLike(res)) {
+        return fn(res);
+      }
+
+      return res.then((ret) =>
+        fn(ret as ResolvedValue<ReturnType<F>>),
+      ) as PromiseLike<T>;
+    }) as FunctionType<MaybeAsync<ReturnType<F>, T>, Parameters<F>>).proxy();
   }
 
   public construct<P0 extends FunctionParameters>(

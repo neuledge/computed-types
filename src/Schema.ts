@@ -192,9 +192,3 @@ function merge(
 }
 
 Schema.merge = merge;
-
-// TODO array
-// TODO array.of
-// TODO array.min
-// TODO array.max
-// TODO array.between

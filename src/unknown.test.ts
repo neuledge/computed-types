@@ -1,6 +1,7 @@
 import 'mocha';
 import { assert } from 'chai';
 import unknown from './unknown';
+import { typeCheck } from './schema/utils';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -19,7 +20,7 @@ describe('unknown', () => {
     assert.equal(unknown(obj), obj);
   });
 
-  it('unknown.boolean()', () => {
+  it('.boolean()', () => {
     assert.equal(unknown.boolean()('true'), true);
     assert.equal(unknown.boolean()('false'), false);
     assert.equal(unknown.boolean()('1'), true);
@@ -54,7 +55,7 @@ describe('unknown', () => {
     );
   });
 
-  it('unknown.string()', () => {
+  it('.string()', () => {
     assert.equal(unknown.string()('hello'), 'hello');
     assert.equal(unknown.string()(false), 'false');
     assert.equal(unknown.string()(true), 'true');
@@ -87,7 +88,7 @@ describe('unknown', () => {
     );
   });
 
-  it('unknown.number()', () => {
+  it('.number()', () => {
     assert.equal(unknown.number()(1), 1);
     assert.equal(unknown.number()(1.1), 1.1);
     assert.equal(unknown.number()('1.1'), 1.1);
@@ -111,5 +112,18 @@ describe('unknown', () => {
       TypeError,
       'undefined',
     );
+  });
+
+  it('.array().of()', () => {
+    const fooArr = unknown.array().of('foo' as 'foo');
+    typeCheck<ReturnType<typeof fooArr>, 'foo'[]>('ok');
+    typeCheck<Parameters<typeof fooArr>, [unknown]>('ok');
+
+    assert.deepEqual(fooArr(['foo']), ['foo']);
+    assert.deepEqual(fooArr([]), []);
+    assert.deepEqual(fooArr(['foo', 'foo']), ['foo', 'foo']);
+
+    assert.throws(() => fooArr(['foo', 'bar'] as any), TypeError);
+    assert.throws(() => fooArr(['foo', 1] as any), TypeError);
   });
 });
