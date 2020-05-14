@@ -6,9 +6,11 @@ import number from './number';
 import boolean from './boolean';
 import Schema from './Schema';
 import { SchemaResolveType } from './schema/io';
-
-export default Schema;
+import { ValidationError, PathError } from './schema/errors';
 
 export type Type<S> = SchemaResolveType<S>;
+export { ValidationError, PathError };
+
+export default Schema;
 
 export { unknown, object, array, string, number, boolean };
