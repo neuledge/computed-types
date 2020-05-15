@@ -8,7 +8,8 @@ import { BooleanValidator } from './boolean';
 import { SchemaResolveType } from './schema/io';
 import compiler from './schema/compiler';
 import { ArrayValidator } from './array';
-import { array, type } from './schema/validations';
+import { array, enumValue, type } from './schema/validations';
+import { Enum } from './schema/utils';
 
 const BOOL_MAP = {
   true: true,
@@ -106,6 +107,13 @@ export class UnknownValidator<
 
       return value;
     }, BooleanValidator);
+  }
+
+  public enum<E extends Enum<E>>(
+    value: E,
+    error?: ErrorLike<[unknown]>,
+  ): ValidatorProxy<Validator<FunctionType<E[keyof E], P>>> {
+    return this.transform(enumValue(value, error), Validator);
   }
 }
 

@@ -1,6 +1,12 @@
 import { ErrorLike, toError } from './errors';
 import FunctionType, { FunctionParameters } from './FunctionType';
-import { isPromiseLike, MaybeAsync, ResolvedValue, Typeof } from './utils';
+import {
+  Enum,
+  isPromiseLike,
+  MaybeAsync,
+  ResolvedValue,
+  Typeof,
+} from './utils';
 
 export function type<
   T extends keyof Typeof,
@@ -139,5 +145,24 @@ export function array<
     }
 
     return arr;
+  };
+}
+
+export function enumValue<
+  E extends Enum<E>,
+  P extends FunctionParameters = [E[keyof E]]
+>(value: E, error?: ErrorLike<P>): FunctionType<E[keyof E], P> {
+  const values = new Set<E[keyof E]>(
+    Object.keys(value)
+      .filter((key) => isNaN(Number(key)))
+      .map((key) => value[key as keyof E]),
+  );
+
+  return (...args: P): E[keyof E] => {
+    if (!values.has(args[0] as E[keyof E])) {
+      return args[0] as E[keyof E];
+    }
+
+    throw toError(error || 'Unknown enum value', ...args);
   };
 }

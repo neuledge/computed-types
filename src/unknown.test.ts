@@ -126,4 +126,8 @@ describe('unknown', () => {
     assert.throws(() => fooArr(['foo', 'bar'] as any), TypeError);
     assert.throws(() => fooArr(['foo', 1] as any), TypeError);
   });
+
+  it('.enum()', () => {
+    // TODO test unknown.enum
+  });
 });

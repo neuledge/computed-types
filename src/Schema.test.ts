@@ -93,4 +93,8 @@ describe('Schema', () => {
       assert.deepEqual(trans({ foo: 'foo', bar: 1 }), ['foo', 'bar']);
     });
   });
+
+  describe('.enum', () => {
+    // TODO test Schema.enum
+  });
 });

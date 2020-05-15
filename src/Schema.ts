@@ -8,7 +8,9 @@ import {
 import Validator, { ValidatorProxy } from './Validator';
 import compiler from './schema/compiler';
 import { either as eitherSchema, merge as mergeSchemas } from './schema/logic';
-import FunctionType from './schema/FunctionType';
+import FunctionType, { FunctionParameters } from './schema/FunctionType';
+import { Enum } from './schema/utils';
+import { enumValue } from './schema/validations';
 
 export default function Schema<S>(
   schema: S,
@@ -230,12 +232,52 @@ function merge<A, B, C, D, E, F>(
 // function merge<A, B, C, D, E, F, G>(
 //   ...args: [A, B, C, D, E, F, G]
 // ): ValidatorProxy<
-//   Validator<SchemaValidatorFunction<A & B & C & D & E & F & G>>
+//   Validator<
+//     FunctionType<
+//       SchemaReturnType<A> &
+//         SchemaReturnType<B> &
+//         SchemaReturnType<C> &
+//         SchemaReturnType<D> &
+//         SchemaReturnType<E> &
+//         SchemaReturnType<F> &
+//         SchemaReturnType<G>,
+//       MergeSchemaParameters<
+//         SchemaParameters<A> &
+//           SchemaParameters<B> &
+//           SchemaParameters<C> &
+//           SchemaParameters<D> &
+//           SchemaParameters<E> &
+//           SchemaParameters<F> &
+//           SchemaParameters<G>
+//       >
+//     >
+//   >
 // >;
 // function merge<A, B, C, D, E, F, G, H>(
 //   ...args: [A, B, C, D, E, F, G, H]
 // ): ValidatorProxy<
-//   Validator<SchemaValidatorFunction<A & B & C & D & E & F & G & H>>
+//   Validator<
+//     FunctionType<
+//       SchemaReturnType<A> &
+//         SchemaReturnType<B> &
+//         SchemaReturnType<C> &
+//         SchemaReturnType<D> &
+//         SchemaReturnType<E> &
+//         SchemaReturnType<F> &
+//         SchemaReturnType<G> &
+//         SchemaReturnType<H>,
+//       MergeSchemaParameters<
+//         SchemaParameters<A> &
+//           SchemaParameters<B> &
+//           SchemaParameters<C> &
+//           SchemaParameters<D> &
+//           SchemaParameters<E> &
+//           SchemaParameters<F> &
+//           SchemaParameters<G> &
+//           SchemaParameters<H>
+//       >
+//     >
+//   >
 // >;
 function merge(
   ...args: [unknown, ...unknown[]]
@@ -244,3 +286,13 @@ function merge(
 }
 
 Schema.merge = merge;
+
+Schema.enum = function <
+  E extends Enum<E>,
+  P extends FunctionParameters = [E[keyof E]]
+>(
+  value: E,
+  error?: ErrorLike<P>,
+): ValidatorProxy<Validator<FunctionType<E[keyof E], P>>> {
+  return new Validator(enumValue(value, error)).proxy();
+};

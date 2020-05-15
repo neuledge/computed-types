@@ -48,6 +48,11 @@ export type Typeof = {
   undefined: undefined;
 };
 
+// https://stackoverflow.com/a/50159864/518153
+export type Enum<E> = Record<keyof E, string | number> & {
+  [k: number]: string;
+};
+
 export type ResolvedValue<T> =
   // do not escape T to [T] to support `number | Promise<string>`
   T extends PromiseLike<infer R> ? R : T;
