@@ -175,6 +175,24 @@ describe('schema/logic', () => {
       assert.throw(() => validator({} as any), TypeError);
       assert.throw(() => validator(undefined as any), TypeError);
     });
+
+    it('merging functions', () => {
+      const validator = merge(
+        (o: { x: number }) => ({
+          x: String(o.x),
+        }),
+        (o: { y?: number }) => ({
+          y: String((o.y || 0) + 1),
+        }),
+      );
+
+      typeCheck<
+        typeof validator,
+        (x: { x: number; y?: number }) => { x: string; y: string }
+      >('ok');
+      assert.deepEqual(validator({ x: 1, y: 2 }), { x: '1', y: '3' });
+      assert.deepEqual(validator({ x: 1 }), { x: '1', y: '1' });
+    });
   });
 
   describe('optional', () => {

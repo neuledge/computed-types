@@ -1,9 +1,9 @@
 import {
+  MergeSchemaParameters,
   SchemaParameters,
   SchemaReturnType,
-  SchemaValidatorFunction,
 } from './io';
-import FunctionType, { MergeFirstParameter } from './FunctionType';
+import FunctionType from './FunctionType';
 import compiler from './compiler';
 import { deepConcat, isPromiseLike } from './utils';
 
@@ -14,13 +14,13 @@ export function either<A, B>(
   ...candidates: [A, B]
 ): FunctionType<
   SchemaReturnType<A> | SchemaReturnType<B>,
-  SchemaParameters<A | B>
+  MergeSchemaParameters<SchemaParameters<A | B>>
 >;
 export function either<A, B, C>(
   ...candidates: [A, B, C]
 ): FunctionType<
   SchemaReturnType<A> | SchemaReturnType<B> | SchemaReturnType<C>,
-  SchemaParameters<A | B | C>
+  MergeSchemaParameters<SchemaParameters<A | B | C>>
 >;
 export function either<A, B, C, D>(
   ...candidates: [A, B, C, D]
@@ -29,7 +29,7 @@ export function either<A, B, C, D>(
   | SchemaReturnType<B>
   | SchemaReturnType<C>
   | SchemaReturnType<D>,
-  SchemaParameters<A | B | C | D>
+  MergeSchemaParameters<SchemaParameters<A | B | C | D>>
 >;
 export function either<A, B, C, D, E>(
   ...candidates: [A, B, C, D, E]
@@ -39,7 +39,7 @@ export function either<A, B, C, D, E>(
   | SchemaReturnType<C>
   | SchemaReturnType<D>
   | SchemaReturnType<E>,
-  SchemaParameters<A | B | C | D | E>
+  MergeSchemaParameters<SchemaParameters<A | B | C | D | E>>
 >;
 export function either<A, B, C, D, E, F>(
   ...candidates: [A, B, C, D, E, F]
@@ -50,7 +50,7 @@ export function either<A, B, C, D, E, F>(
   | SchemaReturnType<D>
   | SchemaReturnType<E>
   | SchemaReturnType<F>,
-  SchemaParameters<A | B | C | D | E | F>
+  MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F>>
 >;
 export function either<A, B, C, D, E, F, G>(
   ...candidates: [A, B, C, D, E, F, G]
@@ -62,7 +62,7 @@ export function either<A, B, C, D, E, F, G>(
   | SchemaReturnType<E>
   | SchemaReturnType<F>
   | SchemaReturnType<G>,
-  SchemaParameters<A | B | C | D | E | F | G>
+  MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F | G>>
 >;
 export function either<A, B, C, D, E, F, G, H>(
   ...candidates: [A, B, C, D, E, F, G, H]
@@ -75,7 +75,7 @@ export function either<A, B, C, D, E, F, G, H>(
   | SchemaReturnType<F>
   | SchemaReturnType<G>
   | SchemaReturnType<H>,
-  SchemaParameters<A | B | C | D | E | F | G | H>
+  MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F | G | H>>
 >;
 export function either<A, S>(
   ...candidates: [A, ...S[]]
@@ -127,26 +127,116 @@ export function either<A, S>(
   >;
 }
 
-export function merge<A>(...args: [A]): SchemaValidatorFunction<A>;
-export function merge<A, B>(...args: [A, B]): SchemaValidatorFunction<A & B>;
+export function merge<A>(
+  ...args: [A]
+): FunctionType<
+  SchemaReturnType<A>,
+  MergeSchemaParameters<SchemaParameters<A>>
+>;
+export function merge<A, B>(
+  ...args: [A, B]
+): FunctionType<
+  SchemaReturnType<A> & SchemaReturnType<B>,
+  MergeSchemaParameters<SchemaParameters<A> & SchemaParameters<B>>
+>;
 export function merge<A, B, C>(
   ...args: [A, B, C]
-): SchemaValidatorFunction<A & B & C>;
+): FunctionType<
+  SchemaReturnType<A> & SchemaReturnType<B> & SchemaReturnType<C>,
+  MergeSchemaParameters<
+    SchemaParameters<A> & SchemaParameters<B> & SchemaParameters<C>
+  >
+>;
 export function merge<A, B, C, D>(
   ...args: [A, B, C, D]
-): SchemaValidatorFunction<A & B & C & D>;
+): FunctionType<
+  SchemaReturnType<A> &
+    SchemaReturnType<B> &
+    SchemaReturnType<C> &
+    SchemaReturnType<D>,
+  MergeSchemaParameters<
+    SchemaParameters<A> &
+      SchemaParameters<B> &
+      SchemaParameters<C> &
+      SchemaParameters<D>
+  >
+>;
 export function merge<A, B, C, D, E>(
   ...args: [A, B, C, D, E]
-): SchemaValidatorFunction<A & B & C & D & E>;
+): FunctionType<
+  SchemaReturnType<A> &
+    SchemaReturnType<B> &
+    SchemaReturnType<C> &
+    SchemaReturnType<D> &
+    SchemaReturnType<E>,
+  MergeSchemaParameters<
+    SchemaParameters<A> &
+      SchemaParameters<B> &
+      SchemaParameters<C> &
+      SchemaParameters<D> &
+      SchemaParameters<E>
+  >
+>;
 export function merge<A, B, C, D, E, F>(
   ...args: [A, B, C, D, E, F]
-): SchemaValidatorFunction<A & B & C & D & E & F>;
-export function merge<A, B, C, D, E, F, G>(
-  ...args: [A, B, C, D, E, F, G]
-): SchemaValidatorFunction<A & B & C & D & E & F & G>;
-export function merge<A, B, C, D, E, F, G, H>(
-  ...args: [A, B, C, D, E, F, G, H]
-): SchemaValidatorFunction<A & B & C & D & E & F & G & H>;
+): FunctionType<
+  SchemaReturnType<A> &
+    SchemaReturnType<B> &
+    SchemaReturnType<C> &
+    SchemaReturnType<D> &
+    SchemaReturnType<E> &
+    SchemaReturnType<F>,
+  MergeSchemaParameters<
+    SchemaParameters<A> &
+      SchemaParameters<B> &
+      SchemaParameters<C> &
+      SchemaParameters<D> &
+      SchemaParameters<E> &
+      SchemaParameters<F>
+  >
+>;
+// export function merge<A, B, C, D, E, F, G>(
+//   ...args: [A, B, C, D, E, F, G]
+// ): FunctionType<
+//   SchemaReturnType<A> &
+//     SchemaReturnType<B> &
+//     SchemaReturnType<C> &
+//     SchemaReturnType<D> &
+//     SchemaReturnType<E> &
+//     SchemaReturnType<F> &
+//     SchemaReturnType<G>,
+//   MergeSchemaParameters<
+//     SchemaParameters<A> &
+//       SchemaParameters<B> &
+//       SchemaParameters<C> &
+//       SchemaParameters<D> &
+//       SchemaParameters<E> &
+//       SchemaParameters<F> &
+//       SchemaParameters<G>
+//   >
+// >;
+// export function merge<A, B, C, D, E, F, G, H>(
+//   ...args: [A, B, C, D, E, F, G, H]
+// ): FunctionType<
+//   SchemaReturnType<A> &
+//     SchemaReturnType<B> &
+//     SchemaReturnType<C> &
+//     SchemaReturnType<D> &
+//     SchemaReturnType<E> &
+//     SchemaReturnType<F> &
+//     SchemaReturnType<G> &
+//     SchemaReturnType<H>,
+//   MergeSchemaParameters<
+//     SchemaParameters<A> &
+//       SchemaParameters<B> &
+//       SchemaParameters<C> &
+//       SchemaParameters<D> &
+//       SchemaParameters<E> &
+//       SchemaParameters<F> &
+//       SchemaParameters<G> &
+//       SchemaParameters<H>
+//   >
+// >;
 export function merge(...args: [unknown, ...unknown[]]): FunctionType {
   if (!args.length) {
     throw new RangeError(`Expecting at least one argument`);
@@ -187,10 +277,10 @@ export function optional<F extends FunctionType, R = undefined>(
   defaultValue?: R,
 ): FunctionType<
   ReturnType<F> | R,
-  MergeFirstParameter<Parameters<F> | [undefined?]>
+  MergeSchemaParameters<Parameters<F> | [undefined?]>
 > {
   return (
-    ...args: MergeFirstParameter<Parameters<F> | [undefined?]>
+    ...args: MergeSchemaParameters<Parameters<F> | [undefined?]>
   ): ReturnType<F> | R => {
     if (args[0] === undefined) {
       return defaultValue as R;

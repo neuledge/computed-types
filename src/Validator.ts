@@ -1,11 +1,9 @@
-import FunctionType, {
-  FunctionParameters,
-  MergeFirstParameter,
-} from './schema/FunctionType';
+import FunctionType, { FunctionParameters } from './schema/FunctionType';
 import { ErrorLike } from './schema/errors';
 import { destruct, equals, message, test } from './schema/validations';
 import { isPromiseLike, MaybeAsync, ResolvedValue } from './schema/utils';
 import { optional as optionalSchema } from './schema/logic';
+import { MergeSchemaParameters } from './schema/io';
 
 export type ValidatorProxy<
   V extends { validator: FunctionType },
@@ -94,7 +92,7 @@ export default class Validator<F extends FunctionType> {
     this,
     FunctionType<
       ReturnType<F> | R,
-      MergeFirstParameter<Parameters<F> | [undefined?]>
+      MergeSchemaParameters<Parameters<F> | [undefined?]>
     >
   > {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

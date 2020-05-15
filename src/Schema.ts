@@ -1,5 +1,6 @@
 import { ErrorLike } from './schema/errors';
 import {
+  MergeSchemaParameters,
   SchemaParameters,
   SchemaReturnType,
   SchemaValidatorFunction,
@@ -27,7 +28,7 @@ function either<A, B>(
   Validator<
     FunctionType<
       SchemaReturnType<A> | SchemaReturnType<B>,
-      SchemaParameters<A | B>
+      MergeSchemaParameters<SchemaParameters<A | B>>
     >
   >
 >;
@@ -37,7 +38,7 @@ function either<A, B, C>(
   Validator<
     FunctionType<
       SchemaReturnType<A> | SchemaReturnType<B> | SchemaReturnType<C>,
-      SchemaParameters<A | B | C>
+      MergeSchemaParameters<SchemaParameters<A | B | C>>
     >
   >
 >;
@@ -50,7 +51,7 @@ function either<A, B, C, D>(
       | SchemaReturnType<B>
       | SchemaReturnType<C>
       | SchemaReturnType<D>,
-      SchemaParameters<A | B | C | D>
+      MergeSchemaParameters<SchemaParameters<A | B | C | D>>
     >
   >
 >;
@@ -64,7 +65,7 @@ function either<A, B, C, D, E>(
       | SchemaReturnType<C>
       | SchemaReturnType<D>
       | SchemaReturnType<E>,
-      SchemaParameters<A | B | C | D | E>
+      MergeSchemaParameters<SchemaParameters<A | B | C | D | E>>
     >
   >
 >;
@@ -79,7 +80,7 @@ function either<A, B, C, D, E, F>(
       | SchemaReturnType<D>
       | SchemaReturnType<E>
       | SchemaReturnType<F>,
-      SchemaParameters<A | B | C | D | E | F>
+      MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F>>
     >
   >
 >;
@@ -95,7 +96,7 @@ function either<A, B, C, D, E, F, G>(
       | SchemaReturnType<E>
       | SchemaReturnType<F>
       | SchemaReturnType<G>,
-      SchemaParameters<A | B | C | D | E | F | G>
+      MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F | G>>
     >
   >
 >;
@@ -112,7 +113,7 @@ function either<A, B, C, D, E, F, G, H>(
       | SchemaReturnType<F>
       | SchemaReturnType<G>
       | SchemaReturnType<H>,
-      SchemaParameters<A | B | C | D | E | F | G | H>
+      MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F | G | H>>
     >
   >
 >;
@@ -122,7 +123,7 @@ function either<A, S>(
   Validator<
     FunctionType<
       SchemaReturnType<A> | SchemaReturnType<S>,
-      SchemaParameters<A | S>
+      MergeSchemaParameters<SchemaParameters<A | S>>
     >
   >
 > {
@@ -132,7 +133,7 @@ function either<A, S>(
     Validator<
       FunctionType<
         SchemaReturnType<A> | SchemaReturnType<S>,
-        SchemaParameters<A | S>
+        MergeSchemaParameters<SchemaParameters<A | S>>
       >
     >
   >;
@@ -141,32 +142,101 @@ Schema.either = either;
 
 function merge<A>(
   ...args: [A]
-): ValidatorProxy<Validator<SchemaValidatorFunction<A>>>;
+): ValidatorProxy<
+  Validator<FunctionType<SchemaReturnType<A>, SchemaParameters<A>>>
+>;
 function merge<A, B>(
   ...args: [A, B]
-): ValidatorProxy<Validator<SchemaValidatorFunction<A & B>>>;
+): ValidatorProxy<
+  Validator<
+    FunctionType<
+      SchemaReturnType<A> & SchemaReturnType<B>,
+      MergeSchemaParameters<SchemaParameters<A> & SchemaParameters<B>>
+    >
+  >
+>;
 function merge<A, B, C>(
   ...args: [A, B, C]
-): ValidatorProxy<Validator<SchemaValidatorFunction<A & B & C>>>;
+): ValidatorProxy<
+  Validator<
+    FunctionType<
+      SchemaReturnType<A> & SchemaReturnType<B> & SchemaReturnType<C>,
+      MergeSchemaParameters<
+        SchemaParameters<A> & SchemaParameters<B> & SchemaParameters<C>
+      >
+    >
+  >
+>;
 function merge<A, B, C, D>(
   ...args: [A, B, C, D]
-): ValidatorProxy<Validator<SchemaValidatorFunction<A & B & C & D>>>;
+): ValidatorProxy<
+  Validator<
+    FunctionType<
+      SchemaReturnType<A> &
+        SchemaReturnType<B> &
+        SchemaReturnType<C> &
+        SchemaReturnType<D>,
+      MergeSchemaParameters<
+        SchemaParameters<A> &
+          SchemaParameters<B> &
+          SchemaParameters<C> &
+          SchemaParameters<D>
+      >
+    >
+  >
+>;
 function merge<A, B, C, D, E>(
   ...args: [A, B, C, D, E]
-): ValidatorProxy<Validator<SchemaValidatorFunction<A & B & C & D & E>>>;
+): ValidatorProxy<
+  Validator<
+    FunctionType<
+      SchemaReturnType<A> &
+        SchemaReturnType<B> &
+        SchemaReturnType<C> &
+        SchemaReturnType<D> &
+        SchemaReturnType<E>,
+      MergeSchemaParameters<
+        SchemaParameters<A> &
+          SchemaParameters<B> &
+          SchemaParameters<C> &
+          SchemaParameters<D> &
+          SchemaParameters<E>
+      >
+    >
+  >
+>;
 function merge<A, B, C, D, E, F>(
   ...args: [A, B, C, D, E, F]
-): ValidatorProxy<Validator<SchemaValidatorFunction<A & B & C & D & E & F>>>;
-function merge<A, B, C, D, E, F, G>(
-  ...args: [A, B, C, D, E, F, G]
 ): ValidatorProxy<
-  Validator<SchemaValidatorFunction<A & B & C & D & E & F & G>>
+  Validator<
+    FunctionType<
+      SchemaReturnType<A> &
+        SchemaReturnType<B> &
+        SchemaReturnType<C> &
+        SchemaReturnType<D> &
+        SchemaReturnType<E> &
+        SchemaReturnType<F>,
+      MergeSchemaParameters<
+        SchemaParameters<A> &
+          SchemaParameters<B> &
+          SchemaParameters<C> &
+          SchemaParameters<D> &
+          SchemaParameters<E> &
+          SchemaParameters<F>
+      >
+    >
+  >
 >;
-function merge<A, B, C, D, E, F, G, H>(
-  ...args: [A, B, C, D, E, F, G, H]
-): ValidatorProxy<
-  Validator<SchemaValidatorFunction<A & B & C & D & E & F & G & H>>
->;
+// function merge<A, B, C, D, E, F, G>(
+//   ...args: [A, B, C, D, E, F, G]
+// ): ValidatorProxy<
+//   Validator<SchemaValidatorFunction<A & B & C & D & E & F & G>>
+// >;
+// function merge<A, B, C, D, E, F, G, H>(
+//   ...args: [A, B, C, D, E, F, G, H]
+// ): ValidatorProxy<
+//   Validator<SchemaValidatorFunction<A & B & C & D & E & F & G & H>>
+// >;
 function merge(
   ...args: [unknown, ...unknown[]]
 ): ValidatorProxy<Validator<FunctionType>> {

@@ -69,12 +69,39 @@ describe('schema/io', () => {
       typeCheck<SchemaParameters<string | number>, ['str']>(['string']);
     });
 
-    it('validators', () => {
+    it('functions', () => {
       typeCheck<SchemaParameters<() => void>, []>('ok');
       typeCheck<SchemaParameters<(x: unknown) => void>, [unknown]>('ok');
       typeCheck<SchemaParameters<(x: string) => void>, [string]>('ok');
       typeCheck<SchemaParameters<(x?: string) => void>, [string?]>('ok');
       typeCheck<SchemaParameters<(x: 'foo') => void>, ['foo']>('ok');
+    });
+
+    it('functions or', () => {
+      typeCheck<SchemaParameters<(() => void) | (() => string)>, []>('ok');
+      typeCheck<
+        SchemaParameters<(() => void) | ((x: number) => string)>,
+        [number] | []
+      >('ok');
+      typeCheck<
+        SchemaParameters<((o: string) => void) | ((o: number) => void)>,
+        [string] | [number]
+      >('ok');
+      typeCheck<
+        SchemaParameters<
+          ((o: { x: number }) => void) | ((o: { y: number }) => void)
+        >,
+        [{ x: number }] | [{ y: number }]
+      >('ok');
+    });
+
+    it('functions and', () => {
+      typeCheck<
+        // SchemaParameters<
+        Parameters<((o: { x: number }) => void) | ((o: { y: number }) => void)>,
+        // >,
+        [{ x: number }] | [{ y: number }]
+      >('ok');
     });
 
     it('objects', () => {

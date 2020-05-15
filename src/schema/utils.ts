@@ -66,6 +66,18 @@ export type MaybeAsync<T, V> = unknown extends IsAsync<T>
   ? PromiseLike<V>
   : V;
 
+export type RecursiveMerge<T> = [T] extends [Primitive]
+  ? T
+  : [T] extends [[unknown]]
+  ? [RecursiveMerge<T[0]>]
+  : [T] extends [[unknown?]]
+  ? [RecursiveMerge<T[0]>?]
+  : [T] extends [object]
+  ? {
+      [K in keyof T]: RecursiveMerge<T[K]>;
+    }
+  : T;
+
 // export type RequiredKeys<T> = {
 //   [k in keyof T]-?: undefined extends T[k] ? never : k;
 // }[keyof T];

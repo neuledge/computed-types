@@ -5,12 +5,27 @@ import string from './string';
 import number from './number';
 import boolean from './boolean';
 import Schema from './Schema';
-import { SchemaResolveType } from './schema/io';
+import {
+  SchemaResolveType,
+  SchemaParameters,
+  MergeSchemaParameters,
+  SchemaReturnType,
+  SchemaValidatorFunction,
+} from './schema/io';
 import { ValidationError, PathError } from './schema/errors';
 
 export type Type<S> = SchemaResolveType<S>;
-export { ValidationError, PathError };
+export {
+  ValidationError,
+  PathError,
+  SchemaParameters,
+  MergeSchemaParameters,
+  SchemaReturnType,
+  SchemaValidatorFunction,
+};
 
 export default Schema;
 
 export { unknown, object, array, string, number, boolean };
+
+// TODO add enum

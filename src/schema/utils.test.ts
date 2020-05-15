@@ -1,6 +1,6 @@
 import 'mocha';
 import { assert } from 'chai';
-import { typeCheck, deepConcat } from './utils';
+import { typeCheck, deepConcat, RecursiveMerge } from './utils';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-function,
  @typescript-eslint/no-unused-vars */
@@ -252,6 +252,81 @@ describe('schema/utils', () => {
       assert.throw(() => deepConcat({ foo: 1 }, { foo: 2, bar: 2 }), TypeError);
       assert.throw(() => deepConcat({ foo: 1 }, null), TypeError);
       assert.throw(() => deepConcat({ foo: 1 }, true), TypeError);
+    });
+  });
+
+  describe('RecursiveMerge', () => {
+    it('or primitives', () => {
+      typeCheck<RecursiveMerge<[string] | [string]>, [string]>('ok');
+      typeCheck<RecursiveMerge<[number] | [number]>, [number]>('ok');
+      typeCheck<RecursiveMerge<[number] | [string]>, [number | string]>('ok');
+      // typeCheck<
+      //   [RecursiveMerge<[string] | [string, string]>],
+      //   [[string] | [string | string]]
+      // >('ok');
+    });
+
+    it('or primitives maybes', () => {
+      typeCheck<RecursiveMerge<[string] | [string?]>, [string?]>('ok');
+      typeCheck<RecursiveMerge<[number?] | [string]>, [(number | string)?]>(
+        'ok',
+      );
+    });
+
+    it('and primitives', () => {
+      typeCheck<RecursiveMerge<[string] & [string]>, [string]>('ok');
+      typeCheck<RecursiveMerge<[number] & [string]>, [never]>('ok');
+    });
+
+    it('and primitives maybes', () => {
+      typeCheck<RecursiveMerge<[string?] & [string]>, [string]>('ok');
+      typeCheck<RecursiveMerge<[number?] & [string]>, [never]>('ok');
+    });
+
+    it('and objects', () => {
+      typeCheck<
+        RecursiveMerge<{ foo: string } & { foo: string }>,
+        { foo: string }
+      >('ok');
+      typeCheck<
+        RecursiveMerge<{ foo: string } & { foo: number }>,
+        { foo: never }
+      >('ok');
+      typeCheck<
+        RecursiveMerge<{ foo: string } & { bar: number }>,
+        { foo: string; bar: number }
+      >('ok');
+      typeCheck<
+        RecursiveMerge<[{ foo: string }] & [{ foo: string }]>,
+        [{ foo: string }]
+      >('ok');
+      typeCheck<
+        RecursiveMerge<[{ foo: string }] & [{ bar: number }]>,
+        [{ foo: string; bar: number }]
+      >('ok');
+      typeCheck<
+        RecursiveMerge<[{ foo: string }] & [{ bar?: number }]>,
+        [{ foo: string; bar?: number }]
+      >('ok');
+    });
+
+    it('or objects', () => {
+      typeCheck<
+        RecursiveMerge<{ foo: string } | { foo: string }>,
+        { foo: string }
+      >('ok');
+      typeCheck<
+        RecursiveMerge<{ foo: string } | { foo: number }>,
+        { foo: string } | { foo: number }
+      >('ok');
+      typeCheck<
+        RecursiveMerge<[{ foo: string }] | [{ foo: string }]>,
+        [{ foo: string }]
+      >('ok');
+      typeCheck<
+        RecursiveMerge<[{ foo: string }] | [{ foo: number }]>,
+        [{ foo: string } | { foo: number }]
+      >('ok');
     });
   });
 });

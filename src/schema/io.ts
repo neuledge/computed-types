@@ -1,7 +1,4 @@
-import FunctionType, {
-  FunctionParameters,
-  MergeFirstParameter,
-} from './FunctionType';
+import FunctionType, { FunctionParameters } from './FunctionType';
 import { IsAsync, Primitive, ResolvedValue } from './utils';
 
 type SchemaOptionalKeys<S> = Exclude<
@@ -26,7 +23,7 @@ type SchemaKeysObject<S> = {
     [K in keyof S & SchemaOptionalKeys<S>]?: K;
   };
 
-type SchemaRawParameters<S> = [S] extends [FunctionType]
+export type SchemaParameters<S> = [S] extends [FunctionType]
   ? Parameters<S>
   : [S] extends [Primitive]
   ? [S]
@@ -35,19 +32,14 @@ type SchemaRawParameters<S> = [S] extends [FunctionType]
   : [S] extends [Array<any>] // eslint-disable-line @typescript-eslint/no-explicit-any
   ? [
       {
-        [K in keyof S]: SchemaRawParameters<S[K]>[0];
+        [K in keyof S]: SchemaParameters<S[K]>[0];
       },
     ]
   : [S] extends [object]
-  ? [{ [K in keyof SchemaKeysObject<S>]: SchemaRawParameters<S[K]>[0] }]
+  ? [{ [K in keyof SchemaKeysObject<S>]: SchemaParameters<S[K]>[0] }]
   : [unknown] extends [S]
   ? [unknown]
   : never;
-
-export type SchemaParameters<
-  S,
-  X extends FunctionParameters = never
-> = MergeFirstParameter<SchemaRawParameters<S> | X>;
 
 export type SchemaResolveType<S> = S extends FunctionType
   ? ResolvedValue<ReturnType<S>>
@@ -85,3 +77,15 @@ export type SchemaValidatorFunction<S> = FunctionType<
   SchemaReturnType<S>,
   SchemaParameters<S>
 >;
+
+export type MergeSchemaParameters<P extends FunctionParameters> = [P] extends [
+  never,
+]
+  ? [never]
+  : [P] extends [[]]
+  ? []
+  : [P] extends [[unknown]]
+  ? [P[0]]
+  : [P] extends [[unknown?]]
+  ? [P[0]?]
+  : P;
