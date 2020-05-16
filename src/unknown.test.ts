@@ -128,6 +128,19 @@ describe('unknown', () => {
   });
 
   it('.enum()', () => {
-    // TODO test unknown.enum
+    enum Mixed {
+      Foo = 'foo',
+      Bar = 1,
+    }
+
+    const validator = unknown.enum(Mixed);
+    typeCheck<ReturnType<typeof validator>, Mixed>('ok');
+    typeCheck<Parameters<typeof validator>, [unknown]>('ok');
+
+    assert.equal(validator('foo'), Mixed.Foo);
+    assert.equal(validator(1), Mixed.Bar);
+
+    assert.throws(() => validator(2), TypeError);
+    assert.throws(() => validator('Foo'), TypeError);
   });
 });

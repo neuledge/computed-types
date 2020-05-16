@@ -160,9 +160,9 @@ export function enumValue<
 
   return (...args: P): E[keyof E] => {
     if (!values.has(args[0] as E[keyof E])) {
-      return args[0] as E[keyof E];
+      throw toError(error || 'Unknown enum value', ...args);
     }
 
-    throw toError(error || 'Unknown enum value', ...args);
+    return args[0] as E[keyof E];
   };
 }

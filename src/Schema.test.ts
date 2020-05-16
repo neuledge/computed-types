@@ -95,6 +95,60 @@ describe('Schema', () => {
   });
 
   describe('.enum', () => {
-    // TODO test Schema.enum
+    it('Numbers', () => {
+      enum Numbers {
+        X,
+        Y,
+        Z,
+      }
+
+      const validator = Schema.enum(Numbers);
+
+      typeCheck<typeof validator, (x: Numbers) => Numbers>('ok');
+
+      assert.equal(validator(Numbers.X), Numbers.X);
+      assert.equal(validator(0), 0);
+      assert.equal(validator(1), 1);
+      assert.equal(validator(2), 2);
+
+      assert.throw(() => validator(3), TypeError);
+      assert.throw(() => validator(-1), TypeError);
+      assert.throw(() => validator('1' as any), TypeError);
+    });
+
+    it('Strings', () => {
+      enum Strings {
+        Foo = 'foo',
+        Bar = 'Bar',
+      }
+
+      const validator = Schema.enum(Strings);
+
+      typeCheck<typeof validator, (x: Strings) => Strings>('ok');
+
+      assert.equal(validator(Strings.Foo), Strings.Foo);
+      assert.equal(validator(Strings.Bar), Strings.Bar);
+      assert.equal(validator('foo' as any), 'foo');
+
+      assert.throw(() => validator('Foo' as any), TypeError);
+      assert.throw(() => validator(0 as any), TypeError);
+    });
+
+    it('Mixed', () => {
+      enum Mixed {
+        Foo = 'foo',
+        Bar = 1,
+      }
+
+      const validator = Schema.enum(Mixed, 'test');
+
+      typeCheck<typeof validator, (x: Mixed) => Mixed>('ok');
+
+      assert.equal(validator(Mixed.Foo), Mixed.Foo);
+      assert.equal(validator(Mixed.Bar), Mixed.Bar);
+
+      assert.throw(() => validator('Foo' as any), TypeError, 'test');
+      assert.throw(() => validator(0 as any), TypeError, 'test');
+    });
   });
 });
