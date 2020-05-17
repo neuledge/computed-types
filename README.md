@@ -38,11 +38,14 @@ const validator = Schema({
 
 #### Generated type:
 ```ts
-interface {
+const value = validator(data);
+
+typeof value = {
   name: string;
   amount: number;
   flags?: string[];
 }
+
 ```
 
 ### Main Features
