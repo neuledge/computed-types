@@ -29,18 +29,24 @@ interfaces on compile time to reduce code duplications and complexity.
 
 #### Runtime code:
 ```ts
-const validator = Schema({
+const UserSchema = {
   name: string,
   amount: number,
   flags: array.of(string).optional();
-});
+};
 
-const value = validator(data);
+type User = Type<typeof UserSchema>;
 ```
 
-#### Generated type:
+#### Equivalent to:
 ```ts
-typeof value == {
+const UserSchema = Joi.object({
+  username: Joi.string().required(),
+  amount: Joi.number().required(),
+  flags: Joi.array().items(Joi.string()),
+});
+
+type User = {
   name: string;
   amount: number;
   flags?: string[];
