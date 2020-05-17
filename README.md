@@ -303,7 +303,7 @@ const validator = Schema({
 });
 ```
 
-### `string.toLowerCase()`
+##### `string.toLowerCase()`
 
 Accept string and convert it to lower case.
 
@@ -311,7 +311,7 @@ Accept string and convert it to lower case.
 const validator = string.toLowerCase().trim();
 ```
 
-### `string.toUpperCase()`
+##### `string.toUpperCase()`
 
 Accept string and convert it to upper case.
 
@@ -319,7 +319,7 @@ Accept string and convert it to upper case.
 const validator = string.toUpperCase().trim();
 ```
 
-### `string.toLocaleLowerCase()`
+##### `string.toLocaleLowerCase()`
 
 Accept string and convert it to local lower case.
 
@@ -327,7 +327,7 @@ Accept string and convert it to local lower case.
 const validator = string.toLocaleLowerCase('en-US').trim();
 ```
 
-### `string.toLocaleUpperCase()`
+##### `string.toLocaleUpperCase()`
 
 Accept string and convert it to local upper case.
 
@@ -335,7 +335,7 @@ Accept string and convert it to local upper case.
 const validator = string.toLocaleUpperCase('en-US').trim();
 ```
 
-### `string.trim()`
+##### `string.trim()`
 
 Accept string and trim it.
 
@@ -343,7 +343,7 @@ Accept string and trim it.
 const validator = string.trim();
 ```
 
-### `string.normalize()`
+##### `string.normalize()`
 
 Accept string and normalize it.
 
@@ -351,7 +351,7 @@ Accept string and normalize it.
 const validator = string.normalize();
 ```
 
-### `string.min()`
+##### `string.min()`
 
 Accept string with minimum given length.
 
@@ -359,7 +359,7 @@ Accept string with minimum given length.
 const validator = string.min(2).toLowerCase();
 ```
 
-### `string.max()`
+##### `string.max()`
 
 Accept string with maximum given length.
 
@@ -367,7 +367,7 @@ Accept string with maximum given length.
 const validator = string.max(10).toUpperCase();
 ```
 
-### `string.between()`
+##### `string.between()`
 
 Accept string within the given length range.
 
@@ -375,7 +375,7 @@ Accept string within the given length range.
 const validator = string.between(2, 10).trim();
 ```
 
-### `string.regexp()`
+##### `string.regexp()`
 
 Accept onlu strings that match the given regular expression.
 
