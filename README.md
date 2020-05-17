@@ -22,10 +22,10 @@
 </p>
 <br>
 
-**Computed-Types**  (formerly: [Funval](https://www.npmjs.org/package/funval)) is a strongly-typed
-validation library that seamlessly validates runtime types with perfect synchronization to
-TypeScript types. Using only plain functions, *computed-types* knows how to validate your data and
-automatically generates TypeScript interfaces to reduce code duplications and complexity.
+**Computed-Types** (formerly: [Funval](https://www.npmjs.org/package/funval)) is a strongly-typed
+validation library for TypeScript. Using only plain functions, *computed-types* knows how to
+validate your data and automatically generates accurate TypeScript interfaces to reduce code
+duplications and complexity.
 
 ```ts
 const validator = Schema({
@@ -37,12 +37,12 @@ const validator = Schema({
 
 ### Main Features
 
-- **Easy to Read** - Uses runtime types like TypeScript (including `string`, `number`, `boolean`,
+- **Easy to Read** - Uses runtime types like in TypeScript (including `string`, `number`, `boolean`,
  etc...)
-- **Reusable Interfaces** - Create new validator using plain functions in seconds.
-- **TypeScript Validation** - Detect errors during compile time.
-- **Function Composition** - Pipe multiple validators to generate new ones.
-- **Asynchronous & Synchronous Support** - Automatically detected promises.
+- **Reusable Interfaces** - Create new validator using existing functions in seconds.
+- **TypeScript Validation** - Detect errors during compile time & runtime.
+- **Function Composition** - Chain multiple validators to generate new types.
+- **Asynchronous & Synchronous Support** - Automatically detected promises and async validation.
 - **Pure Javascript** - Also works without TypeScript.
 
 
