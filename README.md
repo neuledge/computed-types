@@ -41,7 +41,7 @@ type User = Type<typeof UserSchema>;
 #### Equivalent code in `Joi`:
 ```ts
 const UserSchema = Joi.object({
-  username: Joi.string().required(),
+  name: Joi.string().required(),
   amount: Joi.number().required(),
   flags: Joi.array().items(Joi.string()),
 });
