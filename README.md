@@ -40,7 +40,7 @@ const value = validator(data);
 
 #### Generated type:
 ```ts
-typeof value = {
+typeof value == {
   name: string;
   amount: number;
   flags?: string[];
