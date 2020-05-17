@@ -42,6 +42,8 @@ describe('README', () => {
 
     assert.notEqual(err, null);
     assert.equal(user, undefined);
+
+    assert.equal(err.message, 'status: Expect value to equal "suspended"');
     assert.equal(err.errors.length, 1);
     assert.deepEqual(err.errors[0].path, ['status']);
     assert.equal(

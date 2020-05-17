@@ -121,7 +121,7 @@ export default function compiler<S>(
     } catch (e) {
       obj = {};
       res = {};
-      mainError = e || new TypeError(`Unknown Validation Error`);
+      mainError = e;
     }
 
     const promises: PromiseLike<void>[] = [];
