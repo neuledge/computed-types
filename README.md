@@ -27,6 +27,14 @@ validation library that seamlessly validates runtime types with perfect synchron
 TypeScript types. Using only plain functions, *computed-types* knows how to validate your data and
 automatically generates TypeScript interfaces to reduce code duplications and complexity.
 
+```ts
+const validator = Schema({
+  name: string,
+  amount: number,
+  flags: array.of(string).optional();
+});
+```
+
 ### Main Features
 
 - **Easy to Read** - Uses runtime types like TypeScript (including `string`, `number`, `boolean`,
