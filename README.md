@@ -27,15 +27,17 @@ validation library for TypeScript. Using only plain functions, *computed-types* 
 validate your data on runtime and automatically generates accurate static TypeScript interfaces to
 reduce code duplications and complexity.
 
+#### Runtime code:
 ```ts
-// Runtime Code:
 const validator = Schema({
   name: string,
   amount: number,
   flags: array.of(string).optional();
 });
+```
 
-// Generated TypeScript interface:
+#### Generated type:
+```ts
 interface SchemaType {
   name: string;
   amount: number;
