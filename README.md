@@ -27,7 +27,7 @@ validation library for TypeScript. Using functions interfaces, *computed-types* 
 transform and validate your data in runtime and automatically generates accurate TypeScript
 interfaces on compile time to reduce code duplications and complexity.
 
-#### Runtime code:
+#### Using `computed-types`:
 ```ts
 const UserSchema = {
   name: string,
@@ -38,7 +38,7 @@ const UserSchema = {
 type User = Type<typeof UserSchema>;
 ```
 
-#### Equivalent to:
+#### Equivalent code in `Joi`:
 ```ts
 const UserSchema = Joi.object({
   username: Joi.string().required(),
