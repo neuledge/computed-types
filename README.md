@@ -501,6 +501,7 @@ Accept only boolean type values.
 const validator = Schema({
   agree: boolean
 });
+```
 
 <br>
 
