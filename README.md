@@ -163,12 +163,11 @@ const user = await validator({ username: 'test' });
 
 ## Validators Chain
 
-All native validators under `"computed-types"` library are validation functions that can
- be called and validate any sort of data. In addition, each validator has a few helper methods to
- chain multiple validators together.
+Every validator in `"computed-types"` is a validation function that can be called and validate
+any sort of data. In addition, each validator has a few helper methods to chain multiple
+validators together.
 
-For example, this validator will accept any `unknown` value, try to convert it to a number, make
-sure it's a positive number and convert it to a 2-fixed string:
+For example, check out this use case:
 
 ```ts
 import { unknown } from 'computed-types';
