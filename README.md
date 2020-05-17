@@ -45,7 +45,7 @@ automatically generates TypeScript interfaces to reduce code duplications and co
 - [Install](#install)
 - [Usage](#usage)
 - [Creating new Types](#creating-new-types)
-- [Avaiable Types](#avaiable-types)
+- [Available Types](#available-types)
 - [License](#license)
 
 <br>
@@ -160,9 +160,12 @@ const user = await validator({ username: 'test' });
 
 <br>
 
-## Avaiable Types
+## Available Types
 
 `import` [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`](#number), [`boolean`](#boolean), [`array`](#array) `} from 'computed-types';`
+
+<br />
+<br />
 
 ### `Schema`
 
