@@ -167,7 +167,7 @@ Click on each type to see some validation examples.
 
 **`import`** [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`](#number), [`boolean`](#boolean), [`array`](#array) `}` **`from`** `'computed-types';`
 
-<br />
+<br>
 
 ### `Schema`
 
@@ -213,7 +213,7 @@ enum Status {
 const validator = Schema.enum(Status, 'Invalid status');
 ```
 
-<br />
+<br>
 
 ### `unknown`
 
@@ -291,7 +291,7 @@ enum Status {
 const validator = unknown.enum(Status);
 ```
 
-<br />
+<br>
 
 ### `string`
 
@@ -377,10 +377,175 @@ const validator = string.between(2, 10).trim();
 
 ##### `string.regexp()`
 
-Accept onlu strings that match the given regular expression.
+Accept only strings that match the given regular expression.
 
 ```ts
 const validator = string.regexp(/^Hello/).trim();
+```
+
+<br>
+
+### `number`
+
+Accept only number type values.
+
+```ts
+const validator = Schema({
+  amount: number
+});
+```
+
+##### `number.float()`
+
+Accept only floating numbers (throws on NaN or non-finite values).
+
+```ts
+const validator = number.float().gt(0);
+```
+
+##### `number.integer()`
+
+Accept only integer numbers.
+
+```ts
+const validator = number.integer().gt(0);
+```
+
+##### `number.toExponential()`
+
+Accept number and convert it to exponential format string.
+
+```ts
+const validator = number.toExponential().toUpperCase();
+```
+
+##### `number.toFixed()`
+
+Accept number and convert it to fixed format string.
+
+```ts
+const validator = number.toFixed(3);
+```
+
+##### `number.toLocaleString()`
+
+Accept number and convert it to locale string.
+
+```ts
+const validator = number.toLocaleString('en-US');
+```
+
+##### `number.toPrecision()`
+
+Accept number and convert it to precision string.
+
+```ts
+const validator = number.toPrecision(2);
+```
+
+##### `number.toString()`
+
+Accept number and convert it to string.
+
+```ts
+const validator = number.toString(16).toUpperCase();
+```
+
+##### `number.gte()`
+
+Accept number that greater or equal than the boundary given.
+
+```ts
+const validator = number.gte(1.5);
+```
+
+##### `number.lte()`
+
+Accept number that lower or equal than the boundary given.
+
+```ts
+const validator = number.lte(10.5);
+```
+
+##### `number.gt()`
+
+Accept number that greater than the boundary given.
+
+```ts
+const validator = number.gt(1.5);
+```
+
+##### `number.lt()`
+
+Accept number that lower than the boundary given.
+
+```ts
+const validator = number.lt(10.5);
+```
+
+##### `number.between()`
+
+Accept number between the given boundaries.
+
+```ts
+const validator = number.between(0, 1);
+```
+
+<br>
+
+### `boolean`
+
+Accept only boolean type values.
+
+```ts
+const validator = Schema({
+  agree: boolean
+});
+
+<br>
+
+### `array`
+
+Accept only array type values.
+
+```ts
+const validator = Schema({
+  agree: array
+});
+
+##### `array.of()`
+
+Accept only array with given items.
+
+```ts
+const numbers = array.of(number); // numbers[]
+const tuple = array.of(number).between(1, 2); // [number, number?]
+const objects = array.of({ foo: number }); // { foo: number }[]
+const enums = array.of(Schema.enum(Status); // Status[]
+```
+
+##### `array.min()`
+
+Accept only array with minimum given items.
+
+```ts
+const validator = array.min(2);
+```
+
+##### `array.max()`
+
+Accept only array with maximum given items.
+
+```ts
+const validator = array.max(10);
+```
+
+##### `array.between()`
+
+Accept only array with minimum and maximum count of items.
+
+```ts
+const validator = array.between(2, 10);
 ```
 
 <br>
