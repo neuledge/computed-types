@@ -34,12 +34,12 @@ const validator = Schema({
   amount: number,
   flags: array.of(string).optional();
 });
+
+const value = validator(data);
 ```
 
 #### Generated type:
 ```ts
-const value = validator(data);
-
 typeof value = {
   name: string;
   amount: number;
