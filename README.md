@@ -162,9 +162,11 @@ const user = await validator({ username: 'test' });
 
 ## Available Types
 
-`import` [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`](#number), [`boolean`](#boolean), [`array`](#array) `} from 'computed-types';`
+It's usuful to import the following native types when building custom schemas.
+Click on each type to see some validation examples.
 
-<br />
+**`import`** [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`](#number), [`boolean`](#boolean), [`array`](#array) `}` **`from`** `'computed-types';`
+
 <br />
 
 ### `Schema`
@@ -180,7 +182,7 @@ const validator = Schema({
 
 ##### `Schema.either`
 
-OR switch. Create a validator from multiple function validators or schema objects.
+Works as OR switch. Create a validator from multiple function validators or schema objects.
 
 ```ts
 const validator = Schema.either({ foo: string}, { bar: number });
@@ -189,7 +191,7 @@ const validator = Schema.either({ foo: string}, { bar: number });
 
 ##### `Schema.merge`
 
-AND switch. Create a validator from multiple function validators or schema objects.
+Works as AND switch. Create a validator from multiple function validators or schema objects.
 ```ts
 const validator = Schema.merge({ foo: string}, { bar: number });
 // validate: { 
@@ -210,6 +212,8 @@ enum Status {
 
 const validator = Schema.enum(Status, 'Invalid status');
 ```
+
+<br />
 
 ### `unknown`
 
@@ -236,9 +240,7 @@ const validator = unknown.schema({
 Accept any value as an input and try to convert it to an object:
 
 ```ts
-const validator = Schema({
-  data: unknown.object('Expect data to be an object'),
-});
+const validator = unknown.object('Expect data to be an object');
 ```
 
 ##### `unknown.array()`
@@ -246,9 +248,7 @@ const validator = Schema({
 Accept any value as an input and try to convert it to an array:
 
 ```ts
-const validator = Schema({
-  data: unknown.array(),
-});
+const validator = unknown.array().min(1).of(boolean);
 ```
 
 ##### `unknown.string()`
@@ -256,9 +256,7 @@ const validator = Schema({
 Accept any value as an input and try to convert it to a string:
 
 ```ts
-const validator = Schema({
-  data: unknown.string('Expect data to be string'),
-});
+const validator = unknown.string('Expect data to be string').toUpperCase();
 
 // will accept: `{ data: 1 }` and convert it to `{ data: '1' }`
 // will throw: `{ data: null }`
@@ -269,9 +267,7 @@ const validator = Schema({
 Accept any value as an input and try to convert it to a number:
 
 ```ts
-const validator = Schema({
-  data: unknown.number('Expect data to be number'),
-});
+const validator = unknown.number('Expect data to be number').gt(0);
 ```
 
 ##### `unknown.boolean()`
@@ -279,9 +275,7 @@ const validator = Schema({
 Accept any value as an input and try to convert it to a boolean:
 
 ```ts
-const validator = Schema({
-  data: unknown.boolean('Expect data to be boolean'),
-});
+const validator = unknown.boolean('Expect data to be boolean').equals(true);
 ```
 
 ##### `unknown.enum()`
@@ -294,9 +288,99 @@ enum Status {
   Invalid,
 }
 
+const validator = unknown.enum(Status);
+```
+
+<br />
+
+### `string`
+
+Accept only string values (including empty strings).
+
+```ts
 const validator = Schema({
-  status: unknown.enum(Status),
+  content: string,
 });
+```
+
+### `string.toLowerCase()`
+
+Accept string and convert it to lower case.
+
+```ts
+const validator = string.toLowerCase().trim();
+```
+
+### `string.toUpperCase()`
+
+Accept string and convert it to upper case.
+
+```ts
+const validator = string.toUpperCase().trim();
+```
+
+### `string.toLocaleLowerCase()`
+
+Accept string and convert it to local lower case.
+
+```ts
+const validator = string.toLocaleLowerCase('en-US').trim();
+```
+
+### `string.toLocaleUpperCase()`
+
+Accept string and convert it to local upper case.
+
+```ts
+const validator = string.toLocaleUpperCase('en-US').trim();
+```
+
+### `string.trim()`
+
+Accept string and trim it.
+
+```ts
+const validator = string.trim();
+```
+
+### `string.normalize()`
+
+Accept string and normalize it.
+
+```ts
+const validator = string.normalize();
+```
+
+### `string.min()`
+
+Accept string with minimum given length.
+
+```ts
+const validator = string.min(2).toLowerCase();
+```
+
+### `string.max()`
+
+Accept string with maximum given length.
+
+```ts
+const validator = string.max(10).toUpperCase();
+```
+
+### `string.between()`
+
+Accept string within the given length range.
+
+```ts
+const validator = string.between(2, 10).trim();
+```
+
+### `string.regexp()`
+
+Accept onlu strings that match the given regular expression.
+
+```ts
+const validator = string.regexp(/^Hello/).trim();
 ```
 
 <br>
