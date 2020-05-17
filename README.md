@@ -120,8 +120,9 @@ console.log(err);
 
 ## Creating new Types
 
-A computed type is any function that can return a value without throwing any exceptions. For
-example this type will validate email addresses:
+A computed type is any function that can return a value without throwing any exceptions.
+
+For example this type will validate email addresses:
 
 ```ts
 import * as EmailValidator from 'email-validator';
@@ -135,7 +136,8 @@ function Email(input: unknown): string {
 }
 ```
 
-You can use the above validator on schemas as an `Email` type:
+You can use the above validator on schemas as an `Email` type and it will validate inputs in the
+form of `{ email: unknown }` to `{ email: string }` type.
 
 ```ts
 const UserSchema = {
@@ -144,9 +146,6 @@ const UserSchema = {
 
 const validator = Schema(UserSchema);
 ```
-
-The above validator with validate inputs in the form of `{ email: unknown }` to `{ email: string
-}` values.
 
 To create optional types, change the validator arguments to optional as well:
 
@@ -188,6 +187,9 @@ const validator = Schema(UserSchema);
 
 const user = await validator({ username: 'test' });
 ```
+
+Trying to access the return value without resolving it with promise first will detect and alert
+automatically via TypeScript on compile time.
 
 <br>
 
