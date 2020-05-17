@@ -23,9 +23,9 @@
 <br>
 
 **Computed-Types** (formerly: [Funval](https://www.npmjs.org/package/funval)) is a strongly-typed
-validation library for TypeScript. Using functions interfaces, *computed-types* knows how to
-transform and validate your data in runtime and automatically generates accurate TypeScript
-interfaces on compile time to reduce code duplications and complexity.
+validation library for TypeScript. Using function interfaces, *computed-types* knows how to
+transform and validate your data, and automatically generates accurate TypeScript
+interfaces on compile time.
 
 #### Using `computed-types`:
 ```ts
@@ -51,16 +51,16 @@ type User = {
   amount: number;
   flags?: string[];
 }
-
 ```
 
 ### Main Features
 
 - **Easy to Read** - Uses runtime types like in TypeScript (including `string`, `array`, `unknown`,
  etc...)
-- **Reusable Interfaces** - Create new validator using existing functions in seconds.
-- **TypeScript Validation** - Detect errors during compile time & runtime.
+- **Reduce Duplication** - Create new validator using existing functions in seconds.
+- **TypeScript Validation** - Detect errors during compile time as well.
 - **Function Composition** - Chain multiple validators to generate new types.
+- **Data Transformation** - Combine validation and formatting in the one action.
 - **Asynchronous & Synchronous Support** - Automatically detected promises and async validation.
 - **Pure Javascript** - Also works without TypeScript.
 
