@@ -135,8 +135,7 @@ function Email(input: unknown): string {
 }
 ```
 
-Using the function interface, this type will receive any `unknown` value and try to convert it to
- a valid email address as a `string`. You can use the above validator on schemas as an `Email` type:
+You can use the above validator on schemas as an `Email` type:
 
 ```ts
 const UserSchema = {
@@ -144,19 +143,20 @@ const UserSchema = {
 };
 
 const validator = Schema(UserSchema);
-
-// validate `{ email: unknown }` to `{ email: string }`
 ```
 
-To create optional types, change the validator arguments to optional as well and handle :
+The above validator with validate inputs in the form of `{ email: unknown }` to `{ email: string
+}` values.
+
+To create optional types, change the validator arguments to optional as well:
 
 ```ts
 function OptionalEmail(input?: unknown): string | undefined {
   return input == null ? undefined : Email(input);
 }
-
-// will validate `{ email?: unknown }` to `{ email: string | undefined }`
 ```
+
+This will validate inputs in the form of `{ email?: unknown }` to `{ email: string | undefined }`.
 
 <br>
 
