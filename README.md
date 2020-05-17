@@ -219,10 +219,10 @@ console.log(validator('123.4567')); // '123.46'
 ```
 
 You can [see here](#available-types) all the custom chain methods for each type. Please note that
- after calling `toFixed`, the validator is no longer return a `number` but a
+ after calling `toFixed`, the validator no longer returns a `number` but a
 `string` so all the helpers functions available after `toFixed` will be the `string` helpers.
 
-In addition the type helpers, each validator have those default chain helpers so use:
+In addition the type helpers, each validator has those default chain helpers so use:
 
 - [`.equals()`](#equals)
 - [`.test()`](#test)
