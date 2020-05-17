@@ -178,9 +178,9 @@ describe('Validator', () => {
       assert.instanceOf(res2[0], TypeError);
     });
 
-    it('.message(string)', () => {
+    it('.error(string)', () => {
       const error = 'test message';
-      const validator = positiveNumber.message(error);
+      const validator = positiveNumber.error(error);
 
       assert.equal(validator(11), 11);
       assert.equal(validator(40), 40);
@@ -189,9 +189,9 @@ describe('Validator', () => {
       assert.throws(() => validator('foo' as any), TypeError, error);
     });
 
-    it('.message(Error)', () => {
+    it('.error(Error)', () => {
       const error = new ReferenceError('my error');
-      const validator = positiveNumber.message(error);
+      const validator = positiveNumber.error(error);
 
       assert.equal(validator(11), 11);
       assert.equal(validator(40), 40);
@@ -204,8 +204,8 @@ describe('Validator', () => {
       );
     });
 
-    it('.message(function)', () => {
-      const validator = positiveNumber.message((input) => `error: ${input}`);
+    it('.error(function)', () => {
+      const validator = positiveNumber.error((input) => `error: ${input}`);
 
       assert.equal(validator(11), 11);
       assert.equal(validator(40), 40);
@@ -275,7 +275,7 @@ describe('Validator', () => {
 
     it('.message(string)', async () => {
       const error = 'test message';
-      const validator = positiveNumber.message(error);
+      const validator = positiveNumber.error(error);
 
       assert.equal(await validator(11), 11);
       assert.equal(await validator(40), 40);

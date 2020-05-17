@@ -78,9 +78,9 @@ export function destruct<F extends FunctionType>(
   >;
 }
 
-export function message<R, P extends FunctionParameters>(
+export function error<R, P extends FunctionParameters>(
   validator: FunctionType<R, P>,
-  error: ErrorLike<P>,
+  err: ErrorLike<P>,
 ): FunctionType<R, P> {
   return (...args: P): R => {
     try {
@@ -90,10 +90,10 @@ export function message<R, P extends FunctionParameters>(
       }
 
       return (res.then(null, (): never => {
-        throw toError(error, ...args);
+        throw toError(err, ...args);
       }) as unknown) as R;
     } catch (e) {
-      throw toError(error, ...args);
+      throw toError(err, ...args);
     }
   };
 }

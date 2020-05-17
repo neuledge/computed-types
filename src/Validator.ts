@@ -1,6 +1,6 @@
 import FunctionType, { FunctionParameters } from './schema/FunctionType';
 import { ErrorLike } from './schema/errors';
-import { destruct, equals, message, test } from './schema/validations';
+import { destruct, equals, error, test } from './schema/validations';
 import { isPromiseLike, MaybeAsync, ResolvedValue } from './schema/utils';
 import { optional as optionalSchema } from './schema/logic';
 import { MergeSchemaParameters } from './schema/io';
@@ -118,12 +118,12 @@ export default class Validator<F extends FunctionType> {
     return new Class(destruct(validator, error)).proxy();
   }
 
-  public message(error: ErrorLike<Parameters<F>>): ValidatorProxy<this> {
+  public error(err: ErrorLike<Parameters<F>>): ValidatorProxy<this> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Class = (this as any).constructor;
     const { validator } = this;
 
-    return new Class(message(validator, error)).proxy();
+    return new Class(error(validator, err)).proxy();
   }
 }
 

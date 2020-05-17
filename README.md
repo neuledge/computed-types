@@ -45,6 +45,7 @@ automatically generates TypeScript interfaces to reduce code duplications and co
 - [Install](#install)
 - [Usage](#usage)
 - [Creating new Types](#creating-new-types)
+- [Validators Chain](#validators-chain)
 - [Available Types](#available-types)
 - [License](#license)
 
@@ -156,6 +157,125 @@ const UserSchema = {
 const validator = Schema(UserSchema);
 
 const user = await validator({ username: 'test' });
+```
+
+<br>
+
+## Validators Chain
+
+All native validators under `"computed-types"` library are validation functions that can
+ be called and validate any sort of data. In addition, each validator has a few helper methods to
+ chain multiple validators together.
+
+For example, this validator will accept any `unknown` value, try to convert it to a number, make
+sure it's a positive number and convert it to a 2-fixed string:
+
+```ts
+import { unknown } from 'computed-types';
+
+const validator = unknown.number().gt(0).toFixed(2);
+
+console.log(validator('123.4567')); // '123.46'
+```
+
+You can [see here](#available-types) all the custom chain methods for each type. Please note that
+ after calling `toFixed`, the validator is no longer return a `number` but a
+`string` so all the helpers functions available after `toFixed` will be the `string` helpers.
+
+In addition the type helpers, each validator have those default chain helpers so use:
+
+- [`.equals()`](#equals)
+- [`.test()`](#test)
+- [`.transform()`](#transform)
+- [`.construct()`](#construct)
+- [`.optional()`](#optional)
+- [`.destruct()`](#destruct)
+- [`.error()`](#error)
+
+<br>
+
+##### `.equals()`
+
+Verify the return value equals to the given value.
+
+```ts
+const validator = boolean.equals(true);
+```
+
+##### `.test()`
+
+Verify the return value pass the given test function.
+
+```ts
+import * as EmailValidator from 'email-validator';
+
+const validator = string.test(EmailValidator.validate, 'Invalid email address');
+```
+
+##### `.transform()`
+
+Transform the return value to a new value or throw to fail the validation process. The reutrn
+value can be any value, including different types.
+
+```ts
+const validator = number.transform((x): number => {
+  if (x <= 0) {
+    throw new RangeError('Expected number to be positive');
+  }
+
+  return Math.sqrt(x);
+});
+```
+
+##### `.construct()`
+
+Similar to [`.transform()`](#transform) but less common. This helper is useful when you want to
+change the validator input before validating it. The returning value of the construct function
+should always return an array as this array will pass to the original validator input as arguments.
+
+```ts
+const validator = number.gt(1).construct((x: number, y: number) => [x + y]);
+validators(x, y); // x + y
+```
+
+##### `.optional()`
+
+Will convert the validator to an optional by allowing `undefined` values. This is very useful
+when creating optional properties on a schema.
+
+```ts
+const validator = Schema({
+  name: string.trim().min(1),
+  address: string.trim().optional(),
+})
+```
+
+##### `.destruct()`
+
+Use this as the final helper on the chain. It will catch any validation error and spread it to a
+2-arguments array with an error and possible value on success. Useful if you don't like catching
+errors.
+
+```ts
+const validator = Schema({
+  name: string.trim().min(1),
+}).destruct();
+
+const [err, user] = validator(req.body);
+```
+
+##### `.error()`
+
+Will catch any error and replace it with your custom error instead. You can pass a `string`,
+`Error` or a `function` that will generate an error for you. Notice that on most cases you will
+not need to use this helpers, as most validation helpers has an optional `error` param with the
+same functionality.
+
+```ts
+const validator = Schema({
+  name: string.error('expect input to be string'),
+  amount: number.gt(0, (val) => `${val} is not positive amount`);
+});
 ```
 
 <br>

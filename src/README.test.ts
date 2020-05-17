@@ -1,7 +1,7 @@
 import 'mocha';
 import { assert } from 'chai';
 import { typeCheck } from './schema/utils';
-import Schema, { Type, string, number, array } from './';
+import Schema, { Type, string, number, array, unknown } from './';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -48,5 +48,11 @@ describe('README', () => {
       err.errors[0].error.message,
       'Expect value to equal "suspended"',
     );
+  });
+
+  it('Validator chain', () => {
+    const validator = unknown.number().gt(0).toFixed(2);
+
+    assert.equal(validator('123.4567'), '123.46');
   });
 });
