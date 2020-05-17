@@ -37,6 +37,17 @@ automatically generates TypeScript interfaces to reduce code duplications and co
 - **Asynchronous & Synchronous Support** - Automatically detected promises.
 - **Pure Javascript** - Also works without TypeScript.
 
+
+<br>
+
+## Table of Contents
+
+- [Install](#install)
+- [Usage](#usage)
+- [Creating new Types](#creating-new-types)
+- [Avaiable Types](#avaiable-types)
+- [License](#license)
+
 <br>
 
 ## Install
@@ -145,6 +156,144 @@ const UserSchema = {
 const validator = Schema(UserSchema);
 
 const user = await validator({ username: 'test' });
+```
+
+<br>
+
+## Avaiable Types
+
+`import` [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`](#number), [`boolean`](#boolean), [`array`](#array) `} from 'computed-types';`
+
+### `Schema`
+
+Create a validator from schema object, values or function validators.
+
+```ts
+const validator = Schema({
+  name: string,
+  amount: number,
+}, 'Missing name or amount');
+```
+
+##### `Schema.either`
+
+OR switch. Create a validator from multiple function validators or schema objects.
+
+```ts
+const validator = Schema.either({ foo: string}, { bar: number });
+// validate: { foo: string; } | { bar: number; }
+```
+
+##### `Schema.merge`
+
+AND switch. Create a validator from multiple function validators or schema objects.
+```ts
+const validator = Schema.merge({ foo: string}, { bar: number });
+// validate: { 
+//   foo: string;
+//   bar: number; 
+// }
+```
+
+##### `Schema.enum`
+
+Create a validator from TypeScript enum.
+
+```ts
+enum Status {
+ OK,
+ Invalid,
+};
+
+const validator = Schema.enum(Status, 'Invalid status');
+```
+
+### `unknown`
+
+Accept any `unknown` value:
+
+```ts
+const validator = Schema({
+  data: unknown,
+});
+```
+
+##### `unknown.schema()`
+
+Accept any value as an input and try to convert it the given schema:
+
+```ts
+const validator = unknown.schema({
+  foo: string.trim(),
+})
+```
+
+##### `unknown.object()`
+
+Accept any value as an input and try to convert it to an object:
+
+```ts
+const validator = Schema({
+  data: unknown.object('Expect data to be an object'),
+});
+```
+
+##### `unknown.array()`
+
+Accept any value as an input and try to convert it to an array:
+
+```ts
+const validator = Schema({
+  data: unknown.array(),
+});
+```
+
+##### `unknown.string()`
+
+Accept any value as an input and try to convert it to a string:
+
+```ts
+const validator = Schema({
+  data: unknown.string('Expect data to be string'),
+});
+
+// will accept: `{ data: 1 }` and convert it to `{ data: '1' }`
+// will throw: `{ data: null }`
+```
+
+##### `unknown.number()`
+
+Accept any value as an input and try to convert it to a number:
+
+```ts
+const validator = Schema({
+  data: unknown.number('Expect data to be number'),
+});
+```
+
+##### `unknown.boolean()`
+
+Accept any value as an input and try to convert it to a boolean:
+
+```ts
+const validator = Schema({
+  data: unknown.boolean('Expect data to be boolean'),
+});
+```
+
+##### `unknown.enum()`
+
+Accept any value as an input and try to convert it to the given enum:
+
+```ts
+enum Status {
+  OK,
+  Invalid,
+}
+
+const validator = Schema({
+  status: unknown.enum(Status),
+});
 ```
 
 <br>
