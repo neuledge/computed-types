@@ -22,6 +22,11 @@ describe('schema/switch', () => {
       assert.equal(findSwitchKey({ key: 'foo' }, undefined), null);
     });
 
+    it('should not find on non-primitive keys', () => {
+      assert.equal(findSwitchKey({ key: 'foo' }, { key: () => null }), null);
+      assert.equal(findSwitchKey({ key: 'foo' }, { key: {} }), null);
+    });
+
     it('should find primitive switches', () => {
       assert.deepEqual(findSwitchKey({ key: 'foo' }, { key: 'bar' }), [
         'key',
