@@ -6,6 +6,7 @@ import {
 import FunctionType from './FunctionType';
 import compiler from './compiler';
 import { deepConcat, isPromiseLike } from './utils';
+import { findSwitchKey, generateSwitch } from './switch';
 
 export function either<A>(
   ...candidates: [A]
@@ -14,13 +15,15 @@ export function either<A, B>(
   ...candidates: [A, B]
 ): FunctionType<
   SchemaReturnType<A> | SchemaReturnType<B>,
-  MergeSchemaParameters<SchemaParameters<A | B>>
+  MergeSchemaParameters<SchemaParameters<A> | SchemaParameters<B>>
 >;
 export function either<A, B, C>(
   ...candidates: [A, B, C]
 ): FunctionType<
   SchemaReturnType<A> | SchemaReturnType<B> | SchemaReturnType<C>,
-  MergeSchemaParameters<SchemaParameters<A | B | C>>
+  MergeSchemaParameters<
+    SchemaParameters<A> | SchemaParameters<B> | SchemaParameters<C>
+  >
 >;
 export function either<A, B, C, D>(
   ...candidates: [A, B, C, D]
@@ -29,7 +32,12 @@ export function either<A, B, C, D>(
   | SchemaReturnType<B>
   | SchemaReturnType<C>
   | SchemaReturnType<D>,
-  MergeSchemaParameters<SchemaParameters<A | B | C | D>>
+  MergeSchemaParameters<
+    | SchemaParameters<A>
+    | SchemaParameters<B>
+    | SchemaParameters<C>
+    | SchemaParameters<D>
+  >
 >;
 export function either<A, B, C, D, E>(
   ...candidates: [A, B, C, D, E]
@@ -39,7 +47,13 @@ export function either<A, B, C, D, E>(
   | SchemaReturnType<C>
   | SchemaReturnType<D>
   | SchemaReturnType<E>,
-  MergeSchemaParameters<SchemaParameters<A | B | C | D | E>>
+  MergeSchemaParameters<
+    | SchemaParameters<A>
+    | SchemaParameters<B>
+    | SchemaParameters<C>
+    | SchemaParameters<D>
+    | SchemaParameters<E>
+  >
 >;
 export function either<A, B, C, D, E, F>(
   ...candidates: [A, B, C, D, E, F]
@@ -50,7 +64,14 @@ export function either<A, B, C, D, E, F>(
   | SchemaReturnType<D>
   | SchemaReturnType<E>
   | SchemaReturnType<F>,
-  MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F>>
+  MergeSchemaParameters<
+    | SchemaParameters<A>
+    | SchemaParameters<B>
+    | SchemaParameters<C>
+    | SchemaParameters<D>
+    | SchemaParameters<E>
+    | SchemaParameters<F>
+  >
 >;
 export function either<A, B, C, D, E, F, G>(
   ...candidates: [A, B, C, D, E, F, G]
@@ -62,7 +83,15 @@ export function either<A, B, C, D, E, F, G>(
   | SchemaReturnType<E>
   | SchemaReturnType<F>
   | SchemaReturnType<G>,
-  MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F | G>>
+  MergeSchemaParameters<
+    | SchemaParameters<A>
+    | SchemaParameters<B>
+    | SchemaParameters<C>
+    | SchemaParameters<D>
+    | SchemaParameters<E>
+    | SchemaParameters<F>
+    | SchemaParameters<G>
+  >
 >;
 export function either<A, B, C, D, E, F, G, H>(
   ...candidates: [A, B, C, D, E, F, G, H]
@@ -75,7 +104,16 @@ export function either<A, B, C, D, E, F, G, H>(
   | SchemaReturnType<F>
   | SchemaReturnType<G>
   | SchemaReturnType<H>,
-  MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F | G | H>>
+  MergeSchemaParameters<
+    | SchemaParameters<A>
+    | SchemaParameters<B>
+    | SchemaParameters<C>
+    | SchemaParameters<D>
+    | SchemaParameters<E>
+    | SchemaParameters<F>
+    | SchemaParameters<G>
+    | SchemaParameters<H>
+  >
 >;
 export function either<A, S>(
   ...candidates: [A, ...S[]]
@@ -88,6 +126,14 @@ export function either<A, S>(
   }
 
   const validators = candidates.map((schema) => compiler(schema));
+
+  const switchKey = findSwitchKey(...candidates);
+  if (switchKey) {
+    return generateSwitch(switchKey, validators) as FunctionType<
+      SchemaReturnType<A> | SchemaReturnType<S>,
+      SchemaParameters<A | S>
+    >;
+  }
 
   return ((...args: unknown[]): unknown => {
     let i = 0;

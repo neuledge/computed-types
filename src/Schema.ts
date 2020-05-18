@@ -28,7 +28,7 @@ interface SchemaType {
     Validator<
       FunctionType<
         SchemaReturnType<A> | SchemaReturnType<B>,
-        MergeSchemaParameters<SchemaParameters<A | B>>
+        MergeSchemaParameters<SchemaParameters<A> | SchemaParameters<B>>
       >
     >
   >;
@@ -38,7 +38,9 @@ interface SchemaType {
     Validator<
       FunctionType<
         SchemaReturnType<A> | SchemaReturnType<B> | SchemaReturnType<C>,
-        MergeSchemaParameters<SchemaParameters<A | B | C>>
+        MergeSchemaParameters<
+          SchemaParameters<A> | SchemaParameters<B> | SchemaParameters<C>
+        >
       >
     >
   >;
@@ -51,7 +53,12 @@ interface SchemaType {
         | SchemaReturnType<B>
         | SchemaReturnType<C>
         | SchemaReturnType<D>,
-        MergeSchemaParameters<SchemaParameters<A | B | C | D>>
+        MergeSchemaParameters<
+          | SchemaParameters<A>
+          | SchemaParameters<B>
+          | SchemaParameters<C>
+          | SchemaParameters<D>
+        >
       >
     >
   >;
@@ -65,7 +72,13 @@ interface SchemaType {
         | SchemaReturnType<C>
         | SchemaReturnType<D>
         | SchemaReturnType<E>,
-        MergeSchemaParameters<SchemaParameters<A | B | C | D | E>>
+        MergeSchemaParameters<
+          | SchemaParameters<A>
+          | SchemaParameters<B>
+          | SchemaParameters<C>
+          | SchemaParameters<D>
+          | SchemaParameters<E>
+        >
       >
     >
   >;
@@ -80,7 +93,14 @@ interface SchemaType {
         | SchemaReturnType<D>
         | SchemaReturnType<E>
         | SchemaReturnType<F>,
-        MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F>>
+        MergeSchemaParameters<
+          | SchemaParameters<A>
+          | SchemaParameters<B>
+          | SchemaParameters<C>
+          | SchemaParameters<D>
+          | SchemaParameters<E>
+          | SchemaParameters<F>
+        >
       >
     >
   >;
@@ -96,7 +116,15 @@ interface SchemaType {
         | SchemaReturnType<E>
         | SchemaReturnType<F>
         | SchemaReturnType<G>,
-        MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F | G>>
+        MergeSchemaParameters<
+          | SchemaParameters<A>
+          | SchemaParameters<B>
+          | SchemaParameters<C>
+          | SchemaParameters<D>
+          | SchemaParameters<E>
+          | SchemaParameters<F>
+          | SchemaParameters<G>
+        >
       >
     >
   >;
@@ -113,7 +141,16 @@ interface SchemaType {
         | SchemaReturnType<F>
         | SchemaReturnType<G>
         | SchemaReturnType<H>,
-        MergeSchemaParameters<SchemaParameters<A | B | C | D | E | F | G | H>>
+        MergeSchemaParameters<
+          | SchemaParameters<A>
+          | SchemaParameters<B>
+          | SchemaParameters<C>
+          | SchemaParameters<D>
+          | SchemaParameters<E>
+          | SchemaParameters<F>
+          | SchemaParameters<G>
+          | SchemaParameters<H>
+        >
       >
     >
   >;

@@ -3,6 +3,8 @@ import { assert, use } from 'chai';
 import { typeCheck } from './utils';
 import { merge, either, optional } from './logic';
 import chaiAsPromised from 'chai-as-promised';
+import string from '../string';
+import number from '../number';
 
 use(chaiAsPromised);
 
@@ -124,6 +126,47 @@ describe('schema/logic', () => {
       await assert.becomes(validator(1), '1');
       await assert.becomes(validator(true), 1);
       await assert.isRejected(validator('' as any) as any);
+    });
+
+    it('use switch', () => {
+      const validator = either(
+        { type: 'foo' as 'foo', foo: number },
+        { type: 'bar' as 'bar', bar: string },
+      );
+
+      typeCheck<
+        typeof validator,
+        (
+          x: { type: 'foo'; foo: number } | { type: 'bar'; bar: string },
+        ) => { type: 'foo'; foo: number } | { type: 'bar'; bar: string }
+      >('ok');
+
+      assert.deepEqual(validator({ type: 'foo', foo: 2 }), {
+        type: 'foo',
+        foo: 2,
+      });
+      assert.deepEqual(validator({ type: 'bar', bar: 'hello' }), {
+        type: 'bar',
+        bar: 'hello',
+      });
+
+      assert.throw(
+        () => validator({ type: 'foo', foo: 'dd' } as any),
+        TypeError,
+        'foo: Expect value to be "number"',
+      );
+
+      assert.throw(
+        () => validator({ type: 'bar', foo: 'dd' } as any),
+        TypeError,
+        'bar: Expect value to be "string"',
+      );
+
+      assert.throw(
+        () => validator({ type: 'hello', foo: 'dd' } as any),
+        TypeError,
+        'type: Expect value to equal "foo"',
+      );
     });
   });
 

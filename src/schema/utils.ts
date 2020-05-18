@@ -101,6 +101,12 @@ export function isPromiseLike(value: unknown): value is PromiseLike<unknown> {
   return value && typeof (value as PromiseLike<unknown>).then === 'function';
 }
 
+export function isPrimitive(value: unknown): value is Primitive {
+  return (
+    (typeof value !== 'object' && typeof value !== 'function') || value === null
+  );
+}
+
 export function deepConcat(): undefined;
 export function deepConcat<A>(...values: [A]): A;
 export function deepConcat<A, B>(...values: [A, B]): A & B;
