@@ -29,11 +29,11 @@ interfaces on compile time.
 
 #### Using `computed-types`:
 ```ts
-const UserSchema = {
+const UserSchema = Schema({
   name: string,
   amount: number,
   flags: array.of(string).optional();
-};
+});
 
 type User = Type<typeof UserSchema>;
 ```
@@ -91,7 +91,7 @@ npm i computed-types
 ```ts
 import Schema, { Type, string, number, array } from 'computed-types';
 
-const UserSchema = {
+const UserSchema = Schema({
  name: string.trim().normalize().between(3, 40).optional(),
  username: /^[a-z0-9]{3,10}$/,
  status: Schema.either('active' as 'active', 'suspended' as 'suspended'),
@@ -101,10 +101,10 @@ const UserSchema = {
      amount: number.gte(1).integer(),
    })
    .min(1),
-};
-type User = Type<typeof UserSchema>;
+});
 
-const validator = Schema(UserSchema).destruct();
+type User = Type<typeof UserSchema>;
+const validator = UserSchema.destruct();
 
 const [err, user] = validator({
   username: 'john1',

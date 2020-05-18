@@ -7,7 +7,7 @@ import Schema, { Type, string, number, array, unknown } from './';
 
 describe('README', () => {
   it('Usage', () => {
-    const UserSchema = {
+    const UserSchema = Schema({
       name: string.trim().normalize().between(3, 40).optional(),
       username: /^[a-z0-9]{3,10}$/,
       status: Schema.either('active' as 'active', 'suspended' as 'suspended'),
@@ -17,7 +17,7 @@ describe('README', () => {
           amount: number.gte(1).integer(),
         })
         .min(1),
-    };
+    });
     type User = Type<typeof UserSchema>;
 
     typeCheck<
@@ -30,7 +30,7 @@ describe('README', () => {
       }
     >('ok');
 
-    const validator = Schema(UserSchema).destruct();
+    const validator = UserSchema.destruct();
 
     const [err, user] = validator({
       username: 'john1',
