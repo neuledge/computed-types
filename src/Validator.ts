@@ -92,7 +92,7 @@ export default class Validator<F extends FunctionType> {
     this,
     FunctionType<
       ReturnType<F> | R,
-      MergeSchemaParameters<Parameters<F> | [undefined?]>
+      MergeSchemaParameters<Parameters<F> | [(undefined | null)?]>
     >
   > {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

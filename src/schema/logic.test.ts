@@ -205,11 +205,16 @@ describe('schema/logic', () => {
         return String(x);
       });
 
-      typeCheck<typeof validator, (x?: number) => string | undefined>('ok');
+      typeCheck<typeof validator, (x?: number | null) => string | undefined>(
+        'ok',
+      );
       assert.equal(validator(1), '1');
       assert.equal(validator(), undefined);
       assert.equal(validator(undefined), undefined);
-      assert.throw(() => validator(null as any), RangeError, 'Negative input');
+      assert.equal(validator(null), undefined);
+      assert.equal(validator('' as any), undefined);
+      assert.throw(() => validator(false as any), RangeError, 'Negative input');
+      assert.throw(() => validator(0), RangeError, 'Negative input');
       assert.throw(() => validator(-1), RangeError, 'Negative input');
     });
   });

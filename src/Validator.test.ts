@@ -147,18 +147,22 @@ describe('Validator', () => {
       it('()', () => {
         const validator = positiveNumber.optional();
 
-        typeCheck<typeof validator, (x?: number) => number | undefined>('ok');
+        typeCheck<typeof validator, (x?: number | null) => number | undefined>(
+          'ok',
+        );
         assert.equal(validator(1), 1);
         assert.equal(validator(), undefined);
         assert.equal(validator(undefined), undefined);
+        assert.equal(validator('' as any), undefined);
       });
 
       it('(123)', () => {
         const validator = positiveNumber.optional(123);
 
-        typeCheck<typeof validator, (x?: number) => number>('ok');
+        typeCheck<typeof validator, (x?: number | null) => number>('ok');
         assert.equal(validator(1), 1);
         assert.equal(validator(), 123);
+        assert.equal(validator('' as any), 123);
         assert.equal(validator(undefined), 123);
       });
     });

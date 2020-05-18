@@ -277,12 +277,12 @@ export function optional<F extends FunctionType, R = undefined>(
   defaultValue?: R,
 ): FunctionType<
   ReturnType<F> | R,
-  MergeSchemaParameters<Parameters<F> | [undefined?]>
+  MergeSchemaParameters<Parameters<F> | [(undefined | null)?]>
 > {
   return (
-    ...args: MergeSchemaParameters<Parameters<F> | [undefined?]>
+    ...args: MergeSchemaParameters<Parameters<F> | [(undefined | null)?]>
   ): ReturnType<F> | R => {
-    if (args[0] === undefined) {
+    if (args[0] == null || args[0] === '') {
       return defaultValue as R;
     }
 
