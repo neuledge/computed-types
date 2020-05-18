@@ -13,8 +13,12 @@ import {
   SchemaValidatorFunction,
 } from './schema/io';
 import { ValidationError, PathError } from './schema/errors';
+import { isPromiseLike, ResolvedValue } from './schema/utils';
 
+// type generator
 export type Type<S> = SchemaResolveType<S>;
+
+// type helpers
 export {
   ValidationError,
   PathError,
@@ -22,8 +26,14 @@ export {
   MergeSchemaParameters,
   SchemaReturnType,
   SchemaValidatorFunction,
+  ResolvedValue,
 };
 
+// runtime schema
 export default Schema;
 
+// runtime types
 export { unknown, object, array, string, number, boolean };
+
+// runtime helpers
+export { isPromiseLike };
