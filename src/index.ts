@@ -27,5 +27,3 @@ export {
 export default Schema;
 
 export { unknown, object, array, string, number, boolean };
-
-// TODO add enum
