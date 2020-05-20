@@ -9,8 +9,8 @@
   <a href="https://travis-ci.org/neuledge/computed-types">
     <img src="https://travis-ci.org/neuledge/computed-types.svg?branch=master" alt="Build Status">
   </a>
-  <a href="https://libraries.io/npm/computed-types/">
-    <img src="https://img.shields.io/librariesio/release/npm/computed-types" alt="Dependency Status">
+  <a href="https://depfu.com/github/neuledge/computed-types?project_id=12857">
+    <img src="https://badges.depfu.com/badges/f49a9b5caba7c3538e1fd9a06a72bca6/overview.svg" alt="Dependency Status">
   </a>
   <a href="https://coveralls.io/github/neuledge/computed-types?branch=master">
     <img src="https://coveralls.io/repos/github/neuledge/computed-types/badge.svg?branch=master"
