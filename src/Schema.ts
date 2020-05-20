@@ -2,6 +2,7 @@ import { ErrorLike } from './schema/errors';
 import {
   MergeSchemaParameters,
   SchemaParameters,
+  SchemaResolveType,
   SchemaReturnType,
   SchemaValidatorFunction,
 } from './schema/io';
@@ -175,7 +176,7 @@ interface SchemaType {
   ): ValidatorProxy<
     Validator<
       FunctionType<
-        SchemaReturnType<A> & SchemaReturnType<B>,
+        SchemaReturnType<A & B, SchemaResolveType<A> & SchemaResolveType<B>>,
         MergeSchemaParameters<SchemaParameters<A> & SchemaParameters<B>>
       >
     >
@@ -185,7 +186,10 @@ interface SchemaType {
   ): ValidatorProxy<
     Validator<
       FunctionType<
-        SchemaReturnType<A> & SchemaReturnType<B> & SchemaReturnType<C>,
+        SchemaReturnType<
+          A & B & C,
+          SchemaResolveType<A> & SchemaResolveType<B> & SchemaResolveType<C>
+        >,
         MergeSchemaParameters<
           SchemaParameters<A> & SchemaParameters<B> & SchemaParameters<C>
         >
@@ -197,10 +201,13 @@ interface SchemaType {
   ): ValidatorProxy<
     Validator<
       FunctionType<
-        SchemaReturnType<A> &
-          SchemaReturnType<B> &
-          SchemaReturnType<C> &
-          SchemaReturnType<D>,
+        SchemaReturnType<
+          A & B & C & D,
+          SchemaResolveType<A> &
+            SchemaResolveType<B> &
+            SchemaResolveType<C> &
+            SchemaResolveType<D>
+        >,
         MergeSchemaParameters<
           SchemaParameters<A> &
             SchemaParameters<B> &
@@ -215,11 +222,14 @@ interface SchemaType {
   ): ValidatorProxy<
     Validator<
       FunctionType<
-        SchemaReturnType<A> &
-          SchemaReturnType<B> &
-          SchemaReturnType<C> &
-          SchemaReturnType<D> &
-          SchemaReturnType<E>,
+        SchemaReturnType<
+          A & B & C & D & E,
+          SchemaResolveType<A> &
+            SchemaResolveType<B> &
+            SchemaResolveType<C> &
+            SchemaResolveType<D> &
+            SchemaResolveType<E>
+        >,
         MergeSchemaParameters<
           SchemaParameters<A> &
             SchemaParameters<B> &
@@ -235,12 +245,15 @@ interface SchemaType {
   ): ValidatorProxy<
     Validator<
       FunctionType<
-        SchemaReturnType<A> &
-          SchemaReturnType<B> &
-          SchemaReturnType<C> &
-          SchemaReturnType<D> &
-          SchemaReturnType<E> &
-          SchemaReturnType<F>,
+        SchemaReturnType<
+          A & B & C & D & E & F,
+          SchemaResolveType<A> &
+            SchemaResolveType<B> &
+            SchemaResolveType<C> &
+            SchemaResolveType<D> &
+            SchemaResolveType<E> &
+            SchemaResolveType<F>
+        >,
         MergeSchemaParameters<
           SchemaParameters<A> &
             SchemaParameters<B> &
@@ -257,13 +270,16 @@ interface SchemaType {
   // ): ValidatorProxy<
   //   Validator<
   //     FunctionType<
-  //       SchemaReturnType<A> &
-  //         SchemaReturnType<B> &
-  //         SchemaReturnType<C> &
-  //         SchemaReturnType<D> &
-  //         SchemaReturnType<E> &
-  //         SchemaReturnType<F> &
-  //         SchemaReturnType<G>,
+  //       SchemaReturnType<
+  //         A & B & C & D & E & F & G,
+  //         SchemaResolveType<A> &
+  //           SchemaResolveType<B> &
+  //           SchemaResolveType<C> &
+  //           SchemaResolveType<D> &
+  //           SchemaResolveType<E> &
+  //           SchemaResolveType<F> &
+  //           SchemaResolveType<G>
+  //       >,
   //       MergeSchemaParameters<
   //         SchemaParameters<A> &
   //           SchemaParameters<B> &
@@ -281,14 +297,17 @@ interface SchemaType {
   // ): ValidatorProxy<
   //   Validator<
   //     FunctionType<
-  //       SchemaReturnType<A> &
-  //         SchemaReturnType<B> &
-  //         SchemaReturnType<C> &
-  //         SchemaReturnType<D> &
-  //         SchemaReturnType<E> &
-  //         SchemaReturnType<F> &
-  //         SchemaReturnType<G> &
-  //         SchemaReturnType<H>,
+  //       SchemaReturnType<
+  //         A & B & C & D & E & F & G & H,
+  //         SchemaResolveType<A> &
+  //           SchemaResolveType<B> &
+  //           SchemaResolveType<C> &
+  //           SchemaResolveType<D> &
+  //           SchemaResolveType<E> &
+  //           SchemaResolveType<F> &
+  //           SchemaResolveType<G> &
+  //           SchemaResolveType<H>
+  //       >,
   //       MergeSchemaParameters<
   //         SchemaParameters<A> &
   //           SchemaParameters<B> &

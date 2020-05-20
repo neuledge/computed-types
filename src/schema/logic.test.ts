@@ -236,6 +236,24 @@ describe('schema/logic', () => {
       assert.deepEqual(validator({ x: 1, y: 2 }), { x: '1', y: '3' });
       assert.deepEqual(validator({ x: 1 }), { x: '1', y: '1' });
     });
+
+    it('merging [sync, async]', async () => {
+      const validator = merge(
+        (n: number) => n + 1,
+        (n: number) =>
+          n > 0
+            ? Promise.resolve(n + 1)
+            : Promise.reject(new Error('negative')),
+      );
+
+      typeCheck<typeof validator, (x: number) => PromiseLike<number>>('ok');
+
+      await assert.isFulfilled(validator(2));
+      await assert.isRejected(validator(-1), 'negative');
+
+      assert.equal(await validator(2), 3);
+      assert.equal(await validator(6), 7);
+    });
   });
 
   describe('optional', () => {
