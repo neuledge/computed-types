@@ -329,9 +329,9 @@ schema.either = function <A, S>(
     >
   >
 > {
-  return new Validator(
+  return (new Validator(
     eitherSchema(...(candidates as [unknown])),
-  ).proxy() as ValidatorProxy<
+  ).proxy() as unknown) as ValidatorProxy<
     Validator<
       FunctionType<
         SchemaReturnType<A> | SchemaReturnType<S>,
@@ -344,7 +344,9 @@ schema.either = function <A, S>(
 schema.merge = function (
   ...args: [unknown, ...unknown[]]
 ): ValidatorProxy<Validator<FunctionType>> {
-  return new Validator(mergeSchemas(...(args as [unknown]))).proxy();
+  return new Validator(
+    mergeSchemas(...(args as [unknown])),
+  ).proxy() as ValidatorProxy<Validator<FunctionType>>;
 };
 
 schema.enum = function <
