@@ -11,7 +11,7 @@ use(chaiAsPromised);
 describe('Schema', () => {
   describe('()', () => {
     it('validate string', () => {
-      const validator = Schema('foo' as 'foo');
+      const validator = Schema('foo' as const);
 
       typeCheck<typeof validator, (x: 'foo') => 'foo'>('ok');
       assert.equal(validator('foo'), 'foo');
@@ -19,13 +19,13 @@ describe('Schema', () => {
     });
 
     it('custom message', () => {
-      const validator = Schema('foo' as 'foo', 'test error');
+      const validator = Schema('foo' as const, 'test error');
 
       assert.throw(() => validator(-1 as any), TypeError, 'test error');
     });
 
     it('transform validator', () => {
-      const validator = Schema('foo' as 'foo').transform((str) =>
+      const validator = Schema('foo' as const).transform((str) =>
         str.toUpperCase(),
       );
 
@@ -76,7 +76,10 @@ describe('Schema', () => {
 
   describe('.merge', () => {
     it('basic use case', () => {
-      const validator = Schema.merge({ foo: 'foo' as 'foo' }, { bar: 1 as 1 });
+      const validator = Schema.merge(
+        { foo: 'foo' as const },
+        { bar: 1 as const },
+      );
 
       typeCheck<
         typeof validator,

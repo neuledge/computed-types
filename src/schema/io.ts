@@ -35,7 +35,7 @@ export type SchemaParameters<S> = [S] extends [FunctionType]
         [K in keyof S]: SchemaParameters<S[K]>[0];
       },
     ]
-  : [S] extends [object]
+  : [S] extends [object] // eslint-disable-line @typescript-eslint/ban-types
   ? [{ [K in keyof SchemaKeysObject<S>]: SchemaParameters<S[K]>[0] }]
   : [unknown] extends [S]
   ? [unknown]
@@ -47,7 +47,7 @@ export type SchemaResolveType<S> = S extends FunctionType
   ? S
   : S extends RegExp
   ? string
-  : S extends object
+  : S extends object // eslint-disable-line @typescript-eslint/ban-types
   ? { [K in keyof S]: SchemaResolveType<S[K]> }
   : unknown extends S
   ? unknown
@@ -58,7 +58,7 @@ export type RemoveAsync<T> = T extends PromiseLike<any> ? never : T;
 
 type IsSchemaAsync<S> = S extends FunctionType
   ? IsAsync<ReturnType<S>>
-  : S extends object
+  : S extends object // eslint-disable-line @typescript-eslint/ban-types
   ? S extends RegExp
     ? false
     : { [K in keyof S]: IsSchemaAsync<S[K]> }[keyof S]

@@ -6,7 +6,7 @@ import {
   SchemaValidatorFunction,
 } from './io';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/ban-types */
 
 describe('schema/io', () => {
   describe('SchemaParameters', () => {

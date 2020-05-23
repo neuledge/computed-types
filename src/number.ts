@@ -58,7 +58,7 @@ export class NumberValidator<
     return this.test(
       (val) => val >= min,
       error ||
-        ((val): RangeError =>
+        ((val: number): RangeError =>
           new RangeError(
             `Expect value to be greater or equal than ${min} (actual: ${val})`,
           )),
@@ -69,7 +69,7 @@ export class NumberValidator<
     return this.test(
       (val) => val <= max,
       error ||
-        ((val): RangeError =>
+        ((val: number): RangeError =>
           new RangeError(
             `Expect value to be lower or equal than ${max} (actual: ${val})`,
           )),
@@ -86,7 +86,7 @@ export class NumberValidator<
     return this.test(
       (val) => val > boundary,
       error ||
-        ((val): RangeError =>
+        ((val: number): RangeError =>
           new RangeError(
             `Expect value to be greater than ${boundary} (actual: ${val})`,
           )),
@@ -100,7 +100,7 @@ export class NumberValidator<
     return this.test(
       (val) => val < boundary,
       error ||
-        ((val): RangeError =>
+        ((val: number): RangeError =>
           new RangeError(
             `Expect value to be lower than ${boundary} (actual: ${val})`,
           )),
@@ -115,7 +115,7 @@ export class NumberValidator<
     return this.test(
       (val) => val >= min && val <= max,
       error ||
-        ((val): RangeError =>
+        ((val: number): RangeError =>
           new RangeError(
             `Expect value to be between ${min} and ${max} (actual: ${val})`,
           )),

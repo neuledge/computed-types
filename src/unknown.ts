@@ -63,6 +63,7 @@ export class UnknownValidator<
       if (
         input == null ||
         (typeof input === 'object' &&
+          // eslint-disable-next-line @typescript-eslint/ban-types
           ((input as unknown) as object).toString === Object.prototype.toString)
       ) {
         throw toError(error || `Expect value to be string`, input);

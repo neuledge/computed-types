@@ -8,7 +8,7 @@ import number from '../number';
 
 use(chaiAsPromised);
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/ban-types */
 
 describe('schema/logic', () => {
   describe('either', () => {
@@ -130,8 +130,8 @@ describe('schema/logic', () => {
 
     it('use switch', () => {
       const validator = either(
-        { type: 'foo' as 'foo', foo: number },
-        { type: 'bar' as 'bar', bar: string },
+        { type: 'foo' as const, foo: number },
+        { type: 'bar' as const, bar: string },
       );
 
       typeCheck<
@@ -176,7 +176,7 @@ describe('schema/logic', () => {
     });
 
     it('one item', () => {
-      const validator = merge('foo' as 'foo');
+      const validator = merge('foo' as const);
 
       typeCheck<typeof validator, (x: 'foo') => 'foo'>('ok');
       assert.equal(validator('foo'), 'foo');
@@ -184,7 +184,7 @@ describe('schema/logic', () => {
     });
 
     it('never string items', () => {
-      const validator = merge('foo' as 'foo', 'bar' as 'bar');
+      const validator = merge('foo' as const, 'bar' as const);
 
       typeCheck<typeof validator, (x: never) => never>('ok');
       assert.throw(() => validator('foo' as never), TypeError);
@@ -192,7 +192,7 @@ describe('schema/logic', () => {
     });
 
     it('never [string,object] items', () => {
-      const validator = merge('foo' as 'foo', {});
+      const validator = merge('foo' as const, {});
 
       typeCheck<typeof validator, (x: 'foo' & {}) => 'foo' & {}>('ok');
       assert.throw(() => validator('foo'), TypeError);
@@ -210,7 +210,7 @@ describe('schema/logic', () => {
     });
 
     it('merging object [string,object] items', () => {
-      const validator = merge({}, { foo: 'bar' as 'bar' });
+      const validator = merge({}, { foo: 'bar' as const });
 
       typeCheck<typeof validator, (x: { foo: 'bar' }) => { foo: 'bar' }>('ok');
       assert.deepEqual(validator({ foo: 'bar' }), { foo: 'bar' });

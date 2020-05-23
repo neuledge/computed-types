@@ -12,6 +12,7 @@ import { PathError } from './errors';
 type SchemaKeyTask<S> = (
   res: Record<string, unknown>,
   errors: PathError[],
+  // eslint-disable-next-line @typescript-eslint/ban-types
   obj: object,
 ) => void | PromiseLike<void>;
 
@@ -49,6 +50,7 @@ export default function compiler<S>(
   }
 
   let typeValidator: FunctionType<
+    // eslint-disable-next-line @typescript-eslint/ban-types
     [object, Record<string, unknown>],
     SchemaParameters<S>
   >;
@@ -58,7 +60,8 @@ export default function compiler<S>(
 
     typeValidator = (
       ...args: SchemaParameters<S>
-    ): [object, Record<string, unknown>] => {
+    ): // eslint-disable-next-line @typescript-eslint/ban-types
+    [object, Record<string, unknown>] => {
       return [validator(...args), ([] as unknown) as Record<string, unknown>];
     };
   } else {
@@ -66,7 +69,8 @@ export default function compiler<S>(
 
     typeValidator = (
       ...args: SchemaParameters<S>
-    ): [object, Record<string, unknown>] => {
+    ): // eslint-disable-next-line @typescript-eslint/ban-types
+    [object, Record<string, unknown>] => {
       return [validator(...args), {}];
     };
   }
@@ -112,6 +116,7 @@ export default function compiler<S>(
   return ((
     ...args: SchemaParameters<S>
   ): SchemaResolveType<S> | Promise<SchemaResolveType<S>> => {
+    // eslint-disable-next-line @typescript-eslint/ban-types
     let obj: object;
     let res: Record<string, unknown>;
     let mainError: Error | undefined;

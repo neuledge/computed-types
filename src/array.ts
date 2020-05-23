@@ -54,7 +54,7 @@ export class ArrayValidator<
     return this.test(
       (arr) => arr.length >= length,
       error ||
-        ((arr): string =>
+        ((arr: ResolvedValue<R>): string =>
           `Expect array to be minimum of ${length} items (actual: ${arr.length})`),
     );
   }
@@ -66,7 +66,7 @@ export class ArrayValidator<
     return this.test(
       (arr) => arr.length <= length,
       error ||
-        ((arr): string =>
+        ((arr: ResolvedValue<R>): string =>
           `Expect array to be maximum of ${length} items (actual: ${arr.length})`),
     );
   }
@@ -79,7 +79,7 @@ export class ArrayValidator<
     return this.test(
       (arr) => arr.length >= minLength && arr.length <= maxLength,
       error ||
-        ((arr): string =>
+        ((arr: ResolvedValue<R>): string =>
           `Expect array to be between ${minLength} and ${maxLength} items (actual: ${arr.length})`),
     );
   }

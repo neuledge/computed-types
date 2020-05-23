@@ -9,7 +9,7 @@ type EqualReformat<T> = T extends FunctionType
       EqualReformat<ReturnType<T>>,
       EqualReformat<Parameters<T>>,
     ]
-  : T extends object
+  : T extends object // eslint-disable-line @typescript-eslint/ban-types
   ? {
       [K in keyof T]: EqualReformat<T[K]>;
     }
@@ -41,7 +41,7 @@ export type Primitive =
 export type Typeof = {
   string: string;
   number: number;
-  object: object;
+  object: object; // eslint-disable-line @typescript-eslint/ban-types
   boolean: boolean;
   symbol: symbol;
   bigint: bigint;
@@ -77,7 +77,7 @@ export type RecursiveMerge<T> = [T] extends [Primitive]
   ? [RecursiveMerge<T[0]>]
   : [T] extends [[unknown?]]
   ? [RecursiveMerge<T[0]>?]
-  : [T] extends [object]
+  : [T] extends [object] // eslint-disable-line @typescript-eslint/ban-types
   ? {
       [K in keyof T]: RecursiveMerge<T[K]>;
     }

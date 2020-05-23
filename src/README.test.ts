@@ -41,7 +41,7 @@ describe('README', () => {
 
     const [err, user] = validator({
       username: 'john1',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
       status: 'unregistered',
       items: [{ id: 'item-1', amount: 20 }],

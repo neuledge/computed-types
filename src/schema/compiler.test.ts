@@ -11,7 +11,7 @@ use(chaiAsPromised);
 describe('schema', () => {
   describe('compiler', () => {
     it('exact string', () => {
-      const validator = compiler('string' as 'string');
+      const validator = compiler('string' as const);
       typeCheck<typeof validator, (x: 'string') => 'string'>('ok');
 
       const ret = validator('string');
@@ -22,7 +22,7 @@ describe('schema', () => {
     });
 
     it('exact number', () => {
-      const validator = compiler(2 as 2);
+      const validator = compiler(2 as const);
       typeCheck<typeof validator, (x: 2) => 2>('ok');
 
       const ret = validator(2);

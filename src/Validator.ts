@@ -26,7 +26,10 @@ export default class Validator<F extends FunctionType> {
 
   public proxy(): ValidatorProxy<this> {
     return new Proxy(this.validator, {
-      get: (target, propertyKey): this[keyof this] | F[keyof F] =>
+      get: (
+        target: unknown,
+        propertyKey: string,
+      ): this[keyof this] | F[keyof F] =>
         propertyKey in this
           ? this[propertyKey as keyof this]
           : this.validator[propertyKey as keyof F],

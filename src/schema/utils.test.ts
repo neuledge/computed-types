@@ -2,8 +2,9 @@ import 'mocha';
 import { assert } from 'chai';
 import { typeCheck, deepConcat, RecursiveMerge } from './utils';
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-function,
- @typescript-eslint/no-unused-vars */
+/* eslint-disable
+ @typescript-eslint/no-explicit-any,@typescript-eslint/no-empty-function,
+ @typescript-eslint/no-unused-vars,@typescript-eslint/ban-types */
 
 describe('schema/utils', () => {
   describe('typeCheck', () => {

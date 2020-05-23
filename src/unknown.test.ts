@@ -115,7 +115,7 @@ describe('unknown', () => {
   });
 
   it('.array().of()', () => {
-    const fooArr = unknown.array().of('foo' as 'foo');
+    const fooArr = unknown.array().of('foo' as const);
     typeCheck<ReturnType<typeof fooArr>, 'foo'[]>('ok');
     typeCheck<Parameters<typeof fooArr>, [unknown]>('ok');
 
