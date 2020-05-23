@@ -94,7 +94,7 @@ import Schema, { Type, string, number, array } from 'computed-types';
 const UserSchema = Schema({
  name: string.trim().normalize().between(3, 40).optional(),
  username: /^[a-z0-9]{3,10}$/,
- status: Schema.either('active' as 'active', 'suspended' as 'suspended'),
+ status: Schema.either('active' as const, 'suspended' as const),
  items: array
    .of({
      id: string,
@@ -108,13 +108,13 @@ const validator = UserSchema.destruct();
 
 const [err, user] = validator({
   username: 'john1',
-  // @ts-ignore Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
+  // 🚨 TypeScript Error: Type '"unregistered"' is not assignable to type '"active" | "suspended"'.
   status: 'unregistered',
   items: [{ id: 'item-1', amount: 20 }],
 });
 
 console.log(err);
-// TypeError: Expect value to equal "suspended" {
+// 🚨 TypeError: Expect value to equal "suspended" {
 //   errors: [
 //     {
 //       error: TypeError: Expect value to equal "suspended",

@@ -17,7 +17,7 @@ describe('README', () => {
     const UserSchema = Schema({
       name: string.trim().normalize().between(3, 40).optional(),
       username: /^[a-z0-9]{3,10}$/,
-      status: Schema.either('active' as 'active', 'suspended' as 'suspended'),
+      status: Schema.either('active' as const, 'suspended' as const),
       items: array
         .of({
           id: string,
