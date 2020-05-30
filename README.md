@@ -80,8 +80,14 @@ type User = {
 
 ## Install
 
+Via NPM:
 ```bash
 npm i computed-types
+```
+
+Via Deno:
+```ts
+import Schema, { Type, string, number, array } from 'https://deno.land/x/computed_types/src/index.ts';
 ```
 
 <br>
