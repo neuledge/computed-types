@@ -58,7 +58,7 @@
     "@types/chai-as-promised": "^7.1.2",
     "@types/mocha": "^7.0.2",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
-    "@typescript-eslint/parser": "^3.1.0",
+    "@typescript-eslint/parser": "^3.2.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
