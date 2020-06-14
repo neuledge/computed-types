@@ -1,5 +1,5 @@
-import { isPrimitive, Primitive } from './utils';
-import FunctionType from './FunctionType';
+import { isPrimitive, Primitive } from './utils.ts';
+import FunctionType from './FunctionType.ts';
 
 export type SwitchKey = [string, Map<Primitive, number>];
 

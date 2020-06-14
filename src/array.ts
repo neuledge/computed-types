@@ -1,14 +1,14 @@
-import Validator, { ValidatorProxy } from './Validator';
-import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import { array as arrayValidator } from './schema/validations';
-import { ErrorLike } from './schema/errors';
+import Validator, { ValidatorProxy } from './Validator.ts';
+import FunctionType, { FunctionParameters } from './schema/FunctionType.ts';
+import { array as arrayValidator } from './schema/validations.ts';
+import { ErrorLike } from './schema/errors.ts';
 import {
   SchemaParameters,
   SchemaResolveType,
   SchemaReturnType,
-} from './schema/io';
-import compiler from './schema/compiler';
-import { isPromiseLike, ResolvedValue } from './schema/utils';
+} from './schema/io.ts';
+import compiler from './schema/compiler.ts';
+import { isPromiseLike, ResolvedValue } from './schema/utils.ts';
 
 export class ArrayValidator<
   R extends unknown[] | PromiseLike<unknown[]> = unknown[],

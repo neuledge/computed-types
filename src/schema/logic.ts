@@ -3,11 +3,11 @@ import {
   SchemaParameters,
   SchemaResolveType,
   SchemaReturnType,
-} from './io';
-import FunctionType from './FunctionType';
-import compiler from './compiler';
-import { deepConcat, isPromiseLike } from './utils';
-import { findSwitchKey, generateSwitch } from './switch';
+} from './io.ts';
+import FunctionType from './FunctionType.ts';
+import compiler from './compiler.ts';
+import { deepConcat, isPromiseLike } from './utils.ts';
+import { findSwitchKey, generateSwitch } from './switch.ts';
 
 export function either<A>(
   ...candidates: [A]

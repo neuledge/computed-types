@@ -2,12 +2,12 @@ import {
   SchemaParameters,
   SchemaResolveType,
   SchemaValidatorFunction,
-} from './io';
-import { createValidationError, ErrorLike, ObjectPath } from './errors';
-import { array, equals, regexp, type } from './validations';
-import FunctionType from './FunctionType';
-import { isPromiseLike } from './utils';
-import { PathError } from './errors';
+} from './io.ts';
+import { createValidationError, ErrorLike, ObjectPath } from './errors.ts';
+import { array, equals, regexp, type } from './validations.ts';
+import FunctionType from './FunctionType.ts';
+import { isPromiseLike } from './utils.ts';
+import { PathError } from './errors.ts';
 
 type SchemaKeyTask<S> = (
   res: Record<string, unknown>,

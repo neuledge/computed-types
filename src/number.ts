@@ -1,8 +1,8 @@
-import Validator, { ValidatorProxy } from './Validator';
-import { StringValidator } from './string';
-import { ErrorLike } from './schema/errors';
-import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import { type } from './schema/validations';
+import Validator, { ValidatorProxy } from './Validator.ts';
+import { StringValidator } from './string.ts';
+import { ErrorLike } from './schema/errors.ts';
+import FunctionType, { FunctionParameters } from './schema/FunctionType.ts';
+import { type } from './schema/validations.ts';
 
 export class NumberValidator<
   P extends FunctionParameters = [number]

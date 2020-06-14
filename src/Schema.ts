@@ -1,17 +1,17 @@
-import { ErrorLike } from './schema/errors';
+import { ErrorLike } from './schema/errors.ts';
 import {
   MergeSchemaParameters,
   SchemaParameters,
   SchemaResolveType,
   SchemaReturnType,
   SchemaValidatorFunction,
-} from './schema/io';
-import Validator, { ValidatorProxy } from './Validator';
-import compiler from './schema/compiler';
-import { either as eitherSchema, merge as mergeSchemas } from './schema/logic';
-import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import { Enum } from './schema/utils';
-import { enumValue } from './schema/validations';
+} from './schema/io.ts';
+import Validator, { ValidatorProxy } from './Validator.ts';
+import compiler from './schema/compiler.ts';
+import { either as eitherSchema, merge as mergeSchemas } from './schema/logic.ts';
+import FunctionType, { FunctionParameters } from './schema/FunctionType.ts';
+import { Enum } from './schema/utils.ts';
+import { enumValue } from './schema/validations.ts';
 
 interface SchemaType {
   <S>(schema: S, error?: ErrorLike<SchemaParameters<S>>): ValidatorProxy<

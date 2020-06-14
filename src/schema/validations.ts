@@ -1,12 +1,12 @@
-import { ErrorLike, toError } from './errors';
-import FunctionType, { FunctionParameters } from './FunctionType';
+import { ErrorLike, toError } from './errors.ts';
+import FunctionType, { FunctionParameters } from './FunctionType.ts';
 import {
   Enum,
   isPromiseLike,
   MaybeAsync,
   ResolvedValue,
   Typeof,
-} from './utils';
+} from './utils.ts';
 
 export function type<
   T extends keyof Typeof,

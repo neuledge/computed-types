@@ -1,9 +1,9 @@
-import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import { ErrorLike } from './schema/errors';
-import { destruct, equals, error, test } from './schema/validations';
-import { isPromiseLike, MaybeAsync, ResolvedValue } from './schema/utils';
-import { optional as optionalSchema } from './schema/logic';
-import { MergeSchemaParameters } from './schema/io';
+import FunctionType, { FunctionParameters } from './schema/FunctionType.ts';
+import { ErrorLike } from './schema/errors.ts';
+import { destruct, equals, error, test } from './schema/validations.ts';
+import { isPromiseLike, MaybeAsync, ResolvedValue } from './schema/utils.ts';
+import { optional as optionalSchema } from './schema/logic.ts';
+import { MergeSchemaParameters } from './schema/io.ts';
 
 export type ValidatorProxy<
   V extends { validator: FunctionType },

@@ -1,5 +1,5 @@
-import FunctionType from './FunctionType';
-import { RemoveAsync } from './io';
+import FunctionType from './FunctionType.ts';
+import { RemoveAsync } from './io.ts';
 
 type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 

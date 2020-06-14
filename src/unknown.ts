@@ -1,15 +1,15 @@
-import Validator, { ValidatorProxy } from './Validator';
-import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import { ErrorLike, toError } from './schema/errors';
-import { ObjectValidator } from './object';
-import { StringValidator } from './string';
-import { NumberValidator } from './number';
-import { BooleanValidator } from './boolean';
-import { SchemaResolveType } from './schema/io';
-import compiler from './schema/compiler';
-import { ArrayValidator } from './array';
-import { array, enumValue, type } from './schema/validations';
-import { Enum } from './schema/utils';
+import Validator, { ValidatorProxy } from './Validator.ts';
+import FunctionType, { FunctionParameters } from './schema/FunctionType.ts';
+import { ErrorLike, toError } from './schema/errors.ts';
+import { ObjectValidator } from './object.ts';
+import { StringValidator } from './string.ts';
+import { NumberValidator } from './number.ts';
+import { BooleanValidator } from './boolean.ts';
+import { SchemaResolveType } from './schema/io.ts';
+import compiler from './schema/compiler.ts';
+import { ArrayValidator } from './array.ts';
+import { array, enumValue, type } from './schema/validations.ts';
+import { Enum } from './schema/utils.ts';
 
 const BOOL_MAP = {
   true: true,

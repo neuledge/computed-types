@@ -1,5 +1,5 @@
-import { FunctionParameters } from './FunctionType';
-import { ObjectProperty } from './utils';
+import { FunctionParameters } from './FunctionType.ts';
+import { ObjectProperty } from './utils.ts';
 
 export type ErrorLike<P extends FunctionParameters = never> =
   | string

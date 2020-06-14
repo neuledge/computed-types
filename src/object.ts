@@ -1,6 +1,6 @@
-import Validator from './Validator';
-import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import { type } from './schema/validations';
+import Validator from './Validator.ts';
+import FunctionType, { FunctionParameters } from './schema/FunctionType.ts';
+import { type } from './schema/validations.ts';
 
 export class ObjectValidator<
   // eslint-disable-next-line @typescript-eslint/ban-types

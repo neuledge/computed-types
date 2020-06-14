@@ -1,5 +1,5 @@
-import FunctionType, { FunctionParameters } from './FunctionType';
-import { IsAsync, Primitive, ResolvedValue } from './utils';
+import FunctionType, { FunctionParameters } from './FunctionType.ts';
+import { IsAsync, Primitive, ResolvedValue } from './utils.ts';
 
 type SchemaOptionalKeys<S> = Exclude<
   {

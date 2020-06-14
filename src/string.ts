@@ -1,7 +1,7 @@
-import { ErrorLike } from './schema/errors';
-import Validator, { ValidatorProxy } from './Validator';
-import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import { regexp, type } from './schema/validations';
+import { ErrorLike } from './schema/errors.ts';
+import Validator, { ValidatorProxy } from './Validator.ts';
+import FunctionType, { FunctionParameters } from './schema/FunctionType.ts';
+import { regexp, type } from './schema/validations.ts';
 
 export class StringValidator<
   P extends FunctionParameters = [string]
