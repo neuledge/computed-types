@@ -87,7 +87,7 @@ npm i computed-types
 
 #### Deno:
 ```ts
-import Schema, { Type, string, number, array } from 'https://deno.land/x/computed_types/src/index.ts';
+import Schema, { Type, string, number, array } from 'https://cdn.pika.dev/computed-types';
 ```
 
 <br>
