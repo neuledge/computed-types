@@ -4,6 +4,7 @@ import { typeCheck } from './schema/utils';
 import Validator from './Validator';
 
 import chaiAsPromised from 'chai-as-promised';
+import { ValidationError } from './schema/errors';
 use(chaiAsPromised);
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -12,7 +13,7 @@ describe('Validator', () => {
   describe('positiveNumber', () => {
     const positiveNumber = new Validator((number: number): number => {
       if (typeof number !== 'number') {
-        throw new TypeError('Expected type to be number');
+        throw new ValidationError('Expected type to be number');
       }
 
       if (number <= 0) {
@@ -36,10 +37,10 @@ describe('Validator', () => {
 
       assert.throws(() => positiveNumber(0), RangeError);
       assert.throws(() => positiveNumber(-6), RangeError);
-      assert.throws(() => positiveNumber(undefined as any), TypeError);
-      assert.throws(() => positiveNumber(null as any), TypeError);
-      assert.throws(() => positiveNumber({} as any), TypeError);
-      assert.throws(() => positiveNumber('5' as any), TypeError);
+      assert.throws(() => positiveNumber(undefined as any), ValidationError);
+      assert.throws(() => positiveNumber(null as any), ValidationError);
+      assert.throws(() => positiveNumber({} as any), ValidationError);
+      assert.throws(() => positiveNumber('5' as any), ValidationError);
     });
 
     it('.test()', () => {
@@ -48,7 +49,7 @@ describe('Validator', () => {
 
       assert.throws(
         () => positiveNumber.test((num): boolean => num < 100)(100),
-        TypeError,
+        ValidationError,
       );
       assert.throws(
         () => positiveNumber.test((num): boolean => num < 100)(0),
@@ -56,7 +57,7 @@ describe('Validator', () => {
       );
       assert.throws(
         () => positiveNumber.test((num): boolean => num < 100)('ddd' as any),
-        TypeError,
+        ValidationError,
       );
     });
 
@@ -66,27 +67,27 @@ describe('Validator', () => {
       assert.equal(first(4), 4);
       assert.equal(first(99), 99);
 
-      assert.throws(() => first(100), TypeError);
+      assert.throws(() => first(100), ValidationError);
       assert.throws(() => first(0), RangeError);
-      assert.throws(() => first('ddd' as any), TypeError);
+      assert.throws(() => first('ddd' as any), ValidationError);
 
       const second = first.test((num): boolean => num > 10);
 
       assert.equal(second(11), 11);
       assert.equal(second(40), 40);
 
-      assert.throws(() => second(100), TypeError);
-      assert.throws(() => second(9), TypeError);
+      assert.throws(() => second(100), ValidationError);
+      assert.throws(() => second(9), ValidationError);
       assert.throws(() => second(0), RangeError);
-      assert.throws(() => second('ddd' as any), TypeError);
+      assert.throws(() => second('ddd' as any), ValidationError);
 
       assert.throws(
         () => first.test((num): boolean => num > 10)(100),
-        TypeError,
+        ValidationError,
       );
 
       assert.equal(first(4), 4);
-      assert.throws(() => first(100), TypeError);
+      assert.throws(() => first(100), ValidationError);
     });
 
     it('.equals()', () => {
@@ -99,11 +100,14 @@ describe('Validator', () => {
 
       assert.equal(positiveNumber.equals(4)(4), 4);
 
-      assert.throws(() => positiveNumber.equals(4)(5), TypeError);
-      assert.throws(() => positiveNumber.equals(4)(1), TypeError);
+      assert.throws(() => positiveNumber.equals(4)(5), ValidationError);
+      assert.throws(() => positiveNumber.equals(4)(1), ValidationError);
       assert.throws(() => positiveNumber.equals(4)(0), RangeError);
       assert.throws(() => positiveNumber.equals(4)(-30), RangeError);
-      assert.throws(() => positiveNumber.equals(4)('ddd' as any), TypeError);
+      assert.throws(
+        () => positiveNumber.equals(4)('ddd' as any),
+        ValidationError,
+      );
     });
 
     it('.transform(string)', () => {
@@ -179,7 +183,7 @@ describe('Validator', () => {
 
       const res2 = validator('foo' as any);
       assert.equal(res2.length, 1);
-      assert.instanceOf(res2[0], TypeError);
+      assert.instanceOf(res2[0], ValidationError);
     });
 
     it('.error(string)', () => {
@@ -189,8 +193,8 @@ describe('Validator', () => {
       assert.equal(validator(11), 11);
       assert.equal(validator(40), 40);
 
-      assert.throws(() => validator(0), TypeError, error);
-      assert.throws(() => validator('foo' as any), TypeError, error);
+      assert.throws(() => validator(0), ValidationError, error);
+      assert.throws(() => validator('foo' as any), ValidationError, error);
     });
 
     it('.error(Error)', () => {
@@ -214,8 +218,12 @@ describe('Validator', () => {
       assert.equal(validator(11), 11);
       assert.equal(validator(40), 40);
 
-      assert.throws(() => validator(0), TypeError, 'error: 0');
-      assert.throws(() => validator('foo' as any), TypeError, 'error: foo');
+      assert.throws(() => validator(0), ValidationError, 'error: 0');
+      assert.throws(
+        () => validator('foo' as any),
+        ValidationError,
+        'error: foo',
+      );
     });
   });
 
@@ -246,7 +254,7 @@ describe('Validator', () => {
     const positiveNumber = new Validator(
       async (number: number): Promise<number> => {
         if (typeof number !== 'number') {
-          throw new TypeError('Expected type to be number');
+          throw new ValidationError('Expected type to be number');
         }
 
         if (number <= 0) {
@@ -274,7 +282,7 @@ describe('Validator', () => {
 
       const res2 = await validator('foo' as any);
       assert.equal(res2.length, 1);
-      assert.instanceOf(res2[0], TypeError);
+      assert.instanceOf(res2[0], ValidationError);
     });
 
     it('.message(string)', async () => {

@@ -2,6 +2,7 @@ import 'mocha';
 import { assert } from 'chai';
 import unknown from './unknown';
 import { typeCheck } from './schema/utils';
+import { ValidationError } from './schema/errors';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -40,17 +41,17 @@ describe('unknown', () => {
     assert.equal(unknown.boolean()([1]), true);
     assert.equal(unknown.boolean()([0]), false);
 
-    assert.throws(() => unknown.boolean()([]), TypeError);
-    assert.throws(() => unknown.boolean()('hello'), TypeError);
-    assert.throws(() => unknown.boolean()(''), TypeError);
-    assert.throws(() => unknown.boolean()(undefined), TypeError);
-    assert.throws(() => unknown.boolean()(null), TypeError);
-    assert.throws(() => unknown.boolean()({}), TypeError);
-    assert.throws(() => unknown.boolean()({ foo: 1 }), TypeError);
+    assert.throws(() => unknown.boolean()([]), ValidationError);
+    assert.throws(() => unknown.boolean()('hello'), ValidationError);
+    assert.throws(() => unknown.boolean()(''), ValidationError);
+    assert.throws(() => unknown.boolean()(undefined), ValidationError);
+    assert.throws(() => unknown.boolean()(null), ValidationError);
+    assert.throws(() => unknown.boolean()({}), ValidationError);
+    assert.throws(() => unknown.boolean()({ foo: 1 }), ValidationError);
 
     assert.throws(
       () => unknown.boolean('undefined')(undefined),
-      TypeError,
+      ValidationError,
       'undefined',
     );
   });
@@ -75,15 +76,15 @@ describe('unknown', () => {
     );
     assert.equal(unknown.string().toLowerCase().trim()('Hello! '), 'hello!');
 
-    assert.throws(() => unknown.string()({}), TypeError);
-    assert.throws(() => unknown.string()(undefined), TypeError);
-    assert.throws(() => unknown.string()(null), TypeError);
-    assert.throws(() => unknown.string()({}), TypeError);
-    assert.throws(() => unknown.string()({ foo: 1 }), TypeError);
+    assert.throws(() => unknown.string()({}), ValidationError);
+    assert.throws(() => unknown.string()(undefined), ValidationError);
+    assert.throws(() => unknown.string()(null), ValidationError);
+    assert.throws(() => unknown.string()({}), ValidationError);
+    assert.throws(() => unknown.string()({ foo: 1 }), ValidationError);
 
     assert.throws(
       () => unknown.string('undefined')(undefined),
-      TypeError,
+      ValidationError,
       'undefined',
     );
   });
@@ -102,14 +103,14 @@ describe('unknown', () => {
     assert.equal(unknown.number()([]), 0);
     assert.equal(unknown.number()(''), 0);
 
-    assert.throws(() => unknown.number()({}), TypeError);
-    assert.throws(() => unknown.number()(undefined), TypeError);
-    assert.throws(() => unknown.number()([1, 2]), TypeError);
-    assert.throws(() => unknown.number()({ foo: 1 }), TypeError);
+    assert.throws(() => unknown.number()({}), ValidationError);
+    assert.throws(() => unknown.number()(undefined), ValidationError);
+    assert.throws(() => unknown.number()([1, 2]), ValidationError);
+    assert.throws(() => unknown.number()({ foo: 1 }), ValidationError);
 
     assert.throws(
       () => unknown.number('undefined')(undefined),
-      TypeError,
+      ValidationError,
       'undefined',
     );
   });
@@ -123,8 +124,8 @@ describe('unknown', () => {
     assert.deepEqual(fooArr([]), []);
     assert.deepEqual(fooArr(['foo', 'foo']), ['foo', 'foo']);
 
-    assert.throws(() => fooArr(['foo', 'bar'] as any), TypeError);
-    assert.throws(() => fooArr(['foo', 1] as any), TypeError);
+    assert.throws(() => fooArr(['foo', 'bar'] as any), ValidationError);
+    assert.throws(() => fooArr(['foo', 1] as any), ValidationError);
   });
 
   it('.enum()', () => {
@@ -140,7 +141,7 @@ describe('unknown', () => {
     assert.equal(validator('foo'), Mixed.Foo);
     assert.equal(validator(1), Mixed.Bar);
 
-    assert.throws(() => validator(2), TypeError);
-    assert.throws(() => validator('Foo'), TypeError);
+    assert.throws(() => validator(2), ValidationError);
+    assert.throws(() => validator('Foo'), ValidationError);
   });
 });

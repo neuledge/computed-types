@@ -1,5 +1,6 @@
 import FunctionType from './FunctionType';
 import { RemoveAsync } from './io';
+import { ValidationError } from './errors';
 
 type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 
@@ -138,7 +139,7 @@ export function deepConcat<T>(...values: unknown[]): unknown {
   if (typeof base !== 'object' || base === null) {
     for (let i = 1; i < values.length; i += 1) {
       if (values[i] !== base) {
-        throw new TypeError(`Type mismatch on validation concat`);
+        throw new ValidationError(`Type mismatch on validation concat`);
       }
     }
 
@@ -150,7 +151,7 @@ export function deepConcat<T>(...values: unknown[]): unknown {
     const value = values[i];
 
     if (typeof value !== 'object' || value === null) {
-      throw new TypeError(`Type mismatch on validation concat`);
+      throw new ValidationError(`Type mismatch on validation concat`);
     }
 
     for (const key in value) {

@@ -1,4 +1,4 @@
-import { ErrorLike, toError } from './errors';
+import { ErrorLike, toError, ValidationError } from './errors';
 import FunctionType, { FunctionParameters } from './FunctionType';
 import {
   Enum,
@@ -51,7 +51,10 @@ export function destruct<F extends FunctionType>(
   validator: F,
   error?: ErrorLike<Parameters<F>>,
 ): FunctionType<
-  MaybeAsync<ReturnType<F>, [Error | null, ResolvedValue<ReturnType<F>>?]>,
+  MaybeAsync<
+    ReturnType<F>,
+    [ValidationError | null, ResolvedValue<ReturnType<F>>?]
+  >,
   Parameters<F>
 > {
   return ((

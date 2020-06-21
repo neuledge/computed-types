@@ -1,6 +1,7 @@
 import 'mocha';
 import { assert } from 'chai';
 import object from './object';
+import { ValidationError } from './schema/errors';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -16,13 +17,13 @@ describe('object', () => {
     assert.equal(object(arr), arr);
     assert.equal(object(fooArr), fooArr);
 
-    assert.throws(() => object(null as any), TypeError);
-    assert.throws(() => object(0 as any), TypeError);
-    assert.throws(() => object(1 as any), TypeError);
-    assert.throws(() => object('hello' as any), TypeError);
-    assert.throws(() => object(true as any), TypeError);
-    assert.throws(() => object(false as any), TypeError);
-    assert.throws(() => object(Symbol('test') as any), TypeError);
-    assert.throws(() => object(undefined as any), TypeError);
+    assert.throws(() => object(null as any), ValidationError);
+    assert.throws(() => object(0 as any), ValidationError);
+    assert.throws(() => object(1 as any), ValidationError);
+    assert.throws(() => object('hello' as any), ValidationError);
+    assert.throws(() => object(true as any), ValidationError);
+    assert.throws(() => object(false as any), ValidationError);
+    assert.throws(() => object(Symbol('test') as any), ValidationError);
+    assert.throws(() => object(undefined as any), ValidationError);
   });
 });

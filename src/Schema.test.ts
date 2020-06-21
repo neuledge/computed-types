@@ -3,6 +3,7 @@ import { assert, use } from 'chai';
 import { typeCheck } from './schema/utils';
 import chaiAsPromised from 'chai-as-promised';
 import Schema from './Schema';
+import { ValidationError } from './schema/errors';
 
 use(chaiAsPromised);
 
@@ -15,13 +16,13 @@ describe('Schema', () => {
 
       typeCheck<typeof validator, (x: 'foo') => 'foo'>('ok');
       assert.equal(validator('foo'), 'foo');
-      assert.throw(() => validator(-1 as any), TypeError);
+      assert.throw(() => validator(-1 as any), ValidationError);
     });
 
     it('custom message', () => {
       const validator = Schema('foo' as const, 'test error');
 
-      assert.throw(() => validator(-1 as any), TypeError, 'test error');
+      assert.throw(() => validator(-1 as any), ValidationError, 'test error');
     });
 
     it('transform validator', () => {
@@ -31,7 +32,7 @@ describe('Schema', () => {
 
       typeCheck<typeof validator, (x: 'foo') => string>('ok');
       assert.equal(validator('foo'), 'FOO');
-      assert.throw(() => validator(-1 as any), TypeError);
+      assert.throw(() => validator(-1 as any), ValidationError);
     });
   });
 
@@ -114,9 +115,9 @@ describe('Schema', () => {
       assert.equal(validator(1), 1);
       assert.equal(validator(2), 2);
 
-      assert.throw(() => validator(3), TypeError);
-      assert.throw(() => validator(-1), TypeError);
-      assert.throw(() => validator('1' as any), TypeError);
+      assert.throw(() => validator(3), ValidationError);
+      assert.throw(() => validator(-1), ValidationError);
+      assert.throw(() => validator('1' as any), ValidationError);
     });
 
     it('Strings', () => {
@@ -133,8 +134,8 @@ describe('Schema', () => {
       assert.equal(validator(Strings.Bar), Strings.Bar);
       assert.equal(validator('foo' as any), 'foo');
 
-      assert.throw(() => validator('Foo' as any), TypeError);
-      assert.throw(() => validator(0 as any), TypeError);
+      assert.throw(() => validator('Foo' as any), ValidationError);
+      assert.throw(() => validator(0 as any), ValidationError);
     });
 
     it('Mixed', () => {
@@ -150,8 +151,8 @@ describe('Schema', () => {
       assert.equal(validator(Mixed.Foo), Mixed.Foo);
       assert.equal(validator(Mixed.Bar), Mixed.Bar);
 
-      assert.throw(() => validator('Foo' as any), TypeError, 'test');
-      assert.throw(() => validator(0 as any), TypeError, 'test');
+      assert.throw(() => validator('Foo' as any), ValidationError, 'test');
+      assert.throw(() => validator(0 as any), ValidationError, 'test');
     });
   });
 });

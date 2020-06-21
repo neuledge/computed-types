@@ -1,5 +1,5 @@
 import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import { ErrorLike } from './schema/errors';
+import { ErrorLike, ValidationError } from './schema/errors';
 import { destruct, equals, error, test } from './schema/validations';
 import { isPromiseLike, MaybeAsync, ResolvedValue } from './schema/utils';
 import { optional as optionalSchema } from './schema/logic';
@@ -110,7 +110,10 @@ export default class Validator<F extends FunctionType> {
   ): ValidatorProxy<
     this,
     FunctionType<
-      MaybeAsync<ReturnType<F>, [Error | null, ResolvedValue<ReturnType<F>>?]>,
+      MaybeAsync<
+        ReturnType<F>,
+        [ValidationError | null, ResolvedValue<ReturnType<F>>?]
+      >,
       Parameters<F>
     >
   > {

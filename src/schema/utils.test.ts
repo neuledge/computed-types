@@ -1,6 +1,7 @@
 import 'mocha';
 import { assert } from 'chai';
 import { typeCheck, deepConcat, RecursiveMerge } from './utils';
+import { ValidationError } from './errors';
 
 /* eslint-disable
  @typescript-eslint/no-explicit-any,@typescript-eslint/no-empty-function,
@@ -220,13 +221,13 @@ describe('schema/utils', () => {
       assert.equal(deepConcat(null, undefined), null);
       assert.equal(deepConcat(undefined, 'foo'), 'foo');
 
-      assert.throw(() => deepConcat(true, false), TypeError);
-      assert.throw(() => deepConcat('foo', false), TypeError);
-      assert.throw(() => deepConcat('foo', 'bar'), TypeError);
-      assert.throw(() => deepConcat('foo', undefined, 'bar'), TypeError);
-      assert.throw(() => deepConcat(1, 1.1), TypeError);
-      assert.throw(() => deepConcat(1, {}), TypeError);
-      assert.throw(() => deepConcat(1, { foo: 1 }), TypeError);
+      assert.throw(() => deepConcat(true, false), ValidationError);
+      assert.throw(() => deepConcat('foo', false), ValidationError);
+      assert.throw(() => deepConcat('foo', 'bar'), ValidationError);
+      assert.throw(() => deepConcat('foo', undefined, 'bar'), ValidationError);
+      assert.throw(() => deepConcat(1, 1.1), ValidationError);
+      assert.throw(() => deepConcat(1, {}), ValidationError);
+      assert.throw(() => deepConcat(1, { foo: 1 }), ValidationError);
     });
 
     it('deep elements', () => {
@@ -250,9 +251,12 @@ describe('schema/utils', () => {
         { bar: 1, hello: 2 } as any,
       ]);
 
-      assert.throw(() => deepConcat({ foo: 1 }, { foo: 2, bar: 2 }), TypeError);
-      assert.throw(() => deepConcat({ foo: 1 }, null), TypeError);
-      assert.throw(() => deepConcat({ foo: 1 }, true), TypeError);
+      assert.throw(
+        () => deepConcat({ foo: 1 }, { foo: 2, bar: 2 }),
+        ValidationError,
+      );
+      assert.throw(() => deepConcat({ foo: 1 }, null), ValidationError);
+      assert.throw(() => deepConcat({ foo: 1 }, true), ValidationError);
     });
   });
 
