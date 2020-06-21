@@ -1,14 +1,7 @@
 import 'mocha';
 import { assert } from 'chai';
 import { typeCheck } from './schema/utils';
-import Schema, {
-  Type,
-  string,
-  number,
-  array,
-  unknown,
-  ValidationError,
-} from './';
+import Schema, { Type, string, number, array, unknown } from './';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -50,15 +43,35 @@ describe('README', () => {
     assert.notEqual(err, null);
     assert.equal(user, undefined);
 
-    const error = err as Required<ValidationError>;
-
-    assert.equal(error.message, 'status: Expect value to equal "suspended"');
-    assert.equal(error.errors.length, 1);
-    assert.deepEqual(error.errors[0].path, ['status']);
     assert.equal(
-      error.errors[0].error.message,
-      'Expect value to equal "suspended"',
+      JSON.stringify(err, null, 2),
+      `{
+  "message": "status: Expect value to equal \\"suspended\\"",
+  "errors": [
+    {
+      "path": [
+        "status"
+      ],
+      "error": {
+        "message": "Expect value to equal \\"suspended\\""
+      }
+    }
+  ]
+}`,
     );
+
+    if (err) {
+      assert.equal(err.message, 'status: Expect value to equal "suspended"');
+      assert.equal(err.errors?.length, 1);
+
+      if (err.errors) {
+        assert.deepEqual(err.errors[0].path, ['status']);
+        assert.equal(
+          err.errors[0].error.message,
+          'Expect value to equal "suspended"',
+        );
+      }
+    }
   });
 
   it('Validator chain', () => {

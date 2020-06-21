@@ -5,6 +5,7 @@ import { merge, either, optional } from './logic';
 import chaiAsPromised from 'chai-as-promised';
 import string from '../string';
 import number from '../number';
+import { ValidationError } from './errors';
 
 use(chaiAsPromised);
 
@@ -152,19 +153,19 @@ describe('schema/logic', () => {
 
       assert.throw(
         () => validator({ type: 'foo', foo: 'dd' } as any),
-        TypeError,
+        ValidationError,
         'foo: Expect value to be "number"',
       );
 
       assert.throw(
         () => validator({ type: 'bar', foo: 'dd' } as any),
-        TypeError,
+        ValidationError,
         'bar: Expect value to be "string"',
       );
 
       assert.throw(
         () => validator({ type: 'hello', foo: 'dd' } as any),
-        TypeError,
+        ValidationError,
         'type: Expect value to equal "foo"',
       );
     });
@@ -180,33 +181,33 @@ describe('schema/logic', () => {
 
       typeCheck<typeof validator, (x: 'foo') => 'foo'>('ok');
       assert.equal(validator('foo'), 'foo');
-      assert.throw(() => validator('bar' as any), TypeError);
+      assert.throw(() => validator('bar' as any), ValidationError);
     });
 
     it('never string items', () => {
       const validator = merge('foo' as const, 'bar' as const);
 
       typeCheck<typeof validator, (x: never) => never>('ok');
-      assert.throw(() => validator('foo' as never), TypeError);
-      assert.throw(() => validator('bar' as never), TypeError);
+      assert.throw(() => validator('foo' as never), ValidationError);
+      assert.throw(() => validator('bar' as never), ValidationError);
     });
 
     it('never [string,object] items', () => {
       const validator = merge('foo' as const, {});
 
       typeCheck<typeof validator, (x: 'foo' & {}) => 'foo' & {}>('ok');
-      assert.throw(() => validator('foo'), TypeError);
-      assert.throw(() => validator({} as any), TypeError);
-      assert.throw(() => validator('bar' as never), TypeError);
+      assert.throw(() => validator('foo'), ValidationError);
+      assert.throw(() => validator({} as any), ValidationError);
+      assert.throw(() => validator('bar' as never), ValidationError);
     });
 
     it('never [object,undefined] items', () => {
       const validator = merge({}, undefined);
 
       typeCheck<typeof validator, (x: never) => never>('ok');
-      assert.throw(() => validator(undefined as never), TypeError);
-      assert.throw(() => validator({} as never), TypeError);
-      assert.throw(() => validator('bar' as never), TypeError);
+      assert.throw(() => validator(undefined as never), ValidationError);
+      assert.throw(() => validator({} as never), ValidationError);
+      assert.throw(() => validator('bar' as never), ValidationError);
     });
 
     it('merging object [string,object] items', () => {
@@ -215,8 +216,8 @@ describe('schema/logic', () => {
       typeCheck<typeof validator, (x: { foo: 'bar' }) => { foo: 'bar' }>('ok');
       assert.deepEqual(validator({ foo: 'bar' }), { foo: 'bar' });
       assert.deepEqual(validator({ foo: 'bar', x: 1 } as any), { foo: 'bar' });
-      assert.throw(() => validator({} as any), TypeError);
-      assert.throw(() => validator(undefined as any), TypeError);
+      assert.throw(() => validator({} as any), ValidationError);
+      assert.throw(() => validator(undefined as any), ValidationError);
     });
 
     it('merging functions', () => {

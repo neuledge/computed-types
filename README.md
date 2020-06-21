@@ -120,7 +120,7 @@ const [err, user] = validator({
 });
 
 console.log(err);
-// 🚨 TypeError: Expect value to equal "suspended" {
+// 🚨 ValidationError: Expect value to equal "suspended" {
 //   errors: [
 //     {
 //       error: TypeError: Expect value to equal "suspended",

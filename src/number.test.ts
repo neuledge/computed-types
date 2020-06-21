@@ -1,6 +1,7 @@
 import 'mocha';
 import { assert } from 'chai';
 import number from './number';
+import { ValidationError } from './schema/errors';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -19,14 +20,14 @@ describe('number', () => {
     assert.equal(number(Number.POSITIVE_INFINITY), Number.POSITIVE_INFINITY);
     assert.equal(number(Number.NEGATIVE_INFINITY), Number.NEGATIVE_INFINITY);
 
-    assert.throws(() => number('12.3' as any), TypeError);
-    assert.throws(() => number('hello' as any), TypeError);
-    assert.throws(() => number('hello' as any), TypeError);
-    assert.throws(() => number('2 3' as any), TypeError);
-    assert.throws(() => number(undefined as any), TypeError);
-    assert.throws(() => number(null as any), TypeError);
-    assert.throws(() => number(true as any), TypeError);
-    assert.throws(() => number(false as any), TypeError);
+    assert.throws(() => number('12.3' as any), ValidationError);
+    assert.throws(() => number('hello' as any), ValidationError);
+    assert.throws(() => number('hello' as any), ValidationError);
+    assert.throws(() => number('2 3' as any), ValidationError);
+    assert.throws(() => number(undefined as any), ValidationError);
+    assert.throws(() => number(null as any), ValidationError);
+    assert.throws(() => number(true as any), ValidationError);
+    assert.throws(() => number(false as any), ValidationError);
   });
 
   it('.float()', () => {
@@ -38,10 +39,16 @@ describe('number', () => {
     assert.equal(number.float()(Number.MAX_VALUE), Number.MAX_VALUE);
     assert.equal(number.float()(Number.MIN_VALUE), Number.MIN_VALUE);
 
-    assert.throws(() => number.float()(NaN), TypeError);
-    assert.throws(() => number.float()(Number.POSITIVE_INFINITY), TypeError);
-    assert.throws(() => number.float()(Number.NEGATIVE_INFINITY), TypeError);
-    assert.throws(() => number.float()('12.3' as any), TypeError);
+    assert.throws(() => number.float()(NaN), ValidationError);
+    assert.throws(
+      () => number.float()(Number.POSITIVE_INFINITY),
+      ValidationError,
+    );
+    assert.throws(
+      () => number.float()(Number.NEGATIVE_INFINITY),
+      ValidationError,
+    );
+    assert.throws(() => number.float()('12.3' as any), ValidationError);
   });
 
   it('.integer()', () => {
@@ -49,14 +56,17 @@ describe('number', () => {
     assert.equal(number.integer()(0), 0);
     assert.equal(number.integer()(-3), -3);
 
-    assert.throws(() => number.integer()(undefined as any), TypeError);
-    assert.throws(() => number.integer()(null as any), TypeError);
-    assert.throws(() => number.integer()(NaN), TypeError);
-    assert.throws(() => number.integer()(Number.POSITIVE_INFINITY), TypeError);
-    assert.throws(() => number.integer()(1.23), TypeError);
-    assert.throws(() => number.integer()(-1.23), TypeError);
-    assert.throws(() => number.integer()('12.3' as any), TypeError);
-    assert.throws(() => number.integer()('hello' as any), TypeError);
+    assert.throws(() => number.integer()(undefined as any), ValidationError);
+    assert.throws(() => number.integer()(null as any), ValidationError);
+    assert.throws(() => number.integer()(NaN), ValidationError);
+    assert.throws(
+      () => number.integer()(Number.POSITIVE_INFINITY),
+      ValidationError,
+    );
+    assert.throws(() => number.integer()(1.23), ValidationError);
+    assert.throws(() => number.integer()(-1.23), ValidationError);
+    assert.throws(() => number.integer()('12.3' as any), ValidationError);
+    assert.throws(() => number.integer()('hello' as any), ValidationError);
   });
 
   it('.toExponential()', () => {
@@ -93,8 +103,8 @@ describe('number', () => {
 
     assert.throw(() => number.min(3)(2.9), RangeError);
     assert.throw(() => number.min(3)(NaN), RangeError);
-    assert.throw(() => number.min(3)(null as any), TypeError);
-    assert.throw(() => number.min(3, 'test')(1), TypeError, 'test');
+    assert.throw(() => number.min(3)(null as any), ValidationError);
+    assert.throw(() => number.min(3, 'test')(1), ValidationError, 'test');
   });
 
   it('.max()', () => {
@@ -103,8 +113,8 @@ describe('number', () => {
 
     assert.throw(() => number.max(3)(4.1), RangeError);
     assert.throw(() => number.max(3)(NaN), RangeError);
-    assert.throw(() => number.max(3)(null as any), TypeError);
-    assert.throw(() => number.max(3, 'test')(6), TypeError, 'test');
+    assert.throw(() => number.max(3)(null as any), ValidationError);
+    assert.throw(() => number.max(3, 'test')(6), ValidationError, 'test');
   });
 
   it('.gte()', () => {
@@ -127,7 +137,7 @@ describe('number', () => {
     assert.throw(() => number.gt(3)(3), RangeError);
     assert.throw(() => number.gt(3)(NaN), RangeError);
     assert.throw(() => number.gt(3)(2.9), RangeError);
-    assert.throw(() => number.gt(3, 'test')(2.9), TypeError, 'test');
+    assert.throw(() => number.gt(3, 'test')(2.9), ValidationError, 'test');
   });
 
   it('.lt()', () => {
@@ -136,7 +146,7 @@ describe('number', () => {
     assert.throw(() => number.lt(3)(3), RangeError);
     assert.throw(() => number.lt(3)(NaN), RangeError);
     assert.throw(() => number.lt(3)(3.1), RangeError);
-    assert.throw(() => number.lt(3, 'test')(3.1), TypeError, 'test');
+    assert.throw(() => number.lt(3, 'test')(3.1), ValidationError, 'test');
   });
 
   it('.between()', () => {
@@ -147,6 +157,10 @@ describe('number', () => {
     assert.throw(() => number.between(1, 3)(0.9), RangeError);
     assert.throw(() => number.between(1, 3)(3.1), RangeError);
     assert.throw(() => number.between(1, 3)(NaN), RangeError);
-    assert.throw(() => number.between(1, 3, 'test')(NaN), TypeError, 'test');
+    assert.throw(
+      () => number.between(1, 3, 'test')(NaN),
+      ValidationError,
+      'test',
+    );
   });
 });

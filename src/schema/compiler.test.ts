@@ -3,6 +3,7 @@ import { assert, use } from 'chai';
 import { typeCheck } from './utils';
 import compiler from './compiler';
 import chaiAsPromised from 'chai-as-promised';
+import { ValidationError } from './errors';
 
 use(chaiAsPromised);
 
@@ -18,7 +19,7 @@ describe('schema', () => {
       typeCheck<[typeof ret], ['string']>('ok');
       assert.equal(ret, 'string');
 
-      assert.throw(() => validator('foo' as 'string'), TypeError);
+      assert.throw(() => validator('foo' as 'string'), ValidationError);
     });
 
     it('exact number', () => {
@@ -29,7 +30,7 @@ describe('schema', () => {
       typeCheck<typeof ret, 2>('ok');
       assert.equal(ret, 2);
 
-      assert.throw(() => validator(3 as 2), TypeError);
+      assert.throw(() => validator(3 as 2), ValidationError);
     });
 
     it('number validator', () => {
@@ -59,7 +60,7 @@ describe('schema', () => {
       assert.equal(validator('Foo'), 'Foo');
       assert.equal(validator('FooBar'), 'FooBar');
 
-      assert.throws(() => validator('foo'), TypeError);
+      assert.throws(() => validator('foo'), ValidationError);
     });
 
     it('object', () => {
@@ -79,7 +80,7 @@ describe('schema', () => {
         bar: 123,
       });
 
-      assert.throws(() => validator(123 as any), TypeError);
+      assert.throws(() => validator(123 as any), ValidationError);
     });
 
     it('deep object', () => {
@@ -110,7 +111,7 @@ describe('schema', () => {
 
       assert.throws(
         () => validator({ foo: 'foo', bar: 123 } as any),
-        TypeError,
+        ValidationError,
       );
     });
 
@@ -120,7 +121,7 @@ describe('schema', () => {
 
       assert.equal(validator(null), null);
 
-      assert.throws(() => validator(12 as any), TypeError);
+      assert.throws(() => validator(12 as any), ValidationError);
     });
 
     it('array', () => {
@@ -129,11 +130,11 @@ describe('schema', () => {
 
       assert.deepEqual(validator([1, 'foo']), [1, 'foo']);
 
-      assert.throws(() => validator(['foo', 1] as any), TypeError);
-      assert.throws(() => validator([1, 'foo', 1] as any), TypeError);
-      assert.throws(() => validator([1] as any), TypeError);
-      assert.throws(() => validator([2, 'foo'] as any), TypeError);
-      assert.throws(() => validator({ foo: 1 } as any), TypeError);
+      assert.throws(() => validator(['foo', 1] as any), ValidationError);
+      assert.throws(() => validator([1, 'foo', 1] as any), ValidationError);
+      assert.throws(() => validator([1] as any), ValidationError);
+      assert.throws(() => validator([2, 'foo'] as any), ValidationError);
+      assert.throws(() => validator({ foo: 1 } as any), ValidationError);
     });
 
     it('async', async () => {

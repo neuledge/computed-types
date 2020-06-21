@@ -2,6 +2,7 @@ import 'mocha';
 import { assert } from 'chai';
 import string from './string';
 import { typeCheck } from './schema/utils';
+import { ValidationError } from './schema/errors';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -13,13 +14,13 @@ describe('string', () => {
     assert.equal(string(' '), ' ');
     assert.equal(string(''), '');
 
-    assert.throws(() => string(null as any), TypeError);
-    assert.throws(() => string(undefined as any), TypeError);
-    assert.throws(() => string({} as any), TypeError);
-    assert.throws(() => string({ foo: 1 } as any), TypeError);
-    assert.throws(() => string(122 as any), TypeError);
-    assert.throws(() => string(true as any), TypeError);
-    assert.throws(() => string(false as any), TypeError);
+    assert.throws(() => string(null as any), ValidationError);
+    assert.throws(() => string(undefined as any), ValidationError);
+    assert.throws(() => string({} as any), ValidationError);
+    assert.throws(() => string({ foo: 1 } as any), ValidationError);
+    assert.throws(() => string(122 as any), ValidationError);
+    assert.throws(() => string(true as any), ValidationError);
+    assert.throws(() => string(false as any), ValidationError);
   });
 
   it('.toLowerCase()', () => {
@@ -59,7 +60,7 @@ describe('string', () => {
     assert.equal(string.trim()('foo '), 'foo');
     assert.equal(string.trim()(' foo\n\nbar '), 'foo\n\nbar');
 
-    assert.throws(() => string.trim()(false as any), TypeError);
+    assert.throws(() => string.trim()(false as any), ValidationError);
   });
 
   it('.trim().toLowerCase()', () => {
@@ -73,8 +74,8 @@ describe('string', () => {
 
     assert.throws(() => string.min(1)(''), RangeError);
     assert.throws(() => string.min(2)('a'), RangeError);
-    assert.throws(() => string.min(2)(null as any), TypeError);
-    assert.throws(() => string.min(2, 'test')('a'), TypeError, 'test');
+    assert.throws(() => string.min(2)(null as any), ValidationError);
+    assert.throws(() => string.min(2, 'test')('a'), ValidationError, 'test');
   });
 
   it('.max()', () => {
@@ -83,8 +84,8 @@ describe('string', () => {
     assert.equal(string.max(2)(''), '');
 
     assert.throws(() => string.max(2)('abc'), RangeError);
-    assert.throws(() => string.max(2)(null as any), TypeError);
-    assert.throws(() => string.max(2, 'test')('abc'), TypeError, 'test');
+    assert.throws(() => string.max(2)(null as any), ValidationError);
+    assert.throws(() => string.max(2, 'test')('abc'), ValidationError, 'test');
   });
 
   it('.between()', () => {
@@ -96,18 +97,26 @@ describe('string', () => {
     assert.throws(() => string.between(1, 3)(''), RangeError);
     assert.throws(() => string.between(3, 3)('ab'), RangeError);
     assert.throws(() => string.between(3, 3)('abcd'), RangeError);
-    assert.throws(() => string.between(1, 3)(null as any), TypeError);
-    assert.throws(() => string.between(1, 3, 'test')(''), TypeError, 'test');
+    assert.throws(() => string.between(1, 3)(null as any), ValidationError);
+    assert.throws(
+      () => string.between(1, 3, 'test')(''),
+      ValidationError,
+      'test',
+    );
   });
 
   it('.regexp()', () => {
     assert.equal(string.regexp(/^foo$/i)('Foo'), 'Foo');
     assert.equal(string.regexp(/^foo$/i)('foo'), 'foo');
 
-    assert.throws(() => string.regexp(/^foo$/i)(' foo'), TypeError);
-    assert.throws(() => string.regexp(/^foo$/i)(''), TypeError);
-    assert.throws(() => string.regexp(/^foo$/i, 'test')(''), TypeError, 'test');
-    assert.throws(() => string.regexp(/^foo$/i)(null as any), TypeError);
+    assert.throws(() => string.regexp(/^foo$/i)(' foo'), ValidationError);
+    assert.throws(() => string.regexp(/^foo$/i)(''), ValidationError);
+    assert.throws(
+      () => string.regexp(/^foo$/i, 'test')(''),
+      ValidationError,
+      'test',
+    );
+    assert.throws(() => string.regexp(/^foo$/i)(null as any), ValidationError);
   });
 
   it('name use case', () => {
