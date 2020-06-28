@@ -5,7 +5,7 @@ import Schema, { string, array } from './';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 describe('index', () => {
-  it('Circular Types', () => {
+  describe('Circular Types', () => {
     // testing issue:
     // https://github.com/neuledge/computed-types/issues/39
 
@@ -21,22 +21,38 @@ describe('index', () => {
       })(node);
     };
 
-    assert.deepEqual(NodeSchema({ name: 'root', nodes: [] }), {
-      name: 'root',
-      nodes: [],
+    it('should validate correctly', () => {
+      assert.deepEqual(NodeSchema({ name: 'root', nodes: [] }), {
+        name: 'root',
+        nodes: [],
+      });
+
+      assert.deepEqual(
+        NodeSchema({ name: 'root', nodes: [{ name: 'foo', nodes: [] }] }),
+        {
+          name: 'root',
+          nodes: [{ name: 'foo', nodes: [] }],
+        },
+      );
+
+      assert.throws(
+        () => NodeSchema({ name: 'root' } as any),
+        'nodes: Expecting value to be an array',
+      );
     });
 
-    assert.deepEqual(
-      NodeSchema({ name: 'root', nodes: [{ name: 'foo', nodes: [] }] }),
-      {
-        name: 'root',
-        nodes: [{ name: 'foo', nodes: [] }],
-      },
-    );
+    it('should use it on other schemas', () => {
+      const MainSchema = Schema({
+        type: string,
+        node: NodeSchema,
+      });
 
-    assert.throws(
-      () => NodeSchema({ name: 'root' } as any),
-      'nodes: Expecting value to be an array',
-    );
+      assert.deepEqual(
+        MainSchema({ type: 'test', node: { name: 'root', nodes: [] } }),
+        { type: 'test', node: { name: 'root', nodes: [] } },
+      );
+
+      assert.throws(() => MainSchema({ type: 'test', node: null } as any));
+    });
   });
 });
