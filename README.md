@@ -260,7 +260,7 @@ const validator = string.test(EmailValidator.validate, 'Invalid email address');
 
 ##### `.transform()`
 
-Transform the return value to a new value or throw to fail the validation process. The reutrn
+Transform the return value to a new value or throw to fail the validation process. The return
 value can be any value, including different types.
 
 ```ts
