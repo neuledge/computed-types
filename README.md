@@ -260,7 +260,7 @@ const validator = string.test(EmailValidator.validate, 'Invalid email address');
 
 ##### `.transform()`
 
-Transform the return value to a new value or throw to fail the validation process. The reutrn
+Transform the return value to a new value or throw to fail the validation process. The return
 value can be any value, including different types.
 
 ```ts
@@ -328,7 +328,7 @@ const validator = Schema({
 
 ## Available Types
 
-It's usuful to import the following native types when building custom schemas.
+It's useful to import the following native types when building custom schemas.
 Click on each type to see some validation examples.
 
 **`import`** [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`](#number), [`boolean`](#boolean), [`array`](#array) `}` **`from`** `'computed-types';`
