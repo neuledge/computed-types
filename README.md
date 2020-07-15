@@ -73,7 +73,7 @@ type User = {
 - [Usage](#usage)
 - [Creating new Types](#creating-new-types)
 - [Validators Chain](#validators-chain)
-- [Available Types](#available-types)
+- [Documentation](#available-types)
 - [License](#license)
 
 <br>
