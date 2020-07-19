@@ -62,6 +62,7 @@ type User = {
 - **Function Composition** - Chain multiple validators to generate new types.
 - **Data Transformation** - Combine validation and formatting in the one action.
 - **Asynchronous & Synchronous Support** - Automatically detected promises and async validation.
+- **Zero Dependencies** - Light and compact library.
 - **Pure Javascript** - Also works without TypeScript.
 
 
