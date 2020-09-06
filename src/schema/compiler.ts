@@ -9,7 +9,7 @@ import FunctionType from './FunctionType';
 import { isPromiseLike } from './utils';
 import { PathError } from './errors';
 
-type SchemaKeyTask<S> = (
+type SchemaKeyTask = (
   res: Record<string, unknown>,
   errors: PathError[],
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -76,7 +76,7 @@ export default function compiler<S>(
   }
 
   const tasks = Object.keys(schema).map(
-    (key): SchemaKeyTask<S> => {
+    (key): SchemaKeyTask => {
       const path = [...basePath, key];
       const validator = compiler<unknown>(schema[key as keyof S], {
         basePath: path,

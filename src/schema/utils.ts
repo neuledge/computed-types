@@ -125,7 +125,7 @@ export function deepConcat<A, B, C, D, E, F, G>(
 export function deepConcat<A, B, C, D, E, F, G, H>(
   ...values: [A, B, C, D, E, F, G, H]
 ): A & B & C & D & E & F & G & H;
-export function deepConcat<T>(...values: unknown[]): unknown {
+export function deepConcat(...values: unknown[]): unknown {
   if (values.length < 2) {
     return values[0];
   }
