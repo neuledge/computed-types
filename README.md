@@ -6,8 +6,8 @@
   <a href="https://www.npmjs.org/package/computed-types">
     <img src="http://img.shields.io/npm/v/computed-types.svg" alt="View On NPM">
   </a>
-  <a href="https://travis-ci.org/neuledge/computed-types">
-    <img src="https://travis-ci.org/neuledge/computed-types.svg?branch=master" alt="Build Status">
+  <a href="https://travis-ci.com/neuledge/computed-types">
+    <img src="https://travis-ci.com/neuledge/computed-types.svg?branch=master" alt="Build Status">
   </a>
   <a href="https://depfu.com/github/neuledge/computed-types?project_id=12857">
     <img src="https://badges.depfu.com/badges/f49a9b5caba7c3538e1fd9a06a72bca6/overview.svg" alt="Dependency Status">
