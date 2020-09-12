@@ -149,7 +149,7 @@ function Email(input: unknown): string {
     throw new TypeError(`Invalid email address: "${input}"`);
   }
 
-  return input
+  return input;
 }
 ```
 
