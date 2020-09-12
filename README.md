@@ -136,7 +136,8 @@ console.log(err);
 
 ## Creating new Types
 
-A computed type is any function that can return a value without throwing any exceptions.
+A computed type is any function that can return a value without throwing any exceptions. Creating a custom type 
+allows you to normalize, transform and validate any input.
 
 For example this type will validate email addresses:
 
@@ -148,7 +149,7 @@ function Email(input: unknown): string {
     throw new TypeError(`Invalid email address: "${input}"`);
   }
 
-  return input;
+  return input
 }
 ```
 
@@ -172,6 +173,28 @@ function OptionalEmail(input?: unknown): string | undefined {
 ```
 
 This will validate inputs in the form of `{ email?: unknown }` to `{ email: string | undefined }`.
+
+<br>
+
+
+### Using Transform
+
+The custom Email validator above will not support [validator chaining](#validators-chain), but we can easily
+fix this by using the [`.transform()` method](#transform).
+
+```ts
+const EmailWithValidatorChain = unknown.string.transform(Email)
+```
+
+I can now make use of the validator chain:
+
+```ts
+const UserSchema = {
+  email: EmailWithValidatorChain.optional().max(100),
+};
+
+const validator = Schema(UserSchema);
+```
 
 <br>
 
