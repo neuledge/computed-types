@@ -19,7 +19,7 @@ import { isPromiseLike, ResolvedValue } from './schema/utils';
 export type Type<S> = SchemaResolveType<S>;
 
 // type helpers
-export {
+export type {
   ValidationError,
   PathError,
   SchemaParameters,
