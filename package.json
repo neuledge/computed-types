@@ -35,7 +35,8 @@
     "test:commit": "if [[ -z \"$(git status --untracked-files=no --porcelain)\" ]]; then\n  echo \"All filed committed.\"\nelse\n  echo \"Uncommitted changes found. Please Commit them first.\" && exit 1\nfi",
     "prepare": "npm run clean && npm run build",
     "prepublishOnly": "npm run test:commit && npm run test:build",
-    "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
+    "postpublish": "git push && git push --tags",
+    "postversion": "npm publish"
   },
   "author": "Moshe Simantov <me@moshe.io>",
   "repository": "https://github.com/neuledge/computed-types",
