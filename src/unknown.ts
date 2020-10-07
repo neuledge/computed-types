@@ -10,6 +10,7 @@ import compiler from './schema/compiler';
 import { ArrayValidator } from './array';
 import { array, enumValue, type } from './schema/validations';
 import { Enum } from './schema/utils';
+import { DateValidator } from './DateType';
 
 const BOOL_MAP = {
   true: true,
@@ -108,6 +109,24 @@ export class UnknownValidator<
 
       return value;
     }, BooleanValidator);
+  }
+
+  public date(error?: ErrorLike<[unknown]>): ValidatorProxy<DateValidator<P>> {
+    return this.transform((input) => {
+      if (input instanceof Date) {
+        return input;
+      }
+
+      if (typeof input === 'number' || typeof input === 'string') {
+        const value = new Date(input);
+
+        if (!isNaN(value.getTime())) {
+          return value;
+        }
+      }
+
+      throw toError(error || `Unknown date value`, input);
+    }, DateValidator);
   }
 
   public enum<E extends Enum<E>>(

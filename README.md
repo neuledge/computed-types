@@ -355,7 +355,7 @@ const validator = Schema({
 It's useful to import the following native types when building custom schemas.
 Click on each type to see some validation examples.
 
-**`import`** [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`](#number), [`boolean`](#boolean), [`array`](#array) `}` **`from`** `'computed-types';`
+**`import`** [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`](#number), [`boolean`](#boolean), [`array`](#array), [`DateType`](#datetype) `}` **`from`** `'computed-types';`
 
 <br>
 
@@ -466,6 +466,14 @@ Accept any value as an input and try to convert it to a boolean:
 
 ```ts
 const validator = unknown.boolean('Expect data to be boolean').equals(true);
+```
+
+##### `unknown.date()`
+
+Accept any value as an input and try to convert it to a date:
+
+```ts
+const validator = unknown.date('Expect data to be date').equals('1970-01-01T00:00:00.050Z');
 ```
 
 ##### `unknown.enum()`
@@ -737,6 +745,74 @@ Accept only array with minimum and maximum count of items.
 
 ```ts
 const validator = array.between(2, 10);
+```
+
+<br>
+
+### `DateType`
+
+Accept only instances of `Date`.
+
+```ts
+const validator = Schema({
+  eventTime: DateType
+});
+```
+
+##### `DateType.toISOString()`
+
+Accept Date and convert it to ISO date string.
+
+```ts
+const validator = DateType.toISOString();
+```
+
+##### `DateType.getTime()`
+
+Accept Date and convert it to a timestamp.
+
+```ts
+const validator = DateType.getTime().gt(100);
+```
+
+##### `DateType.gte()`
+
+Accept Date that greater or equal than the boundary given.
+
+```ts
+const validator = DateType.gte(new Date('2020-10-01T10:00:00.000Z'));
+```
+
+##### `DateType.lte()`
+
+Accept Date that lower or equal than the boundary given.
+
+```ts
+const validator = DateType.lte(new Date('2020-10-01T10:00:00.000Z'));
+```
+
+##### `DateType.gt()`
+
+Accept Date that greater than the boundary given.
+
+```ts
+const validator = DateType.gt(new Date('2020-10-01T10:00:00.000Z'));
+```
+
+##### `DateType.lt()`
+
+Accept Date that lower than the boundary given.
+
+```ts
+const validator = DateType.lt(new Date('2020-10-01T10:00:00.000Z'));
+```
+
+##### `DateType.between()`
+
+Accept Date between the given boundaries.
+
+```ts
+const validator = DateType.between(new Date('2020-09-01T10:00:00.000Z'), new Date('2020-10-01T10:00:00.000Z'));
 ```
 
 <br>

@@ -128,6 +128,27 @@ describe('unknown', () => {
     assert.throws(() => fooArr(['foo', 1] as any), ValidationError);
   });
 
+  it('.date()', () => {
+    assert.deepEqual(unknown.date()(1), new Date(1));
+    assert.deepEqual(
+      unknown.date()('1970-01-01T00:00:00.050Z'),
+      new Date('1970-01-01T00:00:00.050Z'),
+    );
+
+    assert.throws(() => unknown.date()({}), ValidationError);
+    assert.throws(() => unknown.date()(undefined), ValidationError);
+    assert.throws(() => unknown.date()([1, 2]), ValidationError);
+    assert.throws(() => unknown.date()({ foo: 1 }), ValidationError);
+    assert.throws(() => unknown.date()(NaN), ValidationError);
+    assert.throws(() => unknown.date()(''), ValidationError);
+
+    assert.throws(
+      () => unknown.date('undefined')(undefined),
+      ValidationError,
+      'undefined',
+    );
+  });
+
   it('.enum()', () => {
     enum Mixed {
       Foo = 'foo',
