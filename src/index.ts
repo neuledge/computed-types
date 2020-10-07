@@ -5,6 +5,7 @@ import string from './string';
 import number from './number';
 import boolean from './boolean';
 import Schema from './Schema';
+import DateType from './DateType';
 import {
   SchemaResolveType,
   SchemaParameters,
@@ -35,7 +36,7 @@ export type {
 export default Schema;
 
 // runtime types
-export { unknown, object, array, string, number, boolean };
+export { unknown, object, array, string, number, boolean, DateType };
 
 // runtime helpers
 export { isPromiseLike };
