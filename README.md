@@ -355,9 +355,7 @@ const validator = Schema({
 It's useful to import the following native types when building custom schemas.
 Click on each type to see some validation examples.
 
-**`import`** [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`]
-(#number), [`boolean`](#boolean), [`array`](#array), [`DateType`](#datetype) `}` **`from`**
-`'computed-types';`
+**`import`** [`Schema`](#schema), `{` [`unknown`](#unknown), [`string`](#string), [`number`](#number), [`boolean`](#boolean), [`array`](#array), [`DateType`](#datetype) `}` **`from`** `'computed-types';`
 
 <br>
 
