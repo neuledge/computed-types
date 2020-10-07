@@ -83,6 +83,63 @@ describe('schema', () => {
       assert.throws(() => validator(123 as any), ValidationError);
     });
 
+    it('strict mode: off', () => {
+      const validator = compiler(
+        { foo: 'bar' as const, bar: 123 as const },
+        { strict: false },
+      );
+
+      assert.deepEqual(validator({ foo: 'bar', bar: 123 }), {
+        foo: 'bar',
+        bar: 123,
+      });
+
+      assert.deepEqual(validator({ foo: 'bar', bar: 123, hello: 123 } as any), {
+        foo: 'bar',
+        bar: 123,
+      });
+
+      assert.throws(
+        () => validator({ foo: 'bar2', bar: 123, hello: 123 } as any),
+        ValidationError,
+      );
+
+      assert.throws(
+        () => validator({ foo: 'bar', hello: 123 } as any),
+        ValidationError,
+      );
+    });
+
+    it('strict mode: on', () => {
+      const validator = compiler(
+        { foo: 'bar' as const, bar: 123 as const },
+        { strict: true },
+      );
+
+      assert.deepEqual(validator({ foo: 'bar', bar: 123 }), {
+        foo: 'bar',
+        bar: 123,
+      });
+
+      assert.throws(
+        () => validator({ foo: 'bar', bar: 123, hello: 123 } as any),
+        ValidationError,
+        'Unknown property "hello"',
+      );
+
+      assert.throws(
+        () => validator({ foo: 'bar2', bar: 123, hello: 123 } as any),
+        ValidationError,
+        'Expect value to equal "bar"',
+      );
+
+      assert.throws(
+        () => validator({ foo: 'bar', hello: 123 } as any),
+        ValidationError,
+        'Expect value to equal "123"',
+      );
+    });
+
     it('deep object', () => {
       const validator = compiler({
         foo: String,

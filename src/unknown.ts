@@ -33,7 +33,7 @@ export class UnknownValidator<
     error?: ErrorLike<[unknown]>,
   ): ValidatorProxy<Validator<FunctionType<SchemaResolveType<S>, P>>> {
     return this.transform(
-      compiler<unknown>(schema, error) as FunctionType<
+      compiler<unknown>(schema, { error }) as FunctionType<
         SchemaResolveType<S>,
         [unknown]
       >,
