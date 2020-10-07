@@ -333,9 +333,26 @@ interface SchemaType {
 
 function schema<S>(
   schema: S,
-  error?: ErrorLike<SchemaParameters<S>>,
+  opts?:
+    | ErrorLike<SchemaParameters<S>>
+    | {
+        error?: ErrorLike<SchemaParameters<S>>;
+        strict?: boolean;
+      },
 ): ValidatorProxy<Validator<SchemaValidatorFunction<S>>> {
-  return new Validator(compiler(schema, error)).proxy();
+  let error: ErrorLike<SchemaParameters<S>> | undefined;
+  let strict: boolean | undefined;
+
+  if (opts) {
+    if (typeof opts === 'object' && !(opts instanceof Error)) {
+      error = opts.error;
+      strict = opts.strict;
+    } else {
+      error = opts;
+    }
+  }
+
+  return new Validator(compiler(schema, { error, strict })).proxy();
 }
 
 schema.either = function <A, S>(

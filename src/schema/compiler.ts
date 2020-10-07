@@ -3,7 +3,12 @@ import {
   SchemaResolveType,
   SchemaValidatorFunction,
 } from './io';
-import { createValidationError, ErrorLike, ObjectPath } from './errors';
+import {
+  createValidationError,
+  ErrorLike,
+  ObjectPath,
+  toError,
+} from './errors';
 import { array, equals, regexp, type } from './validations';
 import FunctionType from './FunctionType';
 import { isPromiseLike } from './utils';
@@ -18,24 +23,13 @@ type SchemaKeyTask = (
 
 export default function compiler<S>(
   schema: S,
-  opts?:
-    | ErrorLike<SchemaParameters<S>>
-    | {
-        error?: ErrorLike<SchemaParameters<S>>;
-        basePath?: ObjectPath;
-      },
+  opts?: {
+    error?: ErrorLike<SchemaParameters<S>>;
+    basePath?: ObjectPath;
+    strict?: boolean;
+  },
 ): SchemaValidatorFunction<S> {
-  let error: ErrorLike<SchemaParameters<S>> | undefined;
-  let basePath: ObjectPath = [];
-
-  if (opts) {
-    if (typeof opts === 'object' && !(opts instanceof Error)) {
-      error = opts.error;
-      basePath = opts.basePath || basePath;
-    } else {
-      error = opts;
-    }
-  }
+  const { error, basePath = [], strict } = opts || {};
 
   if (typeof schema === 'function') {
     return (schema as unknown) as SchemaValidatorFunction<S>;
@@ -75,11 +69,14 @@ export default function compiler<S>(
     };
   }
 
-  const tasks = Object.keys(schema).map(
+  const keys = Object.keys(schema);
+
+  const tasks = keys.map(
     (key): SchemaKeyTask => {
       const path = [...basePath, key];
       const validator = compiler<unknown>(schema[key as keyof S], {
         basePath: path,
+        strict,
       });
 
       return (res, errors, obj): void | PromiseLike<void> => {
@@ -97,19 +94,34 @@ export default function compiler<S>(
             (value) => {
               res[key] = value;
             },
-            (err) => {
-              errors.push(err);
+            (error) => {
+              errors.push({ error, path });
             },
           );
-        } catch (e) {
+        } catch (error) {
           errors.push({
-            error: e,
+            error,
             path,
           });
         }
       };
     },
   );
+
+  if (strict) {
+    const keysSet = new Set(keys);
+
+    tasks.push((res, errors, obj): void => {
+      Object.keys(obj).forEach((key) => {
+        if (keysSet.has(key)) return;
+
+        errors.push({
+          path: [...basePath, key],
+          error: toError(`Unknown property "${key}"`),
+        });
+      });
+    });
+  }
 
   const tasksCount = tasks.length;
 

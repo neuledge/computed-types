@@ -370,6 +370,18 @@ const validator = Schema({
 }, 'Missing name or amount');
 ```
 
+##### Strict mode
+
+By default, the schema validator will ignore all properties that aren't exist on the schema. If
+you want to throw an error instead you can toggle the strict mode on.
+
+```ts
+const validator = Schema({
+  name: string,
+  amount: number,
+}, { strict: true });
+```
+
 ##### `Schema.either`
 
 Works as OR switch. Create a validator from multiple function validators or schema objects.
