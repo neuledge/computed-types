@@ -4,6 +4,8 @@ import { typeCheck } from './schema/utils';
 import chaiAsPromised from 'chai-as-promised';
 import Schema from './Schema';
 import { ValidationError } from './schema/errors';
+import string from './string';
+import { SchemaParameters } from './schema/io';
 
 use(chaiAsPromised);
 
@@ -72,6 +74,16 @@ describe('Schema', () => {
       await assert.equal(trans(1) as string, '1-foo');
       await assert.becomes(trans(false) as PromiseLike<string>, '0-foo');
       await assert.isRejected(trans(-1) as PromiseLike<string>);
+    });
+
+    it('issue #69', () => {
+      const A = Schema.either(
+        { id: 1 as const },
+        { id: 2 as const, data: string.optional() },
+      );
+      type AInputs = SchemaParameters<typeof A>;
+
+      typeCheck<AInputs, [{ id: 1 } | { id: 2; data?: string | null }]>('ok');
     });
   });
 
