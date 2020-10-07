@@ -17,6 +17,7 @@ import { isPromiseLike, ResolvedValue } from './schema/utils';
 
 // type generator
 export type Type<S> = SchemaResolveType<S>;
+export type InputType<S> = SchemaParameters<S>;
 
 // type helpers
 export type {
