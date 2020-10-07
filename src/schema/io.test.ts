@@ -1,6 +1,7 @@
 import 'mocha';
 import { typeCheck } from './utils';
 import {
+  SchemaInput,
   SchemaParameters,
   SchemaResolveType,
   SchemaValidatorFunction,
@@ -163,6 +164,26 @@ describe('schema/io', () => {
 
       // typeCheck<SchemaParameters<[(x?: string) => void]>, [[string?]]>('ok');
       // typeCheck<SchemaParameters<[[number]?]>, [[[number]?]]>('ok');
+    });
+  });
+
+  describe('SchemaInput', () => {
+    it('basic use case', () => {
+      typeCheck<
+        SchemaInput<{
+          foo: (x: string) => string;
+          bar: 'hello';
+          optional: (i?: number) => number | undefined;
+        }>,
+        { foo: string; bar: 'hello'; optional?: number }
+      >('ok');
+    });
+
+    it('optional validator', () => {
+      typeCheck<
+        SchemaInput<(i?: number) => number | undefined>,
+        number | undefined
+      >('ok');
     });
   });
 

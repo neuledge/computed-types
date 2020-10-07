@@ -41,6 +41,8 @@ export type SchemaParameters<S> = [S] extends [FunctionType]
   ? [unknown]
   : never;
 
+export type SchemaInput<S> = SchemaParameters<S>[0];
+
 export type SchemaResolveType<S> = S extends FunctionType
   ? ResolvedValue<ReturnType<S>>
   : S extends Primitive

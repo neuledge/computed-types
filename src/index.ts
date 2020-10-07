@@ -11,18 +11,19 @@ import {
   MergeSchemaParameters,
   SchemaReturnType,
   SchemaValidatorFunction,
+  SchemaInput,
 } from './schema/io';
 import { ValidationError, PathError } from './schema/errors';
 import { isPromiseLike, ResolvedValue } from './schema/utils';
 
 // type generator
 export type Type<S> = SchemaResolveType<S>;
-export type InputType<S> = SchemaParameters<S>;
 
 // type helpers
 export type {
   ValidationError,
   PathError,
+  SchemaInput,
   SchemaParameters,
   MergeSchemaParameters,
   SchemaReturnType,
