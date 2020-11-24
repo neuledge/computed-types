@@ -99,7 +99,7 @@ export function typeCheck<T, R, Y = 'ok' extends T ? never : 'ok'>(
 }
 
 export function isPromiseLike(value: unknown): value is PromiseLike<unknown> {
-  return value && typeof (value as PromiseLike<unknown>).then === 'function';
+  return !!value && typeof (value as PromiseLike<unknown>).then === 'function';
 }
 
 export function isPrimitive(value: unknown): value is Primitive {
