@@ -36,6 +36,28 @@ describe('Schema', () => {
       assert.equal(validator('foo'), 'FOO');
       assert.throw(() => validator(-1 as any), ValidationError);
     });
+
+    it('should handle async errors nicely', async () => {
+      // https://github.com/neuledge/computed-types/issues/76
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      async function AvailableUsername(input: string) {
+        throw new TypeError('my error');
+      }
+
+      const UserSchema = {
+        username: AvailableUsername,
+      };
+      const validator = Schema(UserSchema);
+
+      try {
+        await validator({ username: 'test' });
+
+        throw new Error('bad');
+      } catch (error) {
+        assert.equal(error.message, 'username: my error');
+      }
+    });
   });
 
   describe('.either', () => {
