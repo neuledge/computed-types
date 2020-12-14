@@ -14,9 +14,15 @@ import { Enum } from './schema/utils';
 import { enumValue } from './schema/validations';
 
 interface SchemaType {
-  <S>(schema: S, error?: ErrorLike<SchemaParameters<S>>): ValidatorProxy<
-    Validator<SchemaValidatorFunction<S>>
-  >;
+  <S>(
+    schema: S,
+    opts?:
+      | ErrorLike<SchemaParameters<S>>
+      | {
+          error?: ErrorLike<SchemaParameters<S>>;
+          strict?: boolean;
+        },
+  ): ValidatorProxy<Validator<SchemaValidatorFunction<S>>>;
 
   either<A>(
     ...candidates: [A]
