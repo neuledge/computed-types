@@ -1,6 +1,6 @@
 {
   "name": "computed-types",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Runtime validation types for TypeScript.",
   "keywords": [
     "runtime",
