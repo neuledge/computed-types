@@ -171,6 +171,30 @@ describe('Validator', () => {
       });
     });
 
+    describe('.strictOptional', () => {
+      it('()', () => {
+        const validator = positiveNumber.strictOptional();
+
+        typeCheck<typeof validator, (x?: number) => number | undefined>('ok');
+        assert.equal(validator(1), 1);
+        assert.equal(validator(), undefined);
+        assert.equal(validator(undefined), undefined);
+        assert.throw(() => validator('' as any));
+        assert.throw(() => validator(false as any));
+      });
+
+      it('(123)', () => {
+        const validator = positiveNumber.strictOptional(123);
+
+        typeCheck<typeof validator, (x?: number) => number>('ok');
+        assert.equal(validator(1), 1);
+        assert.equal(validator(), 123);
+        assert.equal(validator(undefined), 123);
+        assert.throw(() => validator(null as any));
+        assert.throw(() => validator(false as any));
+      });
+    });
+
     it('.destruct()', () => {
       const validator = positiveNumber.destruct();
 
