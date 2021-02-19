@@ -1,7 +1,7 @@
 import 'mocha';
 import { assert, use } from 'chai';
 import { typeCheck } from './utils';
-import { merge, either, optional } from './logic';
+import { merge, either, optional, strictOptional } from './logic';
 import chaiAsPromised from 'chai-as-promised';
 import string from '../string';
 import number from '../number';
@@ -275,6 +275,28 @@ describe('schema/logic', () => {
       assert.equal(validator(undefined), undefined);
       assert.equal(validator(null), undefined);
       assert.equal(validator('' as any), undefined);
+      assert.throw(() => validator(false as any), RangeError, 'Negative input');
+      assert.throw(() => validator(0), RangeError, 'Negative input');
+      assert.throw(() => validator(-1), RangeError, 'Negative input');
+    });
+  });
+
+  describe('strictOptional', () => {
+    it('function', () => {
+      const validator = strictOptional((x: number): string => {
+        if (x <= 0) {
+          throw new RangeError(`Negative input`);
+        }
+
+        return String(x);
+      });
+
+      typeCheck<typeof validator, (x?: number) => string | undefined>('ok');
+      assert.equal(validator(1), '1');
+      assert.equal(validator(), undefined);
+      assert.equal(validator(undefined), undefined);
+      assert.throw(() => validator('' as any), RangeError, 'Negative input');
+      assert.throw(() => validator(null as any), RangeError, 'Negative input');
       assert.throw(() => validator(false as any), RangeError, 'Negative input');
       assert.throw(() => validator(0), RangeError, 'Negative input');
       assert.throw(() => validator(-1), RangeError, 'Negative input');

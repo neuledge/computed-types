@@ -354,3 +354,21 @@ export function optional<F extends FunctionType, R = undefined>(
     return validator(...args);
   };
 }
+
+export function strictOptional<F extends FunctionType, R = undefined>(
+  validator: F,
+  defaultValue?: R,
+): FunctionType<
+  ReturnType<F> | R,
+  MergeSchemaParameters<Parameters<F> | [undefined?]>
+> {
+  return (
+    ...args: MergeSchemaParameters<Parameters<F> | [(undefined | null)?]>
+  ): ReturnType<F> | R => {
+    if (args[0] === undefined) {
+      return defaultValue as R;
+    }
+
+    return validator(...args);
+  };
+}

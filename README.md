@@ -259,6 +259,7 @@ In addition the type helpers, each validator has those default chain helpers so 
 - [`.transform()`](#transform)
 - [`.construct()`](#construct)
 - [`.optional()`](#optional)
+- [`.strictOptional()`](#strictOptional)
 - [`.destruct()`](#destruct)
 - [`.error()`](#error)
 
@@ -310,8 +311,19 @@ validators(x, y); // x + y
 
 ##### `.optional()`
 
-Will convert the validator to an optional by allowing `undefined` values. This is very useful
-when creating optional properties on a schema.
+Will convert the validator to an optional by allowing `undefined` or `null` values.
+This is very useful for parsing when creating optional properties on a schema.
+
+```ts
+const validator = Schema({
+  name: string.trim().min(1),
+  address: string.trim().optional(),
+})
+```
+
+##### `.strictOptional()`
+
+Same as `.optional()` but allows only `undefined` values.
 
 ```ts
 const validator = Schema({

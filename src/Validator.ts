@@ -2,7 +2,10 @@ import FunctionType, { FunctionParameters } from './schema/FunctionType';
 import { ErrorLike, ValidationError } from './schema/errors';
 import { destruct, equals, error, test } from './schema/validations';
 import { isPromiseLike, MaybeAsync, ResolvedValue } from './schema/utils';
-import { optional as optionalSchema } from './schema/logic';
+import {
+  optional as optionalSchema,
+  strictOptional as strictOptionalSchema,
+} from './schema/logic';
 import { MergeSchemaParameters } from './schema/io';
 
 export type ValidatorProxy<
@@ -103,6 +106,26 @@ export default class Validator<F extends FunctionType> {
     const { validator } = this;
 
     return new Class(optionalSchema<F, R>(validator, defaultValue)).proxy();
+  }
+
+  public strictOptional<
+    R extends ResolvedValue<ReturnType<F>> | undefined = undefined
+  >(
+    defaultValue?: R,
+  ): ValidatorProxy<
+    this,
+    FunctionType<
+      ReturnType<F> | R,
+      MergeSchemaParameters<Parameters<F> | [undefined?]>
+    >
+  > {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const Class = (this as any).constructor;
+    const { validator } = this;
+
+    return new Class(
+      strictOptionalSchema<F, R>(validator, defaultValue),
+    ).proxy();
   }
 
   public destruct(
