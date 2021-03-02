@@ -4,7 +4,6 @@
   "extends":  [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier/@typescript-eslint",
 
     // Make sure this is always the last configuration in the extends array:
     "plugin:prettier/recommended"
