@@ -32,7 +32,7 @@ export default function compiler<S>(
   const { error, basePath = [], strict } = opts || {};
 
   if (typeof schema === 'function') {
-    return (schema as unknown) as SchemaValidatorFunction<S>;
+    return schema as unknown as SchemaValidatorFunction<S>;
   }
 
   if (typeof schema !== 'object' || schema === null) {
@@ -56,7 +56,7 @@ export default function compiler<S>(
       ...args: SchemaParameters<S>
     ): // eslint-disable-next-line @typescript-eslint/ban-types
     [object, Record<string, unknown>] => {
-      return [validator(...args), ([] as unknown) as Record<string, unknown>];
+      return [validator(...args), [] as unknown as Record<string, unknown>];
     };
   } else {
     const validator = type('object', error);
@@ -71,42 +71,40 @@ export default function compiler<S>(
 
   const keys = Object.keys(schema);
 
-  const tasks = keys.map(
-    (key): SchemaKeyTask => {
-      const path = [...basePath, key];
-      const validator = compiler<unknown>(schema[key as keyof S], {
-        basePath: path,
-        strict,
-      });
+  const tasks = keys.map((key): SchemaKeyTask => {
+    const path = [...basePath, key];
+    const validator = compiler<unknown>(schema[key as keyof S], {
+      basePath: path,
+      strict,
+    });
 
-      return (res, errors, obj): void | PromiseLike<void> => {
-        try {
-          const value: unknown = validator(
-            (obj as { [key: string]: unknown })[key],
-          );
+    return (res, errors, obj): void | PromiseLike<void> => {
+      try {
+        const value: unknown = validator(
+          (obj as { [key: string]: unknown })[key],
+        );
 
-          if (!isPromiseLike(value)) {
-            res[key] = value;
-            return;
-          }
-
-          return value.then(
-            (value) => {
-              res[key] = value;
-            },
-            (error) => {
-              errors.push({ error, path });
-            },
-          );
-        } catch (error) {
-          errors.push({
-            error,
-            path,
-          });
+        if (!isPromiseLike(value)) {
+          res[key] = value;
+          return;
         }
-      };
-    },
-  );
+
+        return value.then(
+          (value) => {
+            res[key] = value;
+          },
+          (error) => {
+            errors.push({ error, path });
+          },
+        );
+      } catch (error) {
+        errors.push({
+          error,
+          path,
+        });
+      }
+    };
+  });
 
   if (strict) {
     const keysSet = new Set(keys);

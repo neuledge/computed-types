@@ -4,7 +4,7 @@ import FunctionType, { FunctionParameters } from './schema/FunctionType';
 import { regexp, type } from './schema/validations';
 
 export class StringValidator<
-  P extends FunctionParameters = [string]
+  P extends FunctionParameters = [string],
 > extends Validator<FunctionType<string, P>> {
   public toLowerCase(): ValidatorProxy<this> {
     return this.transform((str) => str.toLowerCase());

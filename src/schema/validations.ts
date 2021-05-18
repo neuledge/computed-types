@@ -10,7 +10,7 @@ import {
 
 export function type<
   T extends keyof Typeof,
-  P extends FunctionParameters = [Typeof[T]]
+  P extends FunctionParameters = [Typeof[T]],
 >(type: T, error?: ErrorLike<P>): FunctionType<Typeof[T], P> {
   return (...args: P): Typeof[T] => {
     if (typeof args[0] !== type || args[0] === null) {
@@ -92,9 +92,9 @@ export function error<R, P extends FunctionParameters>(
         return res;
       }
 
-      return (res.then(null, (): never => {
+      return res.then(null, (): never => {
         throw toError(err, ...args);
-      }) as unknown) as R;
+      }) as unknown as R;
     } catch (e) {
       throw toError(err, ...args);
     }
@@ -123,7 +123,7 @@ export function regexp<P extends FunctionParameters = [string]>(
 
 export function array<
   R extends Array<unknown>,
-  P extends FunctionParameters = [R]
+  P extends FunctionParameters = [R],
 >(length: number | null = null, error?: ErrorLike<P>): FunctionType<R, P> {
   const isArray = (...args: P): R => {
     if (!Array.isArray(args[0])) {
@@ -153,7 +153,7 @@ export function array<
 
 export function enumValue<
   E extends Enum<E>,
-  P extends FunctionParameters = [E[keyof E]]
+  P extends FunctionParameters = [E[keyof E]],
 >(value: E, error?: ErrorLike<P>): FunctionType<E[keyof E], P> {
   const values = new Set<E[keyof E]>(
     Object.keys(value)

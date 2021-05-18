@@ -12,7 +12,7 @@ import { isPromiseLike, ResolvedValue } from './schema/utils';
 
 export class ArrayValidator<
   R extends unknown[] | PromiseLike<unknown[]> = unknown[],
-  P extends FunctionParameters = [R]
+  P extends FunctionParameters = [R],
 > extends Validator<FunctionType<R, P>> {
   public of<S>(
     schema: S,
@@ -22,7 +22,7 @@ export class ArrayValidator<
   > {
     const validator = compiler(schema, { error });
 
-    return (this.transform((arr: ResolvedValue<R>):
+    return this.transform((arr: ResolvedValue<R>):
       | PromiseLike<SchemaResolveType<S>[]>
       | SchemaResolveType<S>[] => {
       let isAsync;
@@ -42,7 +42,7 @@ export class ArrayValidator<
       }
 
       return Promise.all(items);
-    }) as unknown) as ValidatorProxy<
+    }) as unknown as ValidatorProxy<
       ArrayValidator<SchemaReturnType<S, SchemaResolveType<S>[]>, P>
     >;
   }

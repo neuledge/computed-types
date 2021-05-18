@@ -14,7 +14,7 @@ use(chaiAsPromised);
 describe('schema/logic', () => {
   describe('either', () => {
     it('no candidates', () => {
-      assert.throw(() => either(...(([] as unknown) as [unknown])), RangeError);
+      assert.throw(() => either(...([] as unknown as [unknown])), RangeError);
     });
 
     it('sync candidate', () => {
@@ -32,15 +32,13 @@ describe('schema/logic', () => {
     });
 
     it('async candidate', async () => {
-      const validator = either(
-        async (x: number): Promise<string> => {
-          if (x <= 0) {
-            throw new RangeError(`Negative input`);
-          }
+      const validator = either(async (x: number): Promise<string> => {
+        if (x <= 0) {
+          throw new RangeError(`Negative input`);
+        }
 
-          return String(x);
-        },
-      );
+        return String(x);
+      });
 
       typeCheck<typeof validator, (x: number) => PromiseLike<string>>('ok');
 
@@ -173,7 +171,7 @@ describe('schema/logic', () => {
 
   describe('merge', () => {
     it('no items', () => {
-      assert.throw(() => merge(...(([] as unknown) as [unknown])), RangeError);
+      assert.throw(() => merge(...([] as unknown as [unknown])), RangeError);
     });
 
     it('one item', () => {

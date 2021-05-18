@@ -5,7 +5,7 @@ import FunctionType, { FunctionParameters } from './schema/FunctionType';
 import { type } from './schema/validations';
 
 export class NumberValidator<
-  P extends FunctionParameters = [number]
+  P extends FunctionParameters = [number],
 > extends Validator<FunctionType<number, P>> {
   public float(error?: ErrorLike<[number]>): ValidatorProxy<this> {
     return this.test(

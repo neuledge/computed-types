@@ -10,12 +10,12 @@ import { MergeSchemaParameters } from './schema/io';
 
 export type ValidatorProxy<
   V extends { validator: FunctionType },
-  F extends FunctionType = V['validator']
+  F extends FunctionType = V['validator'],
 > = Omit<V, 'validator' | 'proxy'> & { validator: F } & F;
 
 export interface ValidatorConstructor<
   V extends Validator<F>,
-  F extends FunctionType = V['validator']
+  F extends FunctionType = V['validator'],
 > {
   new (validator: F): V;
 }
@@ -57,7 +57,7 @@ export default class Validator<F extends FunctionType> {
     T,
     V extends Validator<
       FunctionType<MaybeAsync<ReturnType<F>, T>, Parameters<F>>
-    >
+    >,
   >(
     fn: FunctionType<T, [ResolvedValue<ReturnType<F>>]>,
     constructor: ValidatorConstructor<V> = this
@@ -91,7 +91,7 @@ export default class Validator<F extends FunctionType> {
   }
 
   public optional<
-    R extends ResolvedValue<ReturnType<F>> | undefined = undefined
+    R extends ResolvedValue<ReturnType<F>> | undefined = undefined,
   >(
     defaultValue?: R,
   ): ValidatorProxy<
@@ -109,7 +109,7 @@ export default class Validator<F extends FunctionType> {
   }
 
   public strictOptional<
-    R extends ResolvedValue<ReturnType<F>> | undefined = undefined
+    R extends ResolvedValue<ReturnType<F>> | undefined = undefined,
   >(
     defaultValue?: R,
   ): ValidatorProxy<
