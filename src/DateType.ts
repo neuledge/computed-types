@@ -5,7 +5,7 @@ import FunctionType, { FunctionParameters } from './schema/FunctionType';
 import { NumberValidator } from './number';
 
 export class DateValidator<
-  P extends FunctionParameters = [Date]
+  P extends FunctionParameters = [Date],
 > extends Validator<FunctionType<Date, P>> {
   public toISOString(
     ...args: Parameters<Date['toISOString']>

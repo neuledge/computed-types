@@ -26,7 +26,7 @@ const BOOL_MAP = {
 };
 
 export class UnknownValidator<
-  P extends FunctionParameters = [unknown]
+  P extends FunctionParameters = [unknown],
 > extends Validator<FunctionType<unknown, P>> {
   public schema<S>(
     schema: S,
@@ -65,7 +65,7 @@ export class UnknownValidator<
         input == null ||
         (typeof input === 'object' &&
           // eslint-disable-next-line @typescript-eslint/ban-types
-          ((input as unknown) as object).toString === Object.prototype.toString)
+          (input as unknown as object).toString === Object.prototype.toString)
       ) {
         throw toError(error || `Expect value to be string`, input);
       }

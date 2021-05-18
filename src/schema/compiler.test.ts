@@ -41,7 +41,7 @@ describe('schema', () => {
       typeCheck<typeof ret, number>('ok');
       assert.equal(ret, 3);
 
-      assert.equal(validator((true as unknown) as number), 2);
+      assert.equal(validator(true as unknown as number), 2);
     });
 
     it('optional validator', () => {
@@ -147,10 +147,10 @@ describe('schema', () => {
       });
       typeCheck<
         typeof validator,
-        (x: {
-          foo?: any;
-          bar: { hello?: any; world?: unknown };
-        }) => { foo: string; bar: { hello: string; world: boolean } }
+        (x: { foo?: any; bar: { hello?: any; world?: unknown } }) => {
+          foo: string;
+          bar: { hello: string; world: boolean };
+        }
       >('ok');
 
       assert.deepEqual(validator({ foo: 'foo', bar: { hello: 'hi' } }), {
@@ -220,10 +220,7 @@ describe('schema', () => {
       });
       typeCheck<
         typeof validator,
-        (x: {
-          foo?: any;
-          bar: { hello: number; world?: any };
-        }) => PromiseLike<{
+        (x: { foo?: any; bar: { hello: number; world?: any } }) => PromiseLike<{
           foo: string;
           bar: { hello: number; world: number };
         }>
