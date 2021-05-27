@@ -1,6 +1,6 @@
 {
   "name": "computed-types",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Runtime validation types for TypeScript.",
   "keywords": [
     "runtime",
@@ -33,7 +33,7 @@
     "coverage": "npm run type-check && npm run lint -- --quiet && npm run mocha:coverage",
     "test:build": "npm run mocha:build",
     "test:commit": "if [[ -z \"$(git status --untracked-files=no --porcelain)\" ]]; then\n  echo \"All filed committed.\"\nelse\n  echo \"Uncommitted changes found. Please Commit them first.\" && exit 1\nfi",
-    "prepare": "npm run clean && npm run build",
+    "prepare": "npm run clean && npm run build && husky install",
     "prepublishOnly": "npm run test:commit && npm run test:build",
     "postpublish": "git push && git push --tags",
     "postversion": "npm publish"
@@ -44,7 +44,15 @@
   "main": "lib/index",
   "module": "lib/index",
   "types": "lib/index",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./lib/*": "./lib/*"
+  },
   "files": [
+    "index.mjs",
     "/lib/*"
   ],
   "devDependencies": {

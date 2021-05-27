@@ -36,7 +36,7 @@ export type {
 export default Schema;
 
 // runtime types
-export { unknown, object, array, string, number, boolean, DateType };
+export { Schema, unknown, object, array, string, number, boolean, DateType };
 
 // runtime helpers
 export { isPromiseLike };
