@@ -149,7 +149,11 @@ export default function compiler<S>(
 
     if (!promises.length) {
       if (errors.length || mainError) {
-        throw createValidationError(errors, mainError || error, ...args);
+        throw createValidationError<SchemaParameters<S>>(
+          errors,
+          mainError || error,
+          ...args,
+        );
       }
 
       return res as SchemaResolveType<S>;
@@ -157,7 +161,11 @@ export default function compiler<S>(
 
     return Promise.all(promises).then(() => {
       if (errors.length || mainError) {
-        throw createValidationError(errors, mainError || error, ...args);
+        throw createValidationError<SchemaParameters<S>>(
+          errors,
+          mainError || error,
+          ...args,
+        );
       }
 
       return res;
