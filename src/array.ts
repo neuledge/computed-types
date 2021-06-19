@@ -22,27 +22,29 @@ export class ArrayValidator<
   > {
     const validator = compiler(schema, { error });
 
-    return this.transform((arr: ResolvedValue<R>):
-      | PromiseLike<SchemaResolveType<S>[]>
-      | SchemaResolveType<S>[] => {
-      let isAsync;
-      const items = arr.map((item):
-        | SchemaResolveType<S>
-        | PromiseLike<SchemaResolveType<S>> => {
-        const ret = validator(...([item] as SchemaParameters<S>));
-        if (isPromiseLike(ret)) {
-          isAsync = true;
+    return this.transform(
+      (
+        arr: ResolvedValue<R>,
+      ): PromiseLike<SchemaResolveType<S>[]> | SchemaResolveType<S>[] => {
+        let isAsync;
+        const items = arr.map(
+          (item): SchemaResolveType<S> | PromiseLike<SchemaResolveType<S>> => {
+            const ret = validator(...([item] as SchemaParameters<S>));
+            if (isPromiseLike(ret)) {
+              isAsync = true;
+            }
+
+            return ret;
+          },
+        );
+
+        if (!isAsync) {
+          return items as SchemaResolveType<S>[];
         }
 
-        return ret;
-      });
-
-      if (!isAsync) {
-        return items as SchemaResolveType<S>[];
-      }
-
-      return Promise.all(items);
-    }) as unknown as ValidatorProxy<
+        return Promise.all(items);
+      },
+    ) as unknown as ValidatorProxy<
       ArrayValidator<SchemaReturnType<S, SchemaResolveType<S>[]>, P>
     >;
   }

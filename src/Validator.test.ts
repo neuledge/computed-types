@@ -252,10 +252,9 @@ describe('Validator', () => {
   });
 
   describe('yesOrNo', () => {
-    const validator = new Validator((input: 'yes' | 'no' | 'random'):
-      | 'yes'
-      | 'no' =>
-      input === 'random' ? (Math.random() <= 0.5 ? 'yes' : 'no') : input,
+    const validator = new Validator(
+      (input: 'yes' | 'no' | 'random'): 'yes' | 'no' =>
+        input === 'random' ? (Math.random() <= 0.5 ? 'yes' : 'no') : input,
     ).proxy();
 
     it('Types', () => {
