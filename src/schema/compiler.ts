@@ -8,6 +8,7 @@ import {
   ErrorLike,
   ObjectPath,
   toError,
+  toPathErrors,
 } from './errors';
 import { array, equals, regexp, type } from './validations';
 import FunctionType from './FunctionType';
@@ -94,14 +95,11 @@ export default function compiler<S>(
             res[key] = value;
           },
           (error) => {
-            errors.push({ error, path });
+            errors.push(...toPathErrors(error, path));
           },
         );
       } catch (error) {
-        errors.push({
-          error,
-          path,
-        });
+        errors.push(...toPathErrors(error, path));
       }
     };
   });

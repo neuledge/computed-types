@@ -238,4 +238,64 @@ describe('schema', () => {
       });
     });
   });
+
+  describe('compiler errors', () => {
+    it('error path', () => {
+      const validator = compiler({
+        foo: (input: string) => {
+          if (typeof input !== 'string') {
+            throw new RangeError('my range error');
+          }
+
+          return input.toUpperCase();
+        },
+      });
+
+      assert.deepEqual(validator({ foo: 'foo' }), { foo: 'FOO' });
+
+      try {
+        validator({ foo: 1 as never });
+        assert.fail('should throw');
+      } catch (e) {
+        assert.equal(e.message, 'foo: my range error');
+        assert.isArray(e.errors);
+
+        assert.instanceOf(e.errors[0].error, RangeError);
+        assert.equal(e.errors[0].error.message, 'my range error');
+        assert.deepEqual(e.errors[0].path, ['foo']);
+      }
+    });
+
+    it('error change path', () => {
+      const validator = compiler({
+        foo: {
+          bar: (input: string) => {
+            if (typeof input !== 'string') {
+              throw { message: 'my path error', path: ['test'] };
+            }
+
+            return input.toUpperCase();
+          },
+        },
+      });
+
+      assert.deepEqual(validator({ foo: { bar: 'foo' } }), {
+        foo: { bar: 'FOO' },
+      });
+
+      try {
+        validator({ foo: { bar: 1 as never } });
+        assert.fail('should throw');
+      } catch (e) {
+        assert.equal(e.message, 'test: my path error');
+        assert.isArray(e.errors);
+
+        assert.deepEqual(e.errors[0].path, ['test']);
+        assert.deepEqual(e.errors[0].error, {
+          message: 'my path error',
+          path: ['test'],
+        });
+      }
+    });
+  });
 });

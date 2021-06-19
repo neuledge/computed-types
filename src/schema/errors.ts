@@ -3,8 +3,8 @@ import { ObjectProperty } from './utils';
 
 export type ErrorLike<P extends FunctionParameters = never> =
   | string
-  | Error
-  | ((...args: P) => string | Error);
+  | ValidationError
+  | ((...args: P) => string | ValidationError);
 
 export type ObjectPath = ObjectProperty[];
 
@@ -15,6 +15,7 @@ export interface PathError {
 
 export class ValidationError extends TypeError {
   public errors?: PathError[];
+  public path?: ObjectPath;
 
   constructor(message: string, errors?: PathError[]) {
     super(message);
@@ -52,6 +53,27 @@ export function toError<P extends FunctionParameters>(
   }
 
   return error;
+}
+
+export function toPathErrors(
+  errorLike: ErrorLike,
+  path: ObjectPath,
+): PathError[] {
+  const error = toError(errorLike);
+
+  if (Array.isArray(error.path)) {
+    path = error.path;
+  }
+
+  if (error.errors?.length) {
+    return ([] as PathError[]).concat(
+      ...error.errors.map((item) =>
+        toPathErrors(item.error, [...path, ...item.path]),
+      ),
+    );
+  }
+
+  return [{ error, path }];
 }
 
 export function createValidationError<P extends FunctionParameters>(
