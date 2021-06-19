@@ -349,8 +349,8 @@ const [err, user] = validator(req.body);
 ##### `.error()`
 
 Will catch any error and replace it with your custom error instead. You can pass a `string`,
-`Error` or a `function` that will generate an error for you. Notice that on most cases you will
-not need to use this helpers, as most validation helpers has an optional `error` param with the
+`ValidationError` or a `function` that will generate an error for you. Notice that on most cases you
+will not need to use this helpers, as most validation helpers has an optional `error` param with the
 same functionality.
 
 ```ts
