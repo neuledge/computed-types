@@ -20,12 +20,6 @@ describe('schema', () => {
       it('should have error properties', () => {
         const err = new ValidationError('foo');
 
-        assert.deepEqual(Object.getOwnPropertyNames(err).sort(), [
-          'errors',
-          'message',
-          'stack',
-        ]);
-
         assert.equal(String(err), 'ValidationError: foo');
         assert.equal(err.message, 'foo');
         assert.include(err.stack, 'ValidationError: foo');
