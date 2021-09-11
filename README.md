@@ -6,8 +6,8 @@
   <a href="https://www.npmjs.org/package/computed-types">
     <img src="http://img.shields.io/npm/v/computed-types.svg" alt="View On NPM">
   </a>
-  <a href="https://github.com/neuledge/computed-types/actions/workflows/test.yml">
-    <img src="https://github.com/neuledge/computed-types/actions/workflows/test.yml/badge.svg"
+  <a href="https://github.com/neuledge/computed-types/actions/workflows/build.yml">
+    <img src="https://github.com/neuledge/computed-types/actions/workflows/build.yml/badge.svg"
       alt="Build Status">
   </a>
   <a href="https://depfu.com/github/neuledge/computed-types?project_id=12857">
