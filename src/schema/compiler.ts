@@ -99,7 +99,7 @@ export default function compiler<S>(
           },
         );
       } catch (error) {
-        errors.push(...toPathErrors(error, path));
+        errors.push(...toPathErrors(error as Error, path));
       }
     };
   });
@@ -134,7 +134,7 @@ export default function compiler<S>(
     } catch (e) {
       obj = {};
       res = {};
-      mainError = e;
+      mainError = e as Error;
     }
 
     const promises: PromiseLike<void>[] = [];

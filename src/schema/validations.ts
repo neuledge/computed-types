@@ -73,7 +73,7 @@ export function destruct<F extends FunctionType>(
         (err) => [error ? toError(error, ...args) : err],
       ) as PromiseLike<[Error | null, ResolvedValue<ReturnType<F>>?]>;
     } catch (err) {
-      return [error ? toError(error, ...args) : err];
+      return [error ? toError(error, ...args) : (err as Error)];
     }
   }) as FunctionType<
     MaybeAsync<ReturnType<F>, [Error | null, ResolvedValue<ReturnType<F>>?]>,

@@ -256,7 +256,7 @@ describe('schema', () => {
       try {
         validator({ foo: 1 as never });
         assert.fail('should throw');
-      } catch (e) {
+      } catch (e: any) {
         assert.equal(e.message, 'foo: my range error');
         assert.isArray(e.errors);
 
@@ -286,7 +286,7 @@ describe('schema', () => {
       try {
         validator({ foo: { bar: 1 as never } });
         assert.fail('should throw');
-      } catch (e) {
+      } catch (e: any) {
         assert.equal(e.message, 'test: my path error');
         assert.isArray(e.errors);
 

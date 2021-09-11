@@ -54,7 +54,7 @@ describe('Schema', () => {
         await validator({ username: 'test' });
 
         throw new Error('bad');
-      } catch (error) {
+      } catch (error: any) {
         assert.equal(error.message, 'username: my error');
       }
     });
