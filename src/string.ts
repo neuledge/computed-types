@@ -36,6 +36,12 @@ export class StringValidator<
     return this.transform((str) => str.trim());
   }
 
+  public truncate(length: number): ValidatorProxy<this> {
+    return this.transform((str) =>
+      str.length > length ? `${str.substring(0, length - 1)}…` : str,
+    );
+  }
+
   public min(
     length: number,
     error?: ErrorLike<[string]>,

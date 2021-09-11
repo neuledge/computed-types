@@ -68,6 +68,18 @@ describe('string', () => {
     assert.equal(string.toLowerCase().trim()(' Fo o  '), 'fo o');
   });
 
+  it('.truncate()', () => {
+    assert.equal(
+      string.truncate(20)('A very long text here to trim'),
+      'A very long text he…',
+    );
+    assert.equal(
+      string.truncate(20)('A very long text here to trim').length,
+      20,
+    );
+    assert.equal(string.truncate(20)('A short string'), 'A short string');
+  });
+
   it('.min()', () => {
     assert.equal(string.min(1)('foo'), 'foo');
     assert.equal(string.min(1)('a'), 'a');

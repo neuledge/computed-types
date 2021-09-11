@@ -565,6 +565,15 @@ Accept string and trim it.
 const validator = string.trim();
 ```
 
+##### `string.truncate()`
+
+Truncate a string to a given length with ellipsis (`…`) to the end. If the string below the given
+ limit the original string is return.
+
+```ts
+const validator = string.truncate(100);
+```
+
 ##### `string.normalize()`
 
 Accept string and normalize it.
