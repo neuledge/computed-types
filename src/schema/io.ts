@@ -18,10 +18,9 @@ type SchemaRequiredKeys<S> = Exclude<keyof S, SchemaOptionalKeys<S>>;
 
 type SchemaKeysObject<S> = {
   [K in keyof S & SchemaRequiredKeys<S>]: K;
-} &
-  {
-    [K in keyof S & SchemaOptionalKeys<S>]?: K;
-  };
+} & {
+  [K in keyof S & SchemaOptionalKeys<S>]?: K;
+};
 
 export type SchemaParameters<S> = [S] extends [FunctionType]
   ? Parameters<S>
