@@ -8,8 +8,8 @@ import { BooleanValidator } from './boolean';
 import { SchemaResolveType } from './schema/io';
 import compiler from './schema/compiler';
 import { ArrayValidator } from './array';
-import { array, enumValue, type } from './schema/validations';
-import { Enum } from './schema/utils';
+import { array, enumValue, recordValue, type } from './schema/validations';
+import { Enum, ObjectProperty } from './schema/utils';
 import { DateValidator } from './DateType';
 
 const BOOL_MAP = {
@@ -134,6 +134,14 @@ export class UnknownValidator<
     error?: ErrorLike<[unknown]>,
   ): ValidatorProxy<Validator<FunctionType<E[keyof E], P>>> {
     return this.transform(enumValue(value, error), Validator);
+  }
+
+  public record<K extends ObjectProperty, V>(
+    key: FunctionType<K, [any]>, // eslint-disable-line @typescript-eslint/no-explicit-any
+    value: FunctionType<V, [any]>, // eslint-disable-line @typescript-eslint/no-explicit-any
+    error?: ErrorLike<[unknown]>,
+  ): ValidatorProxy<Validator<FunctionType<Record<K, V>, P>>> {
+    return this.transform(recordValue(key, value, error), Validator);
   }
 }
 

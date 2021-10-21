@@ -1,11 +1,13 @@
 import 'mocha';
 import { assert, use } from 'chai';
-import { typeCheck } from './schema/utils';
+import { ObjectProperty, typeCheck } from './schema/utils';
 import chaiAsPromised from 'chai-as-promised';
 import Schema from './Schema';
 import { ValidationError } from './schema/errors';
 import string from './string';
 import { SchemaParameters } from './schema/io';
+import number from './number';
+import unknown from './unknown';
 
 use(chaiAsPromised);
 
@@ -187,6 +189,70 @@ describe('Schema', () => {
 
       assert.throw(() => validator('Foo' as any), ValidationError, 'test');
       assert.throw(() => validator(0 as any), ValidationError, 'test');
+    });
+  });
+
+  describe('.record', () => {
+    it('Record<string, number>', () => {
+      const validator = Schema.record(string, number);
+
+      typeCheck<
+        typeof validator,
+        (x: Record<string, number>) => Record<string, number>
+      >('ok');
+
+      assert.deepEqual(validator({ foo: 1, bar: 2 }), { foo: 1, bar: 2 });
+      assert.deepEqual(validator({}), {});
+
+      assert.throw(
+        () => validator({ foo: 'foo' } as any),
+        ValidationError,
+        'foo: Expect value to be "number"',
+      );
+    });
+
+    it('Record<unknown.string, unknown.number>', () => {
+      const validator = Schema.record(unknown.string(), unknown.number());
+
+      typeCheck<
+        typeof validator,
+        (x: Record<ObjectProperty, unknown>) => Record<string, number>
+      >('ok');
+
+      assert.deepEqual(validator({ foo: 1, bar: 2 }), { foo: 1, bar: 2 });
+      assert.deepEqual(validator({}), {});
+      assert.deepEqual(validator({ foo: 1, bar: '2' }), { foo: 1, bar: 2 });
+
+      assert.throw(
+        () => validator({ foo: 1, bar: 'bar' } as any),
+        ValidationError,
+        'bar: Unknown number value',
+      );
+    });
+
+    it('Record<unknown.number, unknown.string>', () => {
+      const validator = Schema.record(unknown.number(), unknown.string());
+
+      typeCheck<
+        typeof validator,
+        (x: Record<ObjectProperty, unknown>) => Record<number, string>
+      >('ok');
+
+      assert.deepEqual(validator({ 1: 'foo', 2: 'bar' }), {
+        1: 'foo',
+        2: 'bar',
+      });
+      assert.deepEqual(validator({}), {});
+      assert.deepEqual(validator({ '1': 1, '02.0': 'bar' }), {
+        1: '1',
+        2: 'bar',
+      });
+
+      assert.throw(
+        () => validator({ foo: 'foo' } as any),
+        ValidationError,
+        'foo: Unknown number value',
+      );
     });
   });
 });
