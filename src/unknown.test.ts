@@ -3,6 +3,8 @@ import { assert } from 'chai';
 import unknown from './unknown';
 import { typeCheck } from './schema/utils';
 import { ValidationError } from './schema/errors';
+import string from './string';
+import number from './number';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -164,5 +166,19 @@ describe('unknown', () => {
 
     assert.throws(() => validator(2), ValidationError);
     assert.throws(() => validator('Foo'), ValidationError);
+  });
+
+  it('.record()', () => {
+    const validator = unknown.record(string, number);
+
+    typeCheck<ReturnType<typeof validator>, Record<string, number>>('ok');
+    typeCheck<Parameters<typeof validator>, [unknown]>('ok');
+
+    assert.deepEqual(validator({ foo: 1 }), { foo: 1 });
+    assert.deepEqual(validator({}), {});
+
+    assert.throws(() => validator(2), ValidationError);
+    assert.throws(() => validator('Foo'), ValidationError);
+    assert.throws(() => validator({ foo: 'foo' }), ValidationError);
   });
 });

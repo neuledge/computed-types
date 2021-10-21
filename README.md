@@ -429,6 +429,14 @@ enum Status {
 const validator = Schema.enum(Status, 'Invalid status');
 ```
 
+##### `Schema.record`
+
+Create a `Record<key, value>` validator.
+
+```ts
+const validator = Schema.record(string.regexp(/^[a-z]+$/), number);
+```
+
 <br>
 
 ### `unknown`
@@ -513,6 +521,14 @@ enum Status {
 }
 
 const validator = unknown.enum(Status);
+```
+
+##### `unknown.record()`
+
+Accept any value as an input and try to convert it to a `Record<key, value>`:
+
+```ts
+const validator = unknown.record(string, number);
 ```
 
 <br>

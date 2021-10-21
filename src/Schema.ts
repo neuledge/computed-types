@@ -10,8 +10,8 @@ import Validator, { ValidatorProxy } from './Validator';
 import compiler from './schema/compiler';
 import { either as eitherSchema, merge as mergeSchemas } from './schema/logic';
 import FunctionType, { FunctionParameters } from './schema/FunctionType';
-import { Enum } from './schema/utils';
-import { enumValue } from './schema/validations';
+import { Enum, ObjectProperty } from './schema/utils';
+import { enumValue, recordValue } from './schema/validations';
 
 interface SchemaType {
   <S>(
@@ -335,6 +335,18 @@ interface SchemaType {
     value: E,
     error?: ErrorLike<P>,
   ): ValidatorProxy<Validator<FunctionType<E[keyof E], P>>>;
+
+  record<
+    K extends ObjectProperty,
+    V,
+    IK extends ObjectProperty,
+    IV,
+    P extends FunctionParameters = [Record<IK, IV>],
+  >(
+    key: FunctionType<K, [IK]>,
+    value: FunctionType<V, [IV]>,
+    error?: ErrorLike<P>,
+  ): ValidatorProxy<Validator<FunctionType<Record<K, V>, P>>>;
 }
 
 function schema<S>(
@@ -399,6 +411,20 @@ schema.enum = function <
   error?: ErrorLike<P>,
 ): ValidatorProxy<Validator<FunctionType<E[keyof E], P>>> {
   return new Validator(enumValue(value, error)).proxy();
+};
+
+schema.record = function <
+  K extends ObjectProperty,
+  V,
+  IK extends ObjectProperty,
+  IV,
+  P extends FunctionParameters = [Record<IK, IV>],
+>(
+  key: FunctionType<K, [IK]>,
+  value: FunctionType<V, [IV]>,
+  error?: ErrorLike<P>,
+): ValidatorProxy<Validator<FunctionType<Record<K, V>, P>>> {
+  return new Validator(recordValue(key, value, error)).proxy();
 };
 
 const Schema: SchemaType = schema;

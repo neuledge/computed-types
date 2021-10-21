@@ -1,9 +1,15 @@
-import { ErrorLike, toError, ValidationError } from './errors';
+import {
+  createValidationError,
+  ErrorLike,
+  toError,
+  ValidationError,
+} from './errors';
 import FunctionType, { FunctionParameters } from './FunctionType';
 import {
   Enum,
   isPromiseLike,
   MaybeAsync,
+  ObjectProperty,
   ResolvedValue,
   Typeof,
 } from './utils';
@@ -167,5 +173,46 @@ export function enumValue<
     }
 
     return args[0] as E[keyof E];
+  };
+}
+
+export function recordValue<
+  K extends ObjectProperty,
+  V,
+  IK extends ObjectProperty,
+  IV,
+  P extends FunctionParameters = [Record<IK, IV>],
+>(
+  key: FunctionType<K, [IK]>,
+  value: FunctionType<V, [IV]>,
+  error?: ErrorLike<P>,
+): FunctionType<Record<K, V>, P> {
+  return (...args) => {
+    const [input] = args;
+
+    if (!input || typeof input !== 'object') {
+      throw toError(error || 'Expected non-null object', ...args);
+    }
+
+    const obj = {} as Record<K, V>;
+
+    for (const k in input) {
+      try {
+        obj[key(k as IK)] = value((input as Record<string, unknown>)[k] as IV);
+      } catch (error) {
+        throw createValidationError(
+          [
+            {
+              path: [k],
+              error: error as Error,
+            },
+          ],
+          null,
+          ...args,
+        );
+      }
+    }
+
+    return obj;
   };
 }
