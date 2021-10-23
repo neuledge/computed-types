@@ -295,9 +295,10 @@ describe('schema/io', () => {
     });
 
     it('optional properties', () => {
-      typeCheck<SchemaResolveType<{ foo: (x: string) => void }>, { foo?: void }>(
-        'ok',
-      );
+      typeCheck<
+        SchemaResolveType<{ foo: (x: string) => void }>,
+        { foo?: void }
+      >('ok');
 
       typeCheck<
         SchemaResolveType<{ foo: (x?: string) => void }>,
@@ -306,17 +307,20 @@ describe('schema/io', () => {
     });
 
     it('undefined properties', () => {
-      typeCheck<SchemaResolveType<{ foo: (x: string) => undefined }>, { foo?: undefined }>(
-        'ok',
-      );
+      typeCheck<
+        SchemaResolveType<{ foo: (x: string) => undefined }>,
+        { foo?: undefined }
+      >('ok');
 
-      typeCheck<SchemaResolveType<{ foo: (x: string) => undefined | number }>, { foo?: number }>(
-        'ok',
-      );
+      typeCheck<
+        SchemaResolveType<{ foo: (x: string) => undefined | number }>,
+        { foo?: number }
+      >('ok');
 
-      typeCheck<SchemaResolveType<{ foo: (x?: string) => number }>, { foo: number }>(
-        'ok',
-      );
+      typeCheck<
+        SchemaResolveType<{ foo: (x?: string) => number }>,
+        { foo: number }
+      >('ok');
     });
 
     it('optional array items', () => {
