@@ -23,7 +23,7 @@ describe('README', () => {
     typeCheck<
       User,
       {
-        name: string | undefined;
+        name?: string;
         username: string;
         status: 'active' | 'suspended';
         items: { id: string; amount: number }[];

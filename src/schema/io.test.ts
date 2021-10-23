@@ -286,7 +286,7 @@ describe('schema/io', () => {
         SchemaResolveType<{ foo: () => 1 | 'foo' }>,
         { foo: 1 | 'foo' }
       >('ok');
-      typeCheck<SchemaResolveType<{ foo: () => void }>, { foo: void }>('ok');
+      typeCheck<SchemaResolveType<{ foo: () => void }>, { foo?: void }>('ok');
 
       typeCheck<
         SchemaResolveType<{ foo: () => Promise<number> }>,
@@ -295,14 +295,28 @@ describe('schema/io', () => {
     });
 
     it('optional properties', () => {
-      typeCheck<SchemaResolveType<{ foo: (x: string) => void }>, { foo: void }>(
+      typeCheck<SchemaResolveType<{ foo: (x: string) => void }>, { foo?: void }>(
         'ok',
       );
 
       typeCheck<
         SchemaResolveType<{ foo: (x?: string) => void }>,
-        { foo: void }
+        { foo?: void }
       >('ok');
+    });
+
+    it('undefined properties', () => {
+      typeCheck<SchemaResolveType<{ foo: (x: string) => undefined }>, { foo?: undefined }>(
+        'ok',
+      );
+
+      typeCheck<SchemaResolveType<{ foo: (x: string) => undefined | number }>, { foo?: number }>(
+        'ok',
+      );
+
+      typeCheck<SchemaResolveType<{ foo: (x?: string) => number }>, { foo: number }>(
+        'ok',
+      );
     });
 
     it('optional array items', () => {
@@ -402,7 +416,7 @@ describe('schema/io', () => {
         SchemaValidatorFunction<{ foo: () => unknown }>,
         (x: {
           foo?: undefined;
-        }) => { foo: unknown } | PromiseLike<{ foo: unknown }>
+        }) => { foo?: unknown } | PromiseLike<{ foo?: unknown }>
       >('ok');
     });
   });

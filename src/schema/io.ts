@@ -42,14 +42,40 @@ export type SchemaParameters<S> = [S] extends [FunctionType]
 
 export type SchemaInput<S> = SchemaParameters<S>[0];
 
+type SchemaResolveTypeUndefinedKeys<S> = Exclude<
+  {
+    [K in keyof S]: [S[K]] extends [FunctionType]
+      ? [undefined] extends [ResolvedValue<ReturnType<S[K]>>]
+        ? K
+        : never
+      : [undefined] extends [S[K]]
+      ? K
+      : never;
+  }[keyof S],
+  undefined
+>;
+
+type SchemaResolveTypeNonUndefinedKeys<S> = Exclude<
+  keyof S,
+  SchemaResolveTypeUndefinedKeys<S>
+>;
+
+type SchemaResolveTypeKeys<S> = {
+  [K in keyof S & SchemaResolveTypeNonUndefinedKeys<S>]: K;
+} & {
+  [K in keyof S & SchemaResolveTypeUndefinedKeys<S>]?: K;
+};
+
 export type SchemaResolveType<S> = S extends FunctionType
   ? ResolvedValue<ReturnType<S>>
   : S extends Primitive
   ? S
   : S extends RegExp
   ? string
-  : S extends object // eslint-disable-line @typescript-eslint/ban-types
+  : [S] extends [Array<any>] // eslint-disable-line @typescript-eslint/no-explicit-any
   ? { [K in keyof S]: SchemaResolveType<S[K]> }
+  : S extends object // eslint-disable-line @typescript-eslint/ban-types
+  ? { [K in keyof SchemaResolveTypeKeys<S>]: SchemaResolveType<S[K]> }
   : unknown extends S
   ? unknown
   : never;
