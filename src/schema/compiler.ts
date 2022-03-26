@@ -75,7 +75,7 @@ export default function compiler<S>(
   const tasks = keys.map((key): SchemaKeyTask => {
     const path = [...basePath, key];
     const validator = compiler<unknown>(schema[key as keyof S], {
-      basePath: path,
+      basePath,
       strict,
     });
 

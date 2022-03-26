@@ -60,6 +60,42 @@ describe('Schema', () => {
         assert.equal(error.message, 'username: my error');
       }
     });
+
+    it('should handle nested objects', () => {
+      const validator = Schema({
+        foo: Schema({
+          bar: string.min(1),
+        }),
+      });
+
+      typeCheck<
+        typeof validator,
+        (x: { foo: { bar: string } }) => { foo: { bar: string } }
+      >('ok');
+      assert.deepEqual(validator({ foo: { bar: 'abc' } }), {
+        foo: { bar: 'abc' },
+      });
+
+      try {
+        validator({ foo: { bar: '' } } as never);
+        assert.fail('should throw');
+      } catch (e: any) {
+        assert.instanceOf(e, ValidationError);
+
+        assert.equal(
+          e.message,
+          'foo.bar: Expect length to be minimum of 1 characters (actual: 0)',
+        );
+        assert.isArray(e.errors);
+
+        assert.instanceOf(e.errors[0].error, RangeError);
+        assert.equal(
+          e.errors[0].error.message,
+          'Expect length to be minimum of 1 characters (actual: 0)',
+        );
+        assert.deepEqual(e.errors[0].path, ['foo', 'bar']);
+      }
+    });
   });
 
   describe('.either', () => {

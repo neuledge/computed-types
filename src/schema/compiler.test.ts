@@ -266,6 +266,36 @@ describe('schema', () => {
       }
     });
 
+    it('nested error path', () => {
+      const validator = compiler({
+        foo: {
+          bar: (input: string) => {
+            if (typeof input !== 'string') {
+              throw new RangeError('my range error');
+            }
+
+            return input.toUpperCase();
+          },
+        },
+      });
+
+      assert.deepEqual(validator({ foo: { bar: 'bar' } }), {
+        foo: { bar: 'BAR' },
+      });
+
+      try {
+        validator({ foo: { bar: 1 } as never });
+        assert.fail('should throw');
+      } catch (e: any) {
+        assert.equal(e.message, 'foo.bar: my range error');
+        assert.isArray(e.errors);
+
+        assert.instanceOf(e.errors[0].error, RangeError);
+        assert.equal(e.errors[0].error.message, 'my range error');
+        assert.deepEqual(e.errors[0].path, ['foo', 'bar']);
+      }
+    });
+
     it('error change path', () => {
       const validator = compiler({
         foo: {

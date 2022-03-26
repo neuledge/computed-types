@@ -24,6 +24,7 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir lib --extensions \".js,.ts\" --source-maps inline",
     "lint": "eslint \"src/**\"",
+    "lint:strict": "npm run lint -- --max-warnings 0",
     "fix": "npm run fix:lint",
     "fix:lint": "npm run lint -- --fix",
     "mocha": "TS_NODE_FILES=true mocha -r ts-node/register \"src/**/*.test.ts\" --timeout 10000",
@@ -34,7 +35,7 @@
     "test:build": "npm run mocha:build",
     "test:commit": "if [[ -z \"$(git status --untracked-files=no --porcelain)\" ]]; then\n  echo \"All filed committed.\"\nelse\n  echo \"Uncommitted changes found. Please Commit them first.\" && exit 1\nfi",
     "prepare": "npm run clean && npm run build && husky install",
-    "prepublishOnly": "npm run test:commit && npm run test:build",
+    "prepublishOnly": "npm run test:commit && npm run test:build && npm run lint:strict",
     "postpublish": "git push && git push --tags",
     "postversion": "npm publish"
   },
