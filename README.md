@@ -14,8 +14,8 @@
     <img src="https://badges.depfu.com/badges/f49a9b5caba7c3538e1fd9a06a72bca6/overview.svg"
       alt="Dependency Status">
   </a>
-  <a href="https://codecov.io/gh/neuledge/computed-types">
-    <img src="https://codecov.io/gh/neuledge/computed-types/branch/master/graph/badge.svg?token=4YPG4FPM23"
+  <a href="https://codecov.io/gh/neuledge/sort-key">
+    <img src="https://codecov.io/gh/neuledge/sort-key/branch/master/graph/badge.svg?token=IG7TTIBZRY"
       alt="Coverage Status" />
   </a>
   <a href="LICENSE">
