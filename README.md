@@ -14,8 +14,8 @@
     <img src="https://badges.depfu.com/badges/f49a9b5caba7c3538e1fd9a06a72bca6/overview.svg"
       alt="Dependency Status">
   </a>
-  <a href="https://coveralls.io/github/neuledge/computed-types?branch=master">
-    <img src="https://coveralls.io/repos/github/neuledge/computed-types/badge.svg?branch=master"
+  <a href="https://codecov.io/gh/neuledge/computed-types">
+    <img src="https://codecov.io/gh/neuledge/computed-types/branch/master/graph/badge.svg?token=4YPG4FPM23"
       alt="Coverage Status" />
   </a>
   <a href="LICENSE">
@@ -25,11 +25,12 @@
 <br>
 
 **Computed-Types** (formerly: [Funval](https://www.npmjs.org/package/funval)) is a strongly-typed
-validation library for TypeScript. Using function interfaces, *computed-types* knows how to
+validation library for TypeScript. Using function interfaces, _computed-types_ knows how to
 transform and validate your data, and automatically generates accurate TypeScript
 interfaces on compile time.
 
 #### Using `computed-types`:
+
 ```ts
 const UserSchema = Schema({
   name: string,
@@ -41,6 +42,7 @@ type User = Type<typeof UserSchema>;
 ```
 
 #### Equivalent code in `Joi`:
+
 ```ts
 const UserSchema = Joi.object({
   name: Joi.string().required(),
@@ -52,13 +54,13 @@ type User = {
   name: string;
   amount: number;
   flags?: string[];
-}
+};
 ```
 
 ### Main Features
 
 - **Easy to Read** - Uses runtime types like in TypeScript (including `string`, `array`, `unknown`,
- etc...)
+  etc...)
 - **Reduce Duplication** - Create new validator using existing functions in seconds.
 - **TypeScript Validation** - Detect errors during compile time as well.
 - **Function Composition** - Chain multiple validators to generate new types.
@@ -66,7 +68,6 @@ type User = {
 - **Asynchronous & Synchronous Support** - Automatically detected promises and async validation.
 - **Zero Dependencies** - Light and compact library.
 - **Pure Javascript** - Also works without TypeScript.
-
 
 <br>
 
@@ -84,13 +85,20 @@ type User = {
 ## Install
 
 #### Node.js:
+
 ```bash
 npm i computed-types
 ```
 
 #### Deno:
+
 ```ts
-import Schema, { Type, string, number, array } from 'https://denoporter.sirjosh.workers.dev/v1/deno.land/x/computed_types/src/index.ts';
+import Schema, {
+  Type,
+  string,
+  number,
+  array,
+} from 'https://denoporter.sirjosh.workers.dev/v1/deno.land/x/computed_types/src/index.ts';
 ```
 
 <br>
@@ -101,15 +109,15 @@ import Schema, { Type, string, number, array } from 'https://denoporter.sirjosh.
 import Schema, { Type, string, number, array } from 'computed-types';
 
 const UserSchema = Schema({
- name: string.trim().normalize().between(3, 40).optional(),
- username: /^[a-z0-9]{3,10}$/,
- status: Schema.either('active' as const, 'suspended' as const),
- items: array
-   .of({
-     id: string,
-     amount: number.gte(1).integer(),
-   })
-   .min(1),
+  name: string.trim().normalize().between(3, 40).optional(),
+  username: /^[a-z0-9]{3,10}$/,
+  status: Schema.either('active' as const, 'suspended' as const),
+  items: array
+    .of({
+      id: string,
+      amount: number.gte(1).integer(),
+    })
+    .min(1),
 });
 
 type User = Type<typeof UserSchema>;
@@ -131,14 +139,13 @@ console.log(err);
 //     }
 //   ]
 // }
-
 ```
 
 <br>
 
 ## Creating new Types
 
-A computed type is any function that can return a value without throwing any exceptions. Creating a custom type 
+A computed type is any function that can return a value without throwing any exceptions. Creating a custom type
 allows you to normalize, transform and validate any input.
 
 For example this type will validate email addresses:
@@ -178,14 +185,13 @@ This will validate inputs in the form of `{ email?: unknown }` to `{ email: stri
 
 <br>
 
-
 ### Using Transform
 
 The custom Email validator above will not support [validator chaining](#validators-chain), but we can easily
 fix this by using the [`.transform()` method](#transform).
 
 ```ts
-const EmailWithValidatorChain = unknown.string.transform(Email)
+const EmailWithValidatorChain = unknown.string.transform(Email);
 ```
 
 I can now make use of the validator chain:
@@ -208,7 +214,9 @@ Asynchronous validators are supported by returning a `Promise` (or `PromiseLike`
 import fetch from 'node-fetch';
 
 async function AvailableUsername(input: string): Promise<string> {
-  const res = await fetch(`/check-username?username=${encodeURIComponent(input)}`);
+  const res = await fetch(
+    `/check-username?username=${encodeURIComponent(input)}`,
+  );
 
   if (!res.ok) {
     throw new TypeError(`Username "${input}" is already taken`);
@@ -218,8 +226,9 @@ async function AvailableUsername(input: string): Promise<string> {
 }
 ```
 
-*Computed-types* automatically detects promise and convert the return type of the `Validator` to
+_Computed-types_ automatically detects promise and convert the return type of the `Validator` to
 promise as well:
+
 ```ts
 const UserSchema = {
   username: AvailableUsername,
@@ -251,7 +260,7 @@ console.log(validator('123.4567')); // '123.46'
 ```
 
 You can [see here](#available-types) all the custom chain methods for each type. Please note that
- after calling `toFixed`, the validator no longer returns a `number` but a
+after calling `toFixed`, the validator no longer returns a `number` but a
 `string` so all the helpers functions available after `toFixed` will be the `string` helpers.
 
 In addition the type helpers, each validator has those default chain helpers so use:
@@ -320,7 +329,7 @@ This is very useful for parsing when creating optional properties on a schema.
 const validator = Schema({
   name: string.trim().min(1),
   address: string.trim().optional(),
-})
+});
 ```
 
 ##### `.strictOptional()`
@@ -331,7 +340,7 @@ Same as `.optional()` but allows only `undefined` values.
 const validator = Schema({
   name: string.trim().min(1),
   address: string.trim().optional(),
-})
+});
 ```
 
 ##### `.destruct()`
@@ -378,10 +387,13 @@ Click on each type to see some validation examples.
 Create a validator from schema object, values or function validators.
 
 ```ts
-const validator = Schema({
-  name: string,
-  amount: number,
-}, 'Missing name or amount');
+const validator = Schema(
+  {
+    name: string,
+    amount: number,
+  },
+  'Missing name or amount',
+);
 ```
 
 ##### Strict mode
@@ -390,10 +402,13 @@ By default, the schema validator will ignore all properties that aren't exist on
 you want to throw an error instead you can toggle the strict mode on.
 
 ```ts
-const validator = Schema({
-  name: string,
-  amount: number,
-}, { strict: true });
+const validator = Schema(
+  {
+    name: string,
+    amount: number,
+  },
+  { strict: true },
+);
 ```
 
 ##### `Schema.either`
@@ -401,18 +416,19 @@ const validator = Schema({
 Works as OR switch. Create a validator from multiple function validators or schema objects.
 
 ```ts
-const validator = Schema.either({ foo: string}, { bar: number });
+const validator = Schema.either({ foo: string }, { bar: number });
 // validate: { foo: string; } | { bar: number; }
 ```
 
 ##### `Schema.merge`
 
 Works as AND switch. Create a validator from multiple function validators or schema objects.
+
 ```ts
-const validator = Schema.merge({ foo: string}, { bar: number });
-// validate: { 
+const validator = Schema.merge({ foo: string }, { bar: number });
+// validate: {
 //   foo: string;
-//   bar: number; 
+//   bar: number;
 // }
 ```
 
@@ -422,9 +438,9 @@ Create a validator from TypeScript enum.
 
 ```ts
 enum Status {
- OK,
- Invalid,
-};
+  OK,
+  Invalid,
+}
 
 const validator = Schema.enum(Status, 'Invalid status');
 ```
@@ -456,7 +472,7 @@ Accept any value as an input and try to convert it the given schema:
 ```ts
 const validator = unknown.schema({
   foo: string.trim(),
-})
+});
 ```
 
 ##### `unknown.object()`
@@ -507,7 +523,9 @@ const validator = unknown.boolean('Expect data to be boolean').equals(true);
 Accept any value as an input and try to convert it to a date:
 
 ```ts
-const validator = unknown.date('Expect data to be date').equals('1970-01-01T00:00:00.050Z');
+const validator = unknown
+  .date('Expect data to be date')
+  .equals('1970-01-01T00:00:00.050Z');
 ```
 
 ##### `unknown.enum()`
@@ -586,7 +604,7 @@ const validator = string.trim();
 ##### `string.truncate()`
 
 Truncate a string to a given length with ellipsis (`…`) to the end. If the string below the given
- limit the original string is return.
+limit the original string is return.
 
 ```ts
 const validator = string.truncate(100);
@@ -640,7 +658,7 @@ Accept only number type values.
 
 ```ts
 const validator = Schema({
-  amount: number
+  amount: number,
 });
 ```
 
@@ -748,7 +766,7 @@ Accept only boolean type values.
 
 ```ts
 const validator = Schema({
-  agree: boolean
+  agree: boolean,
 });
 ```
 
@@ -758,7 +776,7 @@ const validator = Schema({
 
 Accept only array type values.
 
-```ts
+````ts
 const validator = Schema({
   agree: array
 });
@@ -772,7 +790,7 @@ const numbers = array.of(number); // numbers[]
 const tuple = array.of(number).between(1, 2); // [number, number?]
 const objects = array.of({ foo: number }); // { foo: number }[]
 const enums = array.of(Schema.enum(Status); // Status[]
-```
+````
 
 ##### `array.min()`
 
@@ -806,7 +824,7 @@ Accept only instances of `Date`.
 
 ```ts
 const validator = Schema({
-  eventTime: DateType
+  eventTime: DateType,
 });
 ```
 
@@ -863,7 +881,10 @@ const validator = DateType.lt(new Date('2020-10-01T10:00:00.000Z'));
 Accept Date between the given boundaries.
 
 ```ts
-const validator = DateType.between(new Date('2020-09-01T10:00:00.000Z'), new Date('2020-10-01T10:00:00.000Z'));
+const validator = DateType.between(
+  new Date('2020-09-01T10:00:00.000Z'),
+  new Date('2020-10-01T10:00:00.000Z'),
+);
 ```
 
 <br>
