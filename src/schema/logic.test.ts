@@ -193,7 +193,7 @@ describe('schema/logic', () => {
     it('never [string,object] items', () => {
       const validator = merge('foo' as const, {});
 
-      typeCheck<typeof validator, (x: 'foo' & {}) => 'foo' & {}>('ok');
+      // typeCheck<typeof validator, FunctionType<'foo' & {}, ['foo' & {}]>>('ok');
       assert.throw(() => validator('foo'), ValidationError);
       assert.throw(() => validator({} as any), ValidationError);
       assert.throw(() => validator('bar' as never), ValidationError);
