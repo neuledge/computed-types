@@ -69,6 +69,11 @@ type User = {
 - **Zero Dependencies** - Light and compact library.
 - **Pure Javascript** - Also works without TypeScript.
 
+### Sponsored by ❤️
+
+If you like this project, please [consider sponsoring us](https://github.com/sponsors/neuledge) to help us continue to maintain and improve
+this project.
+
 <br>
 
 ## Table of Contents
