@@ -21,6 +21,7 @@
   <a href="LICENSE">
     <img src="https://img.shields.io/npm/l/computed-types.svg" alt="License">
   </a>
+  <a href="https://human0.ai/oss/neuledge-computed-types/badge"><img src="https://human0.ai/oss/badge.svg" alt="Maintained by human0"></a>
 </p>
 <br>
 
@@ -28,6 +29,12 @@
 validation library for TypeScript. Using function interfaces, _computed-types_ knows how to
 transform and validate your data, and automatically generates accurate TypeScript
 interfaces on compile time.
+
+<p align="center">
+  <a href="https://human0.ai/oss/neuledge-computed-types/banner">
+    <img src="https://human0.ai/oss/banner.svg" alt="Maintained by human0">
+  </a>
+</p>
 
 #### Using `computed-types`:
 
