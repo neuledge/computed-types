@@ -465,6 +465,39 @@ Create a `Record<key, value>` validator.
 const validator = Schema.record(string.regexp(/^[a-z]+$/), number);
 ```
 
+##### `Schema.recursive`
+
+Create a recursive validator from a factory. The factory receives the recursive validator as
+`self`, so it can be passed to schema combinators such as `array.of`:
+
+```ts
+type Node = {
+  name: string;
+  children: Node[];
+};
+
+const NodeSchema = Schema.recursive<Node>((self) => ({
+  name: string,
+  children: array.of(self),
+}));
+// validate: (input: Node) => Node
+```
+
+For schemas that refer to one another, defer schema resolution with a zero-argument factory.
+Annotate the constants to break TypeScript's circular inference:
+
+```ts
+type A = { name: string; b?: B };
+type B = { name: string; a?: A };
+
+const ASchema: ReturnType<typeof Schema.recursive<A>> = Schema.recursive<A>(() =>
+  Schema({ name: string, b: BSchema.optional() }),
+);
+const BSchema: ReturnType<typeof Schema.recursive<B>> = Schema.recursive<B>(() =>
+  Schema({ name: string, a: ASchema.optional() }),
+);
+```
+
 <br>
 
 ### `unknown`
