@@ -72,7 +72,6 @@
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
-    "coveralls": "^3.1.1",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
