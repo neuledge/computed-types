@@ -468,7 +468,9 @@ const validator = Schema.record(string.regexp(/^[a-z]+$/), number);
 ##### `Schema.recursive`
 
 Create a recursive validator from a factory. The factory receives the recursive validator as
-`self`, so it can be passed to schema combinators such as `array.of`:
+`self`, so it can be passed to schema combinators such as `array.of`. The factory must return
+a validator for the same type `T` (for example by calling `Schema(...)`), which keeps the
+declared type and the runtime validation in sync:
 
 ```ts
 type Node = {
@@ -476,11 +478,29 @@ type Node = {
   children: Node[];
 };
 
-const NodeSchema = Schema.recursive<Node>((self) => ({
-  name: string,
-  children: array.of(self),
-}));
+const NodeSchema = Schema.recursive<Node>((self) =>
+  Schema({
+    name: string,
+    children: array.of(self),
+  }),
+);
 // validate: (input: Node) => Node
+```
+
+`self` is a validator proxy, so optional self-references can use `self.optional()`:
+
+```ts
+type LinkedList = {
+  value: string;
+  next?: LinkedList;
+};
+
+const LinkedListSchema = Schema.recursive<LinkedList>((self) =>
+  Schema({
+    value: string,
+    next: self.optional(),
+  }),
+);
 ```
 
 For schemas that refer to one another, defer schema resolution with a zero-argument factory.

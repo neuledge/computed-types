@@ -349,7 +349,9 @@ interface SchemaType {
   ): ValidatorProxy<Validator<FunctionType<Record<K, V>, P>>>;
 
   recursive<T>(
-    factory: (self: FunctionType<T, [T]>) => unknown,
+    factory: (
+      self: ValidatorProxy<Validator<FunctionType<T, [T]>>>,
+    ) => FunctionType<T, [T]>,
   ): ValidatorProxy<Validator<FunctionType<T, [T]>>>;
 }
 
@@ -432,34 +434,23 @@ schema.record = function <
 };
 
 schema.recursive = function <T>(
-  factory: (self: FunctionType<T, [T]>) => unknown,
+  factory: (
+    self: ValidatorProxy<Validator<FunctionType<T, [T]>>>,
+  ) => FunctionType<T, [T]>,
 ): ValidatorProxy<Validator<FunctionType<T, [T]>>> {
   let validator: FunctionType<T, [T]> | undefined;
 
-  const compile = (): FunctionType<T, [T]> => {
-    validator = compiler(factory(self)) as FunctionType<T, [T]>;
-    return validator;
+  const recursive = (...args: [T]): T => {
+    if (!validator) {
+      validator = factory(self);
+    }
+
+    return validator(...args);
   };
 
-  const self = ((...args: [T]): T => {
-    if (!validator) {
-      compile();
-    }
+  const self = new Validator(recursive).proxy();
 
-    return (validator as FunctionType<T, [T]>)(...args);
-  }) as FunctionType<T, [T]>;
-
-  const recursive = ((...args: [T]): T => {
-    if (!validator) {
-      compile();
-    }
-
-    return (validator as FunctionType<T, [T]>)(...args);
-  }) as FunctionType<T, [T]>;
-
-  return new Validator(recursive).proxy() as ValidatorProxy<
-    Validator<FunctionType<T, [T]>>
-  >;
+  return self;
 };
 
 const Schema: SchemaType = schema;
