@@ -46,14 +46,14 @@ describe('README', () => {
     assert.equal(
       JSON.stringify(err, null, 2),
       `{
-  "message": "status: Expect value to equal \\"suspended\\"",
+  "message": "status: No alternatives matched",
   "errors": [
     {
       "path": [
         "status"
       ],
       "error": {
-        "message": "Expect value to equal \\"suspended\\""
+        "message": "No alternatives matched"
       }
     }
   ]
@@ -61,15 +61,12 @@ describe('README', () => {
     );
 
     if (err) {
-      assert.equal(err.message, 'status: Expect value to equal "suspended"');
+      assert.equal(err.message, 'status: No alternatives matched');
       assert.equal(err.errors?.length, 1);
 
       if (err.errors) {
         assert.deepEqual(err.errors[0].path, ['status']);
-        assert.equal(
-          err.errors[0].error.message,
-          'Expect value to equal "suspended"',
-        );
+        assert.equal(err.errors[0].error.message, 'No alternatives matched');
       }
     }
   });

@@ -70,7 +70,11 @@ describe('schema/logic', () => {
       );
       assert.equal(validator(1), '1');
       assert.equal(validator(false), 0);
-      assert.throw(() => validator('' as any), RangeError, 'Non boolean');
+      assert.throw(
+        () => validator('' as any),
+        ValidationError,
+        'No alternatives matched',
+      );
     });
 
     it('[sync,async] candidates', async () => {

@@ -5,6 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import Schema from './Schema';
 import { ValidationError } from './schema/errors';
 import string from './string';
+import array from './array';
 import { SchemaParameters } from './schema/io';
 import number from './number';
 import unknown from './unknown';
@@ -144,6 +145,111 @@ describe('Schema', () => {
       type AInputs = SchemaParameters<typeof A>;
 
       typeCheck<AInputs, [{ id: 1 } | { id: 2; data?: string | null }]>('ok');
+    });
+
+    it('issue #169 symmetric candidates reject with a generic either error', () => {
+      const X = {
+        foo: string.equals('X'),
+        bar: array.max(0),
+        baz: array.min(1),
+      };
+      const Y = {
+        foo: string.equals('Y'),
+        bar: array.min(1),
+        baz: array.max(0),
+      };
+
+      const validator = Schema.either(X, Y);
+      const reversed = Schema.either(Y, X);
+
+      assert.deepEqual(validator({ foo: 'X', bar: [], baz: [1] }), {
+        foo: 'X',
+        bar: [],
+        baz: [1],
+      });
+      assert.deepEqual(validator({ foo: 'Y', bar: [1], baz: [] }), {
+        foo: 'Y',
+        bar: [1],
+        baz: [],
+      });
+
+      const assertGenericEitherError = (eitherValidator: any): void => {
+        for (const input of [
+          { foo: 'X', bar: [], baz: [] },
+          { foo: 'Y', bar: [], baz: [] },
+        ]) {
+          try {
+            eitherValidator(input);
+            assert.fail('should throw');
+          } catch (e: any) {
+            assert.instanceOf(e, ValidationError);
+            assert.equal(e.message, 'No alternatives matched');
+            assert.notInclude(e.message, 'foo');
+            assert.notInclude(e.message, 'bar');
+            assert.notInclude(e.message, 'baz');
+            assert.isUndefined(e.path);
+            assert.isUndefined(e.errors);
+          }
+        }
+      };
+
+      assertGenericEitherError(validator);
+      assertGenericEitherError(reversed);
+    });
+
+    it('issue #169 async candidates reject with a generic either error', async () => {
+      const validator = Schema.either(
+        async (x: string): Promise<string> => {
+          if (x !== 'X') {
+            throw new RangeError(`Expect value to equal "X"`);
+          }
+
+          return x;
+        },
+        async (x: string): Promise<string> => {
+          if (x !== 'Y') {
+            throw new RangeError(`Expect value to equal "Y"`);
+          }
+
+          return x;
+        },
+      );
+
+      await assert.becomes(validator('X'), 'X');
+      await assert.becomes(validator('Y'), 'Y');
+      await assert.isRejected(
+        validator('Z') as any,
+        ValidationError,
+        'No alternatives matched',
+      );
+    });
+
+    it('single candidate preserves the original error', async () => {
+      const validator = Schema.either({
+        foo: string.equals('X'),
+      });
+
+      assert.throw(
+        () => validator({ foo: 'Y' } as any),
+        ValidationError,
+        'foo: Expect value to equal "X"',
+      );
+
+      const asyncValidator = Schema.either(
+        async (x: string): Promise<string> => {
+          if (x !== 'X') {
+            throw new RangeError(`Expect value to equal "X"`);
+          }
+
+          return x;
+        },
+      );
+
+      await assert.isRejected(
+        asyncValidator('Y') as any,
+        RangeError,
+        'Expect value to equal "X"',
+      );
     });
   });
 

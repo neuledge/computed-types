@@ -8,6 +8,7 @@ import FunctionType from './FunctionType';
 import compiler from './compiler';
 import { deepConcat, isPromiseLike } from './utils';
 import { findSwitchKey, generateSwitch } from './switch';
+import { ValidationError } from './errors';
 
 export function either<A>(
   ...candidates: [A]
@@ -148,7 +149,9 @@ export function either<A, S>(
         res = validator(...(args as any));
       } catch (e) {
         if (i >= candidates.length) {
-          throw e;
+          throw candidates.length > 1
+            ? new ValidationError('No alternatives matched')
+            : e;
         }
 
         return next();
@@ -160,7 +163,9 @@ export function either<A, S>(
 
       return res.then(null, (e) => {
         if (i >= candidates.length) {
-          throw e;
+          throw candidates.length > 1
+            ? new ValidationError('No alternatives matched')
+            : e;
         }
 
         return next();
