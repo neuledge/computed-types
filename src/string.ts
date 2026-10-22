@@ -6,90 +6,129 @@ import { regexp, type } from './schema/validations';
 export class StringValidator<
   P extends FunctionParameters = [string],
 > extends Validator<FunctionType<string, P>> {
-  public toLowerCase(): ValidatorProxy<this> {
-    return this.transform((str) => str.toLowerCase());
+  public toLowerCase<This extends { validator: FunctionType }>(
+    this: This,
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).transform((str: string) =>
+      str.toLowerCase(),
+    ) as ValidatorProxy<This>;
   }
 
-  public toUpperCase(): ValidatorProxy<this> {
-    return this.transform((str) => str.toUpperCase());
+  public toUpperCase<This extends { validator: FunctionType }>(
+    this: This,
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).transform((str: string) =>
+      str.toUpperCase(),
+    ) as ValidatorProxy<This>;
   }
 
-  public toLocaleLowerCase(
+  public toLocaleLowerCase<This extends { validator: FunctionType }>(
+    this: This,
     ...input: Parameters<string['toLocaleLowerCase']>
-  ): ValidatorProxy<this> {
-    return this.transform((str) => str.toLocaleLowerCase(...input));
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).transform((str: string) =>
+      str.toLocaleLowerCase(...input),
+    ) as ValidatorProxy<This>;
   }
 
-  public toLocaleUpperCase(
+  public toLocaleUpperCase<This extends { validator: FunctionType }>(
+    this: This,
     ...input: Parameters<string['toLocaleUpperCase']>
-  ): ValidatorProxy<this> {
-    return this.transform((str) => str.toLocaleUpperCase(...input));
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).transform((str: string) =>
+      str.toLocaleUpperCase(...input),
+    ) as ValidatorProxy<This>;
   }
 
-  public normalize(
+  public normalize<This extends { validator: FunctionType }>(
+    this: This,
     ...input: Parameters<string['normalize']>
-  ): ValidatorProxy<this> {
-    return this.transform((str) => str.normalize(...input));
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).transform((str: string) =>
+      str.normalize(...input),
+    ) as ValidatorProxy<This>;
   }
 
-  public trim(): ValidatorProxy<this> {
-    return this.transform((str) => str.trim());
+  public trim<This extends { validator: FunctionType }>(
+    this: This,
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).transform((str: string) =>
+      str.trim(),
+    ) as ValidatorProxy<This>;
   }
 
-  public truncate(length: number): ValidatorProxy<this> {
-    return this.transform((str) =>
+  public truncate<This extends { validator: FunctionType }>(
+    this: This,
+    length: number,
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).transform((str: string) =>
       str.length > length ? `${str.substring(0, length - 1)}…` : str,
-    );
+    ) as ValidatorProxy<This>;
   }
 
-  public min(
+  public min<This extends { validator: FunctionType }>(
+    this: This,
     length: number,
     error?: ErrorLike<[string]>,
-  ): ValidatorProxy<this> {
-    return this.test(
-      (str) => str.length >= length,
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).test(
+      (str: string) => str.length >= length,
       error ||
-        ((str): RangeError =>
+        ((str: string): RangeError =>
           new RangeError(
             `Expect length to be minimum of ${length} characters (actual: ${str.length})`,
           )),
-    );
+    ) as ValidatorProxy<This>;
   }
 
-  public max(
+  public max<This extends { validator: FunctionType }>(
+    this: This,
     length: number,
     error?: ErrorLike<[string]>,
-  ): ValidatorProxy<this> {
-    return this.test(
-      (str) => str.length <= length,
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).test(
+      (str: string) => str.length <= length,
       error ||
-        ((str): RangeError =>
+        ((str: string): RangeError =>
           new RangeError(
             `Expect length to be maximum of ${length} characters (actual: ${str.length})`,
           )),
-    );
+    ) as ValidatorProxy<This>;
   }
 
-  public between(
+  public between<This extends { validator: FunctionType }>(
+    this: This,
     minLength: number,
     maxLength: number,
     error?: ErrorLike<[string]>,
-  ): ValidatorProxy<this> {
-    return this.test(
-      (str) => str.length >= minLength && str.length <= maxLength,
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).test(
+      (str: string) => str.length >= minLength && str.length <= maxLength,
       error ||
-        ((str): RangeError =>
+        ((str: string): RangeError =>
           new RangeError(
             `Expect length to be between ${minLength} and ${maxLength} characters (actual: ${str.length})`,
           )),
-    );
+    ) as ValidatorProxy<This>;
   }
 
-  public regexp(
+  public regexp<This extends { validator: FunctionType }>(
+    this: This,
     exp: RegExp | string,
     error?: ErrorLike<[string]>,
-  ): ValidatorProxy<this> {
-    return this.transform(regexp(exp, error));
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).transform(regexp(exp, error)) as ValidatorProxy<This>;
   }
 }
 

@@ -144,4 +144,38 @@ describe('string', () => {
 
     assert.throws(() => validator('av    '), RangeError);
   });
+
+  it('preserves constructed input type across chained validators (issue #79)', () => {
+    const constructed = string.construct((input: { key: string }) => [
+      input.key,
+    ]);
+
+    // constructed validator accepts the original input and produces a string
+    typeCheck<Parameters<typeof constructed>, [{ key: string }]>('ok');
+    typeCheck<[ReturnType<typeof constructed>], [string]>('ok');
+
+    // .min(1) keeps the constructed input type and output type
+    const min = constructed.min(1);
+    typeCheck<Parameters<typeof min>, [{ key: string }]>('ok');
+    typeCheck<[ReturnType<typeof min>], [string]>('ok');
+
+    // further chaining keeps it too
+    const chained = constructed.min(1).max(10).trim();
+    typeCheck<Parameters<typeof chained>, [{ key: string }]>('ok');
+    typeCheck<[ReturnType<typeof chained>], [string]>('ok');
+
+    // .destruct() keeps the input type and returns the tuple output
+    const destructed = constructed.destruct();
+    typeCheck<Parameters<typeof destructed>, [{ key: string }]>('ok');
+    typeCheck<ReturnType<typeof destructed>, [ValidationError | null, string?]>(
+      'ok',
+    );
+
+    // runtime behavior is unchanged
+    assert.equal(constructed({ key: 'abc' }), 'abc');
+    assert.equal(min({ key: 'abc' }), 'abc');
+    assert.equal(chained({ key: '  abc  ' }), 'abc');
+    assert.throws(() => min({ key: '' }), RangeError);
+    assert.equal(destructed({ key: 'abc' })[1], 'abc');
+  });
 });

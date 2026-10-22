@@ -46,11 +46,16 @@ export default class Validator<F extends FunctionType> {
     return this.transform(equals(value, error));
   }
 
-  public test(
-    tester: FunctionType<unknown, [ResolvedValue<ReturnType<F>>]>,
-    error?: ErrorLike<[ResolvedValue<ReturnType<F>>]>,
-  ): ValidatorProxy<this> {
-    return this.transform(test(tester, error));
+  public test<This extends { validator: FunctionType }>(
+    this: This,
+    tester: FunctionType<
+      unknown,
+      [ResolvedValue<ReturnType<This['validator']>>]
+    >,
+    error?: ErrorLike<[ResolvedValue<ReturnType<This['validator']>>]>,
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).transform(test(tester, error)) as ValidatorProxy<This>;
   }
 
   public transform<
@@ -91,32 +96,20 @@ export default class Validator<F extends FunctionType> {
   }
 
   public optional<
-    R extends ResolvedValue<ReturnType<F>> | undefined = undefined,
+    This extends { validator: FunctionType },
+    R extends
+      | ResolvedValue<ReturnType<This['validator']>>
+      | undefined = undefined,
   >(
+    this: This,
     defaultValue?: R,
   ): ValidatorProxy<
-    this,
+    This,
     FunctionType<
-      ReturnType<F> | R,
-      MergeSchemaParameters<Parameters<F> | [(undefined | null)?]>
-    >
-  > {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Class = (this as any).constructor;
-    const { validator } = this;
-
-    return new Class(optionalSchema<F, R>(validator, defaultValue)).proxy();
-  }
-
-  public strictOptional<
-    R extends ResolvedValue<ReturnType<F>> | undefined = undefined,
-  >(
-    defaultValue?: R,
-  ): ValidatorProxy<
-    this,
-    FunctionType<
-      ReturnType<F> | R,
-      MergeSchemaParameters<Parameters<F> | [undefined?]>
+      ReturnType<This['validator']> | R,
+      MergeSchemaParameters<
+        Parameters<This['validator']> | [(undefined | null)?]
+      >
     >
   > {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -124,20 +117,45 @@ export default class Validator<F extends FunctionType> {
     const { validator } = this;
 
     return new Class(
-      strictOptionalSchema<F, R>(validator, defaultValue),
+      optionalSchema<This['validator'], R>(validator, defaultValue),
     ).proxy();
   }
 
-  public destruct(
-    error?: ErrorLike<Parameters<F>>,
+  public strictOptional<
+    This extends { validator: FunctionType },
+    R extends
+      | ResolvedValue<ReturnType<This['validator']>>
+      | undefined = undefined,
+  >(
+    this: This,
+    defaultValue?: R,
   ): ValidatorProxy<
-    this,
+    This,
+    FunctionType<
+      ReturnType<This['validator']> | R,
+      MergeSchemaParameters<Parameters<This['validator']> | [undefined?]>
+    >
+  > {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const Class = (this as any).constructor;
+    const { validator } = this;
+
+    return new Class(
+      strictOptionalSchema<This['validator'], R>(validator, defaultValue),
+    ).proxy();
+  }
+
+  public destruct<This extends { validator: FunctionType }>(
+    this: This,
+    error?: ErrorLike<Parameters<This['validator']>>,
+  ): ValidatorProxy<
+    This,
     FunctionType<
       MaybeAsync<
-        ReturnType<F>,
-        [ValidationError | null, ResolvedValue<ReturnType<F>>?]
+        ReturnType<This['validator']>,
+        [ValidationError | null, ResolvedValue<ReturnType<This['validator']>>?]
       >,
-      Parameters<F>
+      Parameters<This['validator']>
     >
   > {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -147,7 +165,10 @@ export default class Validator<F extends FunctionType> {
     return new Class(destruct(validator, error)).proxy();
   }
 
-  public error(err: ErrorLike<Parameters<F>>): ValidatorProxy<this> {
+  public error<This extends { validator: FunctionType }>(
+    this: This,
+    err: ErrorLike<Parameters<This['validator']>>,
+  ): ValidatorProxy<This> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Class = (this as any).constructor;
     const { validator } = this;
