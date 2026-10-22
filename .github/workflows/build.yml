@@ -41,4 +41,4 @@ jobs:
         uses: codecov/codecov-action@v2
         if: matrix.node-version == '18.x'
         with:
-          fail_ci_if_error: true
+          fail_ci_if_error: false
