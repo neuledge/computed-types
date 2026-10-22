@@ -347,6 +347,12 @@ interface SchemaType {
     value: FunctionType<V, [IV]>,
     error?: ErrorLike<P>,
   ): ValidatorProxy<Validator<FunctionType<Record<K, V>, P>>>;
+
+  recursive<T>(
+    factory: (
+      self: ValidatorProxy<Validator<FunctionType<T, [T]>>>,
+    ) => FunctionType<T, [T]>,
+  ): ValidatorProxy<Validator<FunctionType<T, [T]>>>;
 }
 
 function schema<S>(
@@ -425,6 +431,26 @@ schema.record = function <
   error?: ErrorLike<P>,
 ): ValidatorProxy<Validator<FunctionType<Record<K, V>, P>>> {
   return new Validator(recordValue(key, value, error)).proxy();
+};
+
+schema.recursive = function <T>(
+  factory: (
+    self: ValidatorProxy<Validator<FunctionType<T, [T]>>>,
+  ) => FunctionType<T, [T]>,
+): ValidatorProxy<Validator<FunctionType<T, [T]>>> {
+  let validator: FunctionType<T, [T]> | undefined;
+
+  const recursive = (...args: [T]): T => {
+    if (!validator) {
+      validator = factory(self);
+    }
+
+    return validator(...args);
+  };
+
+  const self = new Validator(recursive).proxy();
+
+  return self;
 };
 
 const Schema: SchemaType = schema;
