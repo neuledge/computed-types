@@ -87,13 +87,14 @@ describe('Schema', () => {
           'foo.bar: Expect length to be minimum of 1 characters (actual: 0)',
         );
         assert.isArray(e.errors);
+        const errors = e.errors!;
 
-        assert.instanceOf(e.errors[0].error, RangeError);
+        assert.instanceOf(errors[0].error, RangeError);
         assert.equal(
-          e.errors[0].error.message,
+          errors[0].error.message,
           'Expect length to be minimum of 1 characters (actual: 0)',
         );
-        assert.deepEqual(e.errors[0].path, ['foo', 'bar']);
+        assert.deepEqual(errors[0].path, ['foo', 'bar']);
       }
     });
   });
