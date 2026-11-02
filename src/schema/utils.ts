@@ -4,12 +4,21 @@ import { ValidationError } from './errors';
 
 type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 
+type EqualReformatTuple<T extends readonly unknown[]> = T extends readonly [
+  infer Head,
+  ...infer Tail,
+]
+  ? [EqualReformat<Head>, ...EqualReformatTuple<Tail>]
+  : [];
+
 type EqualReformat<T> = T extends FunctionType
   ? [
       '$$FunctionType$$',
       EqualReformat<ReturnType<T>>,
       EqualReformat<Parameters<T>>,
     ]
+  : T extends readonly unknown[]
+  ? ['$$Array$$', EqualReformatTuple<T>, T['length'], EqualReformat<T[number]>]
   : T extends object // eslint-disable-line @typescript-eslint/ban-types
   ? {
       [K in keyof T]: EqualReformat<T[K]>;
