@@ -82,6 +82,20 @@
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
   },
+  "overrides": {
+    "mocha": {
+      "glob": "14.0.2"
+    },
+    "nyc": {
+      "glob": "14.0.2"
+    },
+    "test-exclude": {
+      "glob": "14.0.2"
+    },
+    "rimraf@6": {
+      "glob": "14.0.2"
+    }
+  },
   "lint-staged": {
     "src/**/*": "eslint"
   }
