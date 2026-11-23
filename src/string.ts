@@ -42,18 +42,20 @@ export class StringValidator<
     );
   }
 
-  public min(
+  public min<This extends { validator: FunctionType }>(
+    this: This,
     length: number,
     error?: ErrorLike<[string]>,
-  ): ValidatorProxy<this> {
-    return this.test(
-      (str) => str.length >= length,
+  ): ValidatorProxy<This> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).test(
+      (str: string) => str.length >= length,
       error ||
-        ((str): RangeError =>
+        ((str: string): RangeError =>
           new RangeError(
             `Expect length to be minimum of ${length} characters (actual: ${str.length})`,
           )),
-    );
+    ) as ValidatorProxy<This>;
   }
 
   public max(

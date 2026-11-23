@@ -144,4 +144,38 @@ describe('string', () => {
 
     assert.throws(() => validator('av    '), RangeError);
   });
+
+  it('preserves constructed input type through .min() and .destruct() (issue #79)', () => {
+    const constructed = string.construct((input: { key: string } | string) =>
+      typeof input === 'string' ? [input] : [input.key],
+    );
+
+    // the constructed validator accepts both strings and objects
+    typeCheck<Parameters<typeof constructed>, [{ key: string } | string]>('ok');
+    typeCheck<[ReturnType<typeof constructed>], [string]>('ok');
+
+    // .min(1) keeps the constructed input and output types
+    const min = constructed.min(1);
+    typeCheck<Parameters<typeof min>, [{ key: string } | string]>('ok');
+    typeCheck<[ReturnType<typeof min>], [string]>('ok');
+
+    // .destruct() keeps the constructed input type and returns the tuple output
+    const destructed = constructed.destruct();
+    typeCheck<Parameters<typeof destructed>, [{ key: string } | string]>('ok');
+    typeCheck<ReturnType<typeof destructed>, [ValidationError | null, string?]>(
+      'ok',
+    );
+
+    // runtime behavior is unchanged
+    assert.equal(constructed('abc'), 'abc');
+    assert.equal(constructed({ key: 'abc' }), 'abc');
+    assert.equal(min('abc'), 'abc');
+    assert.equal(min({ key: 'abc' }), 'abc');
+    assert.throws(() => min(''), RangeError);
+    assert.throws(() => min({ key: '' }), RangeError);
+
+    const res = destructed({ key: 'abc' });
+    assert.equal(res[0], null);
+    assert.equal(res[1], 'abc');
+  });
 });
